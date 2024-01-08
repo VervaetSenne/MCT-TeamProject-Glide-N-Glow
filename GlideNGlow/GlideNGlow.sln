@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Ui.ConsoleApp", "GlideNGlow.Ui.ConsoleApp\GlideNGlow.Ui.ConsoleApp.csproj", "{5C837165-30BF-47A4-8179-F54A8A886F41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Core.Data", "GlideNGlow.Core.Data\GlideNGlow.Core.Data.csproj", "{FDF095C4-3122-4415-AA6E-4677A3A03666}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6DC75EFE-4C31-48A5-AB13-CBD1025BE029}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ui", "Ui", "{CD2AEAE4-EF9C-427F-AF88-9BE39D23FE24}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C837165-30BF-47A4-8179-F54A8A886F41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C837165-30BF-47A4-8179-F54A8A886F41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C837165-30BF-47A4-8179-F54A8A886F41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C837165-30BF-47A4-8179-F54A8A886F41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDF095C4-3122-4415-AA6E-4677A3A03666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDF095C4-3122-4415-AA6E-4677A3A03666}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDF095C4-3122-4415-AA6E-4677A3A03666}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDF095C4-3122-4415-AA6E-4677A3A03666}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FDF095C4-3122-4415-AA6E-4677A3A03666} = {6DC75EFE-4C31-48A5-AB13-CBD1025BE029}
+		{5C837165-30BF-47A4-8179-F54A8A886F41} = {CD2AEAE4-EF9C-427F-AF88-9BE39D23FE24}
+	EndGlobalSection
+EndGlobal
