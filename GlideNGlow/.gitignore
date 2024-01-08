@@ -1,4 +1,7 @@
-﻿### core template
+﻿### user template
+appsettings.*.json
+
+### core template
 *.swp
 *.*~
 project.lock.json
