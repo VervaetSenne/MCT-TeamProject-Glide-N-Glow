@@ -1,6 +1,16 @@
-﻿namespace GlideNGlow.Core.Data;
+﻿using GlideNGlow.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
-public class GlideNGlowDbContext
+namespace GlideNGlow.Core.Data;
+
+public sealed class GlideNGlowDbContext : DbContext
 {
-    
+    public DbSet<Entry> Entries { get; }
+    public DbSet<Game> Games { get; }
+
+    public GlideNGlowDbContext()
+    {
+        Entries = Set<Entry>();
+        Games = Set<Game>();
+    }
 }
