@@ -4,4 +4,6 @@ public class Game
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public required string Name { get; set; }
+    public required byte[] Image { get; set; }
+    public required string AssemblyName { get; set; }
 }

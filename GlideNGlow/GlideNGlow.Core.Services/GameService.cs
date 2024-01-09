@@ -13,7 +13,12 @@ public class GameService : IGameService
     {
         _dbContext = dbContext;
     }
-    
+
+    public Task<Game?> FindByIdAsync(Guid id)
+    {
+        return _dbContext.Games.SingleOrDefaultAsync(g => g.Id == id);
+    }
+
     public async Task<IEnumerable<Game>> FindAsync()
     {
         return await _dbContext.Games.ToListAsync();
