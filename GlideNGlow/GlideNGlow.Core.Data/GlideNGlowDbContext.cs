@@ -8,7 +8,7 @@ public sealed class GlideNGlowDbContext : DbContext
     public DbSet<Entry> Entries { get; }
     public DbSet<Game> Games { get; }
 
-    public GlideNGlowDbContext()
+    public GlideNGlowDbContext(DbContextOptions options) : base(options)
     {
         Entries = Set<Entry>();
         Games = Set<Game>();
