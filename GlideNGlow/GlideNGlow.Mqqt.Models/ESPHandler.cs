@@ -12,7 +12,7 @@ public class EspHandler : IAsyncDisposable
     
     private const string TopicRgb = "{{r: {0},  g:{1},  b:{2}}}";
 
-    public EspHandler(string ip, ILogger logger, MqttHandler mqttHandler)
+    public EspHandler(ILogger<EspHandler> logger, MqttHandler mqttHandler)
     {
         _mqttHandler = mqttHandler;
         _logger = logger;

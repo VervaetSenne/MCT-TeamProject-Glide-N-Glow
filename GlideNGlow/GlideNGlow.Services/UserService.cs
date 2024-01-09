@@ -1,11 +1,11 @@
-﻿using GlideNGlow.Core.Models;
+﻿using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Core.Models;
 using GlideNGlow.Core.Services.Abstractions;
-using GlideNGlow.Services.Settings;
 using Microsoft.Extensions.Options.Implementations;
 
 namespace GlideNGlow.Services;
 
-public class UserService
+public class UserService : IUserService
 {
     private readonly IWritableOptions<AppSettings> _appsettings;
     private readonly IEntryService _entryService;

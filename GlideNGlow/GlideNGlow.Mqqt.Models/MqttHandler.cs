@@ -1,5 +1,7 @@
 using System.Text;
+using GlideNGlow.Common.Models.Settings;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Protocol;
@@ -11,10 +13,10 @@ public class MqttHandler : IAsyncDisposable
     private readonly ILogger _logger;
     private readonly IMqttClient _mqttClient;
 
-    public MqttHandler(string ip, ILogger? logger)
+    public MqttHandler(IOptionsMonitor<AppSettings> appSettings, ILogger<MqttHandler> logger)
     {
-        _brokerAddress = ip;
-        this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _brokerAddress = appSettings.CurrentValue.Ip;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         logger?.LogInformation("MqttHandler created");
         _mqttClient = new MqttFactory().CreateMqttClient();
         

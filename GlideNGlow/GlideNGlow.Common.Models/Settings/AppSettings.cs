@@ -1,9 +1,8 @@
-﻿using GlideNGlow.Common.Models;
-
-namespace GlideNGlow.Services.Settings;
+﻿namespace GlideNGlow.Common.Models.Settings;
 
 public class AppSettings
 {
+    public string Ip { get; set; }
     public Guid? CurrentGamemode { get; set; }
     public List<Guid> AvailableGamemodes { get; set; } = new();
     public bool ForceGamemode { get; set; } = false;

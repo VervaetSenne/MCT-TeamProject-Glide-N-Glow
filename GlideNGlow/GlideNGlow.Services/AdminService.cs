@@ -1,6 +1,8 @@
-﻿namespace GlideNGlow.Services;
+﻿using GlideNGlow.Services.Abstractions;
 
-public class AdminService
+namespace GlideNGlow.Services;
+
+public class AdminService : IAdminService
 {
     
 }
