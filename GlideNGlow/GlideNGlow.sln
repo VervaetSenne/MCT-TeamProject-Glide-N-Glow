@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# 
+#
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Ui.ConsoleApp", "GlideNGlow.Ui.ConsoleApp\GlideNGlow.Ui.ConsoleApp.csproj", "{5C837165-30BF-47A4-8179-F54A8A886F41}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Core.Data", "GlideNGlow.Core.Data\GlideNGlow.Core.Data.csproj", "{FDF095C4-3122-4415-AA6E-4677A3A03666}"
@@ -10,6 +10,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ui", "Ui", "{CD2AEAE4-EF9C-427F-AF88-9BE39D23FE24}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Mqqt.Models", "GlideNGlow.Mqqt.Models\GlideNGlow.Mqqt.Models.csproj", "{3868AFFD-91B8-4FE3-A93A-2D5CF384CCA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Common.Models", "GlideNGlow.Common.Models\GlideNGlow.Common.Models.csproj", "{4B6444D0-22E1-4547-99F0-D4E1F3614A9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{3868AFFD-91B8-4FE3-A93A-2D5CF384CCA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3868AFFD-91B8-4FE3-A93A-2D5CF384CCA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3868AFFD-91B8-4FE3-A93A-2D5CF384CCA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B6444D0-22E1-4547-99F0-D4E1F3614A9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B6444D0-22E1-4547-99F0-D4E1F3614A9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B6444D0-22E1-4547-99F0-D4E1F3614A9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B6444D0-22E1-4547-99F0-D4E1F3614A9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FDF095C4-3122-4415-AA6E-4677A3A03666} = {6DC75EFE-4C31-48A5-AB13-CBD1025BE029}

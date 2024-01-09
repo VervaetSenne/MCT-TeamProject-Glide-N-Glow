@@ -2,9 +2,10 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Client;
+using MQTTnet.Protocol;
 
 namespace GlideNGlow.Mqqt.Models;
-public class MqttHandler : IDisposable
+public class MqttHandler : IAsyncDisposable
 {
     private readonly string _brokerAddress;
     private readonly ILogger _logger;
@@ -36,20 +37,24 @@ public class MqttHandler : IDisposable
 
         await _mqttClient.PublishAsync(applicationMessage, CancellationToken.None);
 
-        await _mqttClient.DisconnectAsync();
-
         _logger.LogInformation("MQTT application message is published.");
         
     }
 
-    public async Task Subscribe(String topic, Action<string,string> callback)
+    public async Task Subscribe(String topic, Action<string,string> callback, MqttQualityOfServiceLevel qos = MqttQualityOfServiceLevel.AtLeastOnce)
     {
-        var mqttFactory = new MqttFactory();
+        // make sure it is with qos 1
+        await _mqttClient.SubscribeAsync(topic, qos);
+        var route = topic.Split('/');
         
-        await _mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic(topic).Build());
-
         _mqttClient.ApplicationMessageReceivedAsync += (e) =>
         {
+            var incoming = e.ApplicationMessage.Topic.Split('/');
+            for (int i = 0; i < route.Length; i++)
+            {
+                if (route[i] == "+") continue;
+                if (route[i] != incoming[i]) return Task.CompletedTask;
+            }
             callback(e.ApplicationMessage.Topic,Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment.Array ?? Array.Empty<byte>()));
             return Task.CompletedTask;
         };
@@ -58,8 +63,9 @@ public class MqttHandler : IDisposable
 
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
+        await _mqttClient.DisconnectAsync();
         _mqttClient.Dispose();
     }
 }

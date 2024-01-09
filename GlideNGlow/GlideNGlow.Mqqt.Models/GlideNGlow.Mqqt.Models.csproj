@@ -12,4 +12,8 @@
     <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.3.3.952" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GlideNGlow.Common.Models\GlideNGlow.Common.Models.csproj" />
+  </ItemGroup>
+
 </Project>
