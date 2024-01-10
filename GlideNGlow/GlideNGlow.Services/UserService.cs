@@ -1,6 +1,7 @@
 ﻿using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Core.Models;
 using GlideNGlow.Core.Services.Abstractions;
+using GlideNGlow.Services.Abstractions;
 using Microsoft.Extensions.Options.Implementations;
 
 namespace GlideNGlow.Services;
@@ -18,6 +19,11 @@ public class UserService : IUserService
         _appsettings = appsettings;
         _entryService = entryService;
         _gameService = gameService;
+    }
+
+    public async Task<IEnumerable<Game>> GetGamemodesAsync()
+    {
+        return await _gameService.FindAsync();
     }
 
     public async Task AddScoreAsync(Guid gameId, string name, string score)
@@ -40,15 +46,15 @@ public class UserService : IUserService
         return await _gameService.FindByIdAsync(AppSettings.CurrentGamemode.Value);
     }
 
+    public async Task<IEnumerable<Entry>> GetEntriesAsync()
+    {
+        var entries = await _entryService.FindAsync();
+        return entries;
+    }
+
     public async Task SetActiveGamemodeAsync(Guid id)
     {
         _appsettings.Update(settings => settings.CurrentGamemode = id);
-        // TODO continue with massimo code
-    }
-
-    public async Task SetAvailableGamemodesAsync(IEnumerable<Guid> ids)
-    {
-        _appsettings.Update(settings => settings.AvailableGamemodes = ids.ToList());
         // TODO continue with massimo code
     }
 }
