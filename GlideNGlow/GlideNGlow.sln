@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Mqqt.Models", "G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Common.Models", "GlideNGlow.Common.Models\GlideNGlow.Common.Models.csproj", "{4B6444D0-22E1-4547-99F0-D4E1F3614A9F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.GPIO.Models", "GlideNGlow.GPIO.Models\GlideNGlow.GPIO.Models.csproj", "{04B94825-FAD3-4B2A-996A-37C0A4FB306D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,10 @@ Global
 		{4B6444D0-22E1-4547-99F0-D4E1F3614A9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B6444D0-22E1-4547-99F0-D4E1F3614A9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B6444D0-22E1-4547-99F0-D4E1F3614A9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04B94825-FAD3-4B2A-996A-37C0A4FB306D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04B94825-FAD3-4B2A-996A-37C0A4FB306D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04B94825-FAD3-4B2A-996A-37C0A4FB306D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04B94825-FAD3-4B2A-996A-37C0A4FB306D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FDF095C4-3122-4415-AA6E-4677A3A03666} = {6DC75EFE-4C31-48A5-AB13-CBD1025BE029}
