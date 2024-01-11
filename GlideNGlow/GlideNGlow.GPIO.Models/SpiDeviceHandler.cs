@@ -1,8 +1,11 @@
 using System.Device.Spi;
 using System.Drawing;
+using GlideNGlow.Common.Models;
 using Iot.Device.Ws28xx;
 using GlideNGlow.Common.Models.Settings;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options.Implementations;
 
 namespace GlideNGlow.GPIO.Models;
 
@@ -10,12 +13,13 @@ public class SpiDeviceHandler : IDisposable
 {
     private readonly SpiDevice _spiDevice;
     private Ws2812b _ws2812B;
-    private readonly IOptionsMonitor<AppSettings> _appSettings;
+    private readonly IWritableOptions<AppSettings> _appSettings;
     private int _pixelAmount;
-
-
-    public SpiDeviceHandler(IOptionsMonitor<AppSettings> appSettings)
+    private readonly ILogger _logger;
+    
+    public SpiDeviceHandler(IWritableOptions<AppSettings> appSettings,ILogger<SpiDeviceHandler> logger)
     {
+        _logger = logger;
         _spiDevice = SpiDevice.Create(new SpiConnectionSettings(0,0)
         {
             ClockFrequency = 2_400_000,
@@ -31,9 +35,31 @@ public class SpiDeviceHandler : IDisposable
     
     private void UpdateSettings()
     {
+#if DEBUG
+        _appSettings.Update(settings =>
+        {
+            settings.Strips = new List<LightStripData>()
+            {
+                new LightStripData()
+                {
+                    Leds = 300,
+                    Length = 500,
+                    DistanceTillNext = 0
+                }
+                
+            };
+        });
+#endif
+        
         _pixelAmount = GetCurrentAppSettings().Strips.Aggregate(0, (i, strip) => i + strip.Leds);
+        if(_pixelAmount == 0)
+        {
+            _logger.LogError("Pixel amount is 0");
+            return;
+        }
         
         _ws2812B = new Ws2812b(_spiDevice, _pixelAmount);
+        _logger.LogInformation($"Updated pixel amount to {_pixelAmount}");
     }
     
     private AppSettings GetCurrentAppSettings()
@@ -211,6 +237,15 @@ public class SpiDeviceHandler : IDisposable
 
     public Task TestAsync()
     {
+        if(_pixelAmount == 0)
+        {
+            UpdateSettings();
+            if (_pixelAmount == 0)
+            {
+                _logger.LogError("Pixel amount is 0");
+                return Task.CompletedTask;
+            }
+        }
         Random randomGen = new Random();
         for(int i = 0; i < 50; i++)
         {
