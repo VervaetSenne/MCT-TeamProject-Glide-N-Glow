@@ -60,7 +60,25 @@ function checkSettings() {
       };
 
       // Send the data to the API using fetch
-      fetch('https://your-api-endpoint.com', {
+      var fetchdom = 'http://localhost:5165';
+      var fetchlink = ``;
+      if (data.optionText == 'User gamemode switch') {
+        fetchlink = `${fetchdom}/admin/allow-game-switch/${data.isChecked}`;
+        console.log(fetchlink);
+      }
+      if (data.optionText == 'Gamemode force') {
+        fetchlink = `${fetchdom}/admin/force-gamemode/${data.isChecked}`;
+        console.log(fetchlink);
+      }
+      if (data.optionText == 'Lighting') {
+        fetchlink = `${fetchdom}/admin/lightning/${data.isChecked}`;
+        console.log(fetchlink);
+      }
+      if (data.optionText == 'Start calibration') {
+        fetchlink = '';
+      }
+
+      fetch(fetchlink, {
         method: 'POST', // or 'PUT', 'DELETE', etc., depending on your API
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +98,9 @@ function checkSettings() {
   });
 }
 function checkAvailableGamemodes() {
-  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  const checkboxes = document.querySelectorAll(
+    '.checkbox-container input[type="checkbox"]'
+  );
 
   checkboxes.forEach((checkbox) => {
     checkbox.addEventListener('change', function () {
