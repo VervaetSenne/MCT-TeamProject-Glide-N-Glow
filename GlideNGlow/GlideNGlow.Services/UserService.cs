@@ -26,17 +26,19 @@ public class UserService : IUserService
         return await _gameService.FindAsync();
     }
 
-    public async Task AddScoreAsync(Guid gameId, string name, string score)
+    public async Task<Entry> AddScoreAsync(Guid gameId, string name, string score)
     {
         var game = await _gameService.FindByIdAsync(gameId);
         if (game is null)
             throw new Exception("Game could not be found!"); // TODO create a service result to return.
-        await _entryService.CreateAsync(new Entry
+        var entry = new Entry
         {
             GameId = gameId,
             Name = name,
             Score = score
-        });
+        };
+        await _entryService.CreateAsync(entry);
+        return entry;
     }
     
     public async Task<Game?> GetActiveGamemodeAsync()

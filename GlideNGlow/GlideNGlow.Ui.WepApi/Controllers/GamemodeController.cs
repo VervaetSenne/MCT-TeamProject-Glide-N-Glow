@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GlideNGlow.Ui.WepApi.Controllers;
 
-[Route("[controller]")]
+[Route("gamemode")]
 [ApiController]
 public class GamemodeController : Controller
 {
@@ -14,10 +14,17 @@ public class GamemodeController : Controller
         _userService = userService;
     }
 
-    [HttpGet]
+    [HttpGet("all")]
     public async Task<IActionResult> GetAync()
     {
         var games = await _userService.GetGamemodesAsync();
-        return new OkObjectResult(games);
+        return Ok(games);
+    }
+
+    [HttpGet("active")]
+    public async Task<IActionResult> GetActive()
+    {
+        var current = await _userService.GetActiveGamemodeAsync();
+        return Ok(current);
     }
 }

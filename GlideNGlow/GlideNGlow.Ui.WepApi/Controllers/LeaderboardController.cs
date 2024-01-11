@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GlideNGlow.Ui.WepApi.Controllers;
 
-[Route("[controller]")]
+[Route("leaderboard")]
 [ApiController]
 public class LeaderboardController : Controller
 {
@@ -19,13 +19,13 @@ public class LeaderboardController : Controller
     public async Task<IActionResult> GetAsync()
     {
         var leaderBoard = _userService.GetEntriesAsync();
-        return new OkObjectResult(leaderBoard);
+        return Ok(leaderBoard);
     }
 
     [HttpPost("{gameId:guid}/{name}/{score}")]
     public async Task<IActionResult> AddScoreAsync(Guid gameId, string name, string score)
     {
-        var entry = _userService.AddScoreAsync(gameId, name, score);
-        return new OkObjectResult(entry);
+        await _userService.AddScoreAsync(gameId, name, score);
+        return Ok();
     }
 }

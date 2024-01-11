@@ -27,4 +27,19 @@ public class AdminService : IAdminService
         // TODO continue with massimo code
         return true;
     }
+
+    public void AllowGameSwitch(bool value)
+    {
+        _appsettings.Update(settings => settings.ForceGamemode = value);
+    }
+
+    public void ForceGamemode(bool value)
+    {
+        _appsettings.Update(settings => settings.ForceGamemode = value);
+    }
+
+    public void LightingSwitch(bool value)
+    {
+        _appsettings.Update(settings => settings.LightingToggle = value);
+    }
 }

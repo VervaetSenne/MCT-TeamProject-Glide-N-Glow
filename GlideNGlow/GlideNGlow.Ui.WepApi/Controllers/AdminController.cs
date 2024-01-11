@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GlideNGlow.Ui.WepApi.Controllers;
 
-[Route("[controller]")]
+[Route("admin")]
 [ApiController]
 public class AdminController : Controller
 {
@@ -21,6 +21,27 @@ public class AdminController : Controller
         if (result)
             return new BadRequestResult();
 
-        return new OkResult();
+        return Ok();
+    }
+
+    [HttpPost("allow-game-switch/{value:bool}")]
+    public IActionResult AllowGameSwitch(bool value)
+    {
+        _adminService.AllowGameSwitch(value);
+        return Ok();
+    }
+    
+    [HttpPost("force-gamemode/{value:bool}")]
+    public IActionResult ForceGamemode(bool value)
+    {
+        _adminService.ForceGamemode(value);
+        return Ok();
+    }
+    
+    [HttpPost("lightning/{value:bool}")]
+    public IActionResult LightingSwitch(bool value)
+    {
+        _adminService.LightingSwitch(value);
+        return Ok();
     }
 }
