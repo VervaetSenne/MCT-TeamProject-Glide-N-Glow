@@ -28,6 +28,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GlideNGlow.Core.Services\GlideNGlow.Core.Services.csproj" />
+      <ProjectReference Include="..\GlideNGlow.GPIO.Models\GlideNGlow.GPIO.Models.csproj" />
         <ProjectReference Include="..\GlideNGlow.Mqtt.Models\GlideNGlow.Mqtt.Models.csproj" />
         <ProjectReference Include="..\GlideNGlow.Services\GlideNGlow.Services.csproj" />
     </ItemGroup>

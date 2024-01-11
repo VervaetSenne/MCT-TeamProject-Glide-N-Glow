@@ -92,7 +92,7 @@ public class SpiDeviceHandler : IDisposable
                 int pixelId = startId + i * direction;
                 if (pixelId < 0)
                 {
-                    pixelId = _pixelAmount + pixelId;
+                    pixelId += _pixelAmount;
                 }
                 SetPixel(pixelId, color);
             } 
@@ -104,7 +104,7 @@ public class SpiDeviceHandler : IDisposable
                 int pixelId = startId + i * direction;
                 if (pixelId > _pixelAmount)
                 {
-                    pixelId = pixelId - _pixelAmount;
+                    pixelId -= _pixelAmount;
                 }
 
                 SetPixel(pixelId, color);
@@ -140,7 +140,7 @@ public class SpiDeviceHandler : IDisposable
                 int pixelId = startId + i * direction;
                 if (pixelId < 0)
                 {
-                    pixelId = _pixelAmount + pixelId;
+                    pixelId += _pixelAmount ;
                 }
                 SetPixel(pixelId, ColorLerp(startColor, stopColor, i, length));
             } 
@@ -152,13 +152,50 @@ public class SpiDeviceHandler : IDisposable
                 int pixelId = startId + i * direction;
                 if (pixelId > _pixelAmount)
                 {
-                    pixelId = pixelId - _pixelAmount;
+                    pixelId -= _pixelAmount;
                 }
 
                 SetPixel(pixelId, ColorLerp(startColor, stopColor, i, length));
             } 
         }
         UpdateColors();
+    }
+    
+    public Task LightUpGrowAsync(int startId, int vector, Color startColor, Color stopColor, int delayMilli)
+    {
+        var direction = (vector - startId) / Math.Abs(vector - startId);
+        var length = Math.Abs(vector - startId);
+        Color color;
+
+        if (direction < 0)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int pixelId = startId + i * direction;
+                if (pixelId < 0)
+                {
+                    pixelId += _pixelAmount;
+                }
+                SetPixel(pixelId, ColorLerp(startColor, stopColor, i, length));
+                Task.Delay(delayMilli);
+            } 
+        }
+        else
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int pixelId = startId + i * direction;
+                if (pixelId > _pixelAmount)
+                {
+                    pixelId -= _pixelAmount;
+                }
+
+                SetPixel(pixelId, ColorLerp(startColor, stopColor, i, length));
+                Task.Delay(delayMilli);
+            } 
+        }
+        UpdateColors();
+        return Task.CompletedTask;
     }
 
     public void LightUpAll(Color color)
@@ -170,6 +207,26 @@ public class SpiDeviceHandler : IDisposable
     {
         LightUpAll(Color.HotPink);
         //255 50 60
+    }
+
+    public Task TestAsync()
+    {
+        Random randomGen = new Random();
+        for(int i = 0; i < 50; i++)
+        {
+            //generate random color
+            Color color = Color.FromArgb(randomGen.Next(0, 255), randomGen.Next(0, 255), randomGen.Next(0, 255));
+            Color color2 = Color.FromArgb(randomGen.Next(0, 255), randomGen.Next(0, 255), randomGen.Next(0, 255));
+            //generate random int from -50 till 50 that isn't 0
+            int randomInt = randomGen.Next(-50, 50);
+            while(randomInt == 0)
+            {
+                randomInt = randomGen.Next(-50, 50);
+            }
+            LightUpGrowAsync(0, _pixelAmount, color, color2, 1).Wait();
+            Task.Delay(100);
+        }
+        return Task.CompletedTask;
     }
     
     public void Dispose()
