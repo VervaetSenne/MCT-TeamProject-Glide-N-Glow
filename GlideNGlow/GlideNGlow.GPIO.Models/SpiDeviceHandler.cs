@@ -229,11 +229,31 @@ public class SpiDeviceHandler : IDisposable
     {
         LightUpRange(0, _pixelAmount, color);
     }
+    
+    public void LightUpAll(int r, int g, int b)
+    {
+        LightUpRange(0, _pixelAmount, Color.FromArgb(r, g, b));
+    }
 
     public void Pinkify()
     {
         LightUpAll(Color.HotPink);
         //255 50 60
+    }
+
+    public Task Test2Async()
+    {
+        for(int i = 0; i<_pixelAmount; i++)
+        {
+            LightUpPixel(i, Color.Red);
+            Task.Delay(100);
+            if (i - 1 >= 0)
+            {
+                LightUpPixel(i-1, Color.Black);
+            }
+        }
+        LightUpPixel(_pixelAmount-1, Color.Black);
+        return Task.CompletedTask;
     }
 
     public Task TestAsync()
