@@ -13,8 +13,6 @@ public class SpiDeviceHandler : IDisposable
     private Ws2812b _ws2812B;
     private readonly IOptionsMonitor<AppSettings> _appSettings;
     private int _pixelAmount;
-    
-    private List<LightPixel> Pixels = new();
 
 
     public SpiDeviceHandler(IOptionsMonitor<AppSettings> appSettings)
@@ -33,11 +31,6 @@ public class SpiDeviceHandler : IDisposable
         
         _ws2812B = new Ws2812b(spiDevice, _pixelAmount);
         
-        
-        for (int i = 0; i < _pixelAmount; i++)
-        {
-            Pixels.Add(new LightPixel());
-        }
 
     }
     
@@ -61,6 +54,7 @@ public class SpiDeviceHandler : IDisposable
     public void SetPixel(int pixelId, Color color)
     {
         _ws2812B.Image.SetPixel(pixelId, 0, color);
+        
     }
 
     public void UpdateColors()
