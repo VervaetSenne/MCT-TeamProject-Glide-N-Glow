@@ -8,39 +8,31 @@ namespace GlideNGlow.GPIO.Models;
 
 public class SpiDeviceHandler : IDisposable
 {
-    SpiConnectionSettings _settings;
-    private readonly SpiDevice spiDevice;
+    private readonly SpiDevice _spiDevice;
     private Ws2812b _ws2812B;
     private readonly IOptionsMonitor<AppSettings> _appSettings;
     private int _pixelAmount;
 
-
     public SpiDeviceHandler(IOptionsMonitor<AppSettings> appSettings)
     {
-        _settings = new SpiConnectionSettings(0,0)
+        _spiDevice = SpiDevice.Create(new SpiConnectionSettings(0,0)
         {
             ClockFrequency = 2_400_000,
             Mode = SpiMode.Mode0,
             DataBitLength = 8
-        };
-
-        spiDevice = SpiDevice.Create(_settings);
+        });
         
         _appSettings = appSettings;
         _pixelAmount = GetCurrentAppSettings().Strips.Aggregate(0, (i, strip) => i + strip.Leds);
         
-        _ws2812B = new Ws2812b(spiDevice, _pixelAmount);
-        
-        
-        
-
+        _ws2812B = new Ws2812b(_spiDevice, _pixelAmount);
     }
     
     private void UpdateSettings()
     {
         _pixelAmount = GetCurrentAppSettings().Strips.Aggregate(0, (i, strip) => i + strip.Leds);
         
-        _ws2812B = new Ws2812b(spiDevice, _pixelAmount);
+        _ws2812B = new Ws2812b(_spiDevice, _pixelAmount);
     }
     
     private AppSettings GetCurrentAppSettings()
@@ -178,10 +170,8 @@ public class SpiDeviceHandler : IDisposable
         _ws2812B.Update();
     }
     
-    
-
     public void Dispose()
     {
-        spiDevice.Dispose();
+        _spiDevice.Dispose();
     }
 }
