@@ -151,10 +151,16 @@ public class SpiDeviceHandler : IDisposable
     private Color ColorLerp(Color startColor, Color stopColor, int i, int length)
     {
         return Color.FromArgb(
-            (int)Math.Round(startColor.R + (stopColor.R - startColor.R) * ((double)i / length)),
-            (int)Math.Round(startColor.G + (stopColor.G - startColor.G) * ((double)i / length)),
-            (int)Math.Round(startColor.B + (stopColor.B - startColor.B) * ((double)i / length))
+            LerpIntDiff(startColor.R, stopColor.R, i, length),
+            LerpIntDiff(startColor.G, stopColor.G, i, length),
+            LerpIntDiff(startColor.B, stopColor.B, i, length)
         );
+    }
+
+    private int LerpIntDiff(int startInt, int stopInt, int i, int length)
+    {
+        int difference = stopInt - startInt;
+        return (int)(startInt + ((difference * i )/ ((float)length)));
     }
     
     public void LightUpLerp(int startId, int vector, Color startColor, Color stopColor)
