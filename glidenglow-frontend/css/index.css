@@ -10,6 +10,7 @@
   --bg-current-gamemode: #dbdbdb;
   --page-bg-primary: #dfdfdf;
   --transition-speed: 600ms;
+  --hover-bg-primary: #a4a4a4;
 }
 
 body {
@@ -275,6 +276,7 @@ input:checked + .slider:before {
   /* Adjust border color */
   border-radius: 3px;
   /* Adjust border radius */
+  transition: background-color 0.3s ease; /* Add a transition for background-color */
 }
 
 .checkbox-container:hover input ~ .checkmark {
@@ -352,6 +354,9 @@ input:checked + .slider:before {
   margin: 5px;
   background-color: var(--bg-current-gamemode);
   border-radius: 10px;
+}
+.gamemode-box:hover {
+  background-color: var(--hover-bg-primary);
 }
 .current-gamemode-container::-webkit-scrollbar {
   width: 0.25rem;
