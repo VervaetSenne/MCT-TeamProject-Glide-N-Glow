@@ -30,6 +30,9 @@ public class SpiDeviceHandler : IDisposable
         _appSettings = appSettings;
         _pixelAmount = GetCurrentAppSettings().Strips.Aggregate(0, (i, strip) => i + strip.Leds);
         
+        //TODO: remove this line, appsettings isn't working atm.
+        _pixelAmount = 300;
+        
         _ws2812B = new Ws2812b(_spiDevice, _pixelAmount);
     }
     
