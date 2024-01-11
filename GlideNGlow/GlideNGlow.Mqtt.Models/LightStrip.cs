@@ -1,74 +1,70 @@
-using System.Device.Spi;
 using System.Drawing;
-using GlideNGlow.Common.Models;
-using Iot.Device.Ws28xx;
 using GlideNGlow.Common.Models.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Options.Implementations;
+using MQTTnet.Protocol;
 
-namespace GlideNGlow.GPIO.Models;
+namespace GlideNGlow.Mqqt.Models;
 
-public class SpiDeviceHandler : IDisposable
+public class LightStrip
 {
-    private readonly SpiDevice _spiDevice;
-    private Ws2812b _ws2812B;
-    private readonly IWritableOptions<AppSettings> _appSettings;
     private int _pixelAmount;
     private readonly ILogger _logger;
+    private readonly IOptionsMonitor<AppSettings> _appsettings;
+    private readonly MqttHandler _mqttHandler;
     
-    public SpiDeviceHandler(IWritableOptions<AppSettings> appSettings,ILogger<SpiDeviceHandler> logger)
+    
+    public LightStrip(ILogger<LightStrip> logger, IOptionsMonitor<AppSettings> appsettings,MqttHandler mqttHandler)
     {
         _logger = logger;
-        _spiDevice = SpiDevice.Create(new SpiConnectionSettings(0,0)
-        {
-            ClockFrequency = 2_400_000,
-            Mode = SpiMode.Mode0,
-            DataBitLength = 8
-        });
-        
-        _appSettings = appSettings;
+        _appsettings = appsettings;
         _pixelAmount = GetCurrentAppSettings().Strips.Aggregate(0, (i, strip) => i + strip.Leds);
+        //_pixelAmount = size;
         
-        //TODO: remove this line, appsettings isn't working atm.
-        _pixelAmount = 300;
-        
-        _ws2812B = new Ws2812b(_spiDevice, _pixelAmount);
-    }
-    
-    private void UpdateSettings()
-    {
-#if DEBUG
-        _appSettings.Update(settings =>
-        {
-            settings.Strips = new List<LightStripData>()
-            {
-                new LightStripData()
-                {
-                    Leds = 300,
-                    Length = 500,
-                    DistanceTillNext = 0
-                }
-                
-            };
-        });
-#endif
-        
-        _pixelAmount = GetCurrentAppSettings().Strips.Aggregate(0, (i, Strips) => i + Strips.Leds);
-        _pixelAmount = 300;
         if(_pixelAmount == 0)
         {
             _logger.LogError("Pixel amount is 0");
-            return;
+            //TODO: remove this line, appsettings isn't working atm.
+            _pixelAmount = 300;
         }
+        _mqttHandler = mqttHandler;
         
-        _ws2812B = new Ws2812b(_spiDevice, _pixelAmount);
-        _logger.LogInformation($"Updated pixel amount to {_pixelAmount}");
+        
     }
-    
+
     private AppSettings GetCurrentAppSettings()
     {
-        return _appSettings.CurrentValue;
+        return _appsettings.CurrentValue;
+    }
+
+    public void UpdateSettings()
+    {
+// #if DEBUG
+//         _appSettings.Update(settings =>
+//         {
+//             settings.Strips = new List<LightStripData>()
+//             {
+//                 new LightStripData()
+//                 {
+//                     Leds = 300,
+//                     Length = 500,
+//                     DistanceTillNext = 0
+//                 }
+//                 
+//             };
+//         });
+// #endif
+        
+        _pixelAmount = GetCurrentAppSettings().Strips.Aggregate(0, (i, Strips) => i + Strips.Leds);
+        if(_pixelAmount == 0)
+        {
+            _logger.LogError("Pixel amount is 0");
+            _pixelAmount = 300;
+            //return;
+        }
+
+        SetPixelAmount(_pixelAmount).Wait();
+        _logger.LogInformation($"Updated pixel amount to {_pixelAmount}");
     }
     
     public void SetPixel(int pixelId, byte r, byte g, byte b)
@@ -76,33 +72,44 @@ public class SpiDeviceHandler : IDisposable
         SetPixel(pixelId, Color.FromArgb(r, g, b));
     }
     
-    public void SetPixel(int pixelId, Color color)
+    public async Task SetPixel(int pixelId, Color color)
     {
-        _ws2812B.Image.SetPixel(pixelId, 0, color);
-        
+        //todo: send pixel id and color over mqtt
+        await _mqttHandler.SendMessage(TopicSetPixel, string.Format(PayloadSetPixel, color.R, color.G, color.B));
     }
+    private const string TopicSetPixel = "esp32/strip/rgb";
+    private const string PayloadSetPixel = "{{r: {0},  g:{1},  b:{2}}}";
 
-    public void UpdateColors()
+    public async Task UpdateColors()
     {
-        _ws2812B.Update();
+        //todo: tell mqtt to update colors
+        await _mqttHandler.SendMessage(TopicSetPixel, "");
     }
+    private const string TopicUpdateColors = "esp32/strip/update";
+
+    public async Task SetPixelAmount(int pixelAmount)
+    {
+        await _mqttHandler.SendMessage(TopicSetPixelAmount, string.Format(PayloadSetPixelAmount, pixelAmount));
+    }
+    private const string TopicSetPixelAmount = "esp32/strip/amount";
+    private const string PayloadSetPixelAmount = "{0}";
     
     public void LightUpPixel(int pixelId,byte r, byte g, byte b)
     {
-        SetPixel(pixelId, Color.FromArgb(r, g, b));
-        UpdateColors();
+        SetPixel(pixelId, Color.FromArgb(r, g, b)).Wait();
+        UpdateColors().Wait();
     }
     
     public void LightUpPixel(int pixelId,Color color)
     {
-        SetPixel(pixelId, color);
-        UpdateColors();
+        SetPixel(pixelId, color).Wait();
+        UpdateColors().Wait();
     }
     
     public void LightOutPixel(int pixelId)
     {
-        SetPixel(pixelId, Color.Black);
-        UpdateColors();
+        SetPixel(pixelId, Color.Black).Wait();
+        UpdateColors().Wait();
     }
 
     public void LightUpRange(int startId, int vector, byte r, byte g, byte b)
@@ -124,7 +131,7 @@ public class SpiDeviceHandler : IDisposable
                 {
                     pixelId += _pixelAmount;
                 }
-                SetPixel(pixelId, color);
+                SetPixel(pixelId, color).Wait();
             } 
         }
         else
@@ -137,10 +144,10 @@ public class SpiDeviceHandler : IDisposable
                     pixelId -= _pixelAmount;
                 }
 
-                SetPixel(pixelId, color);
+                SetPixel(pixelId, color).Wait();
             } 
         }
-        UpdateColors();
+        UpdateColors().Wait();
     }
     
     public void LightOutRange(int startId, int vector)
@@ -178,7 +185,7 @@ public class SpiDeviceHandler : IDisposable
                 {
                     pixelId += _pixelAmount ;
                 }
-                SetPixel(pixelId, ColorLerp(startColor, stopColor, i, length));
+                SetPixel(pixelId, ColorLerp(startColor, stopColor, i, length)).Wait();
             } 
         }
         else
@@ -191,10 +198,10 @@ public class SpiDeviceHandler : IDisposable
                     pixelId -= _pixelAmount;
                 }
 
-                SetPixel(pixelId, ColorLerp(startColor, stopColor, i, length));
+                SetPixel(pixelId, ColorLerp(startColor, stopColor, i, length)).Wait();
             } 
         }
-        UpdateColors();
+        UpdateColors().Wait();
     }
     
     public Task LightUpGrowAsync(int startId, int vector, Color startColor, Color stopColor, int delayMilli)
@@ -212,7 +219,7 @@ public class SpiDeviceHandler : IDisposable
                 {
                     pixelId += _pixelAmount;
                 }
-                SetPixel(pixelId, ColorLerp(startColor, stopColor, i, length));
+                SetPixel(pixelId, ColorLerp(startColor, stopColor, i, length)).Wait();
                 Task.Delay(delayMilli);
             } 
         }
@@ -226,11 +233,11 @@ public class SpiDeviceHandler : IDisposable
                     pixelId -= _pixelAmount;
                 }
 
-                SetPixel(pixelId, ColorLerp(startColor, stopColor, i, length));
+                SetPixel(pixelId, ColorLerp(startColor, stopColor, i, length)).Wait();
                 Task.Delay(delayMilli);
             } 
         }
-        UpdateColors();
+        UpdateColors().Wait();
         return Task.CompletedTask;
     }
 
@@ -250,19 +257,19 @@ public class SpiDeviceHandler : IDisposable
         //255 50 60
     }
 
-    public Task Test2Async()
+    public async Task Test2Async()
     {
         for(int i = 0; i<_pixelAmount; i++)
         {
             LightUpPixel(i, Color.Red);
-            Task.Delay(100);
+            Task.Delay(100).Wait();
             if (i - 1 >= 0)
             {
                 LightUpPixel(i-1, Color.Black);
             }
         }
         LightUpPixel(_pixelAmount-1, Color.Black);
-        return Task.CompletedTask;
+        
     }
 
     public Task TestAsync()
@@ -294,10 +301,5 @@ public class SpiDeviceHandler : IDisposable
             Task.Delay(10000);
         }
         return Task.CompletedTask;
-    }
-    
-    public void Dispose()
-    {
-        _spiDevice.Dispose();
     }
 }

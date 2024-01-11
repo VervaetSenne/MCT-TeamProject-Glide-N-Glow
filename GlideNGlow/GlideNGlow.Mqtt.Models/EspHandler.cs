@@ -1,4 +1,6 @@
+using GlideNGlow.Common.Models.Settings;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MQTTnet.Protocol;
 
 namespace GlideNGlow.Mqqt.Models;
@@ -8,14 +10,14 @@ public class EspHandler : IDisposable
 
     private readonly MqttHandler _mqttHandler;
     private readonly ILogger _logger;
+    private readonly IOptionsMonitor<AppSettings> _appSettings;
     private Dictionary<string,LightButtons> _lightButtons = new Dictionary<string,LightButtons>();
-    
-    private const string TopicRgb = "{{r: {0},  g:{1},  b:{2}}}";
 
-    public EspHandler(ILogger<EspHandler> logger, MqttHandler mqttHandler)
+    public EspHandler(ILogger<EspHandler> logger, IOptionsMonitor<AppSettings> appSettings,MqttHandler mqttHandler)
     {
         _mqttHandler = mqttHandler;
         _logger = logger;
+        _appSettings = appSettings;
     }
 
     #region Subscriptions
@@ -89,6 +91,7 @@ public class EspHandler : IDisposable
 
         await _mqttHandler.SendMessage($"esp32/{macAddress}/ledcircle", string.Format(TopicRgb, r, g, b));
     }
+    private const string TopicRgb = "{{r: {0},  g:{1},  b:{2}}}";
     
     public void Dispose()
     {
