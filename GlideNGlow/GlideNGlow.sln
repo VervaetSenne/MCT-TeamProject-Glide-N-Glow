@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{2B1D85
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Extensions.Options.Implementations", "Microsoft.Extensions.Options.Implementations\Microsoft.Extensions.Options.Implementations.csproj", "{AFFB1BEE-5356-43BB-A89C-5629754690F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Mqqt.Models", "GlideNGlow.Mqqt.Models\GlideNGlow.Mqqt.Models.csproj", "{3868AFFD-91B8-4FE3-A93A-2D5CF384CCA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Mqtt.Models", "GlideNGlow.Mqtt.Models\GlideNGlow.Mqtt.Models.csproj", "{3868AFFD-91B8-4FE3-A93A-2D5CF384CCA0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Common.Models", "GlideNGlow.Common.Models\GlideNGlow.Common.Models.csproj", "{4B6444D0-22E1-4547-99F0-D4E1F3614A9F}"
 EndProject
