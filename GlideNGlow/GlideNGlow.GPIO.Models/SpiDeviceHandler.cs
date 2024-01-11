@@ -51,7 +51,8 @@ public class SpiDeviceHandler : IDisposable
         });
 #endif
         
-        _pixelAmount = GetCurrentAppSettings().Strips.Aggregate(0, (i, strip) => i + strip.Leds);
+        _pixelAmount = GetCurrentAppSettings().Strips.Aggregate(0, (i, Strips) => i + Strips.Leds);
+        _pixelAmount = 300;
         if(_pixelAmount == 0)
         {
             _logger.LogError("Pixel amount is 0");
@@ -249,17 +250,19 @@ public class SpiDeviceHandler : IDisposable
         Random randomGen = new Random();
         for(int i = 0; i < 50; i++)
         {
+            int maxColorBrightness = 150;
             //generate random color
-            Color color = Color.FromArgb(randomGen.Next(0, 255), randomGen.Next(0, 255), randomGen.Next(0, 255));
-            Color color2 = Color.FromArgb(randomGen.Next(0, 255), randomGen.Next(0, 255), randomGen.Next(0, 255));
+            Color color = Color.FromArgb(randomGen.Next(0, maxColorBrightness), randomGen.Next(0, maxColorBrightness), randomGen.Next(0, maxColorBrightness));
+            Color color2 = Color.FromArgb(randomGen.Next(0, maxColorBrightness), randomGen.Next(0, maxColorBrightness), randomGen.Next(0, maxColorBrightness));
             //generate random int from -50 till 50 that isn't 0
             int randomInt = randomGen.Next(-50, 50);
             while(randomInt == 0)
             {
                 randomInt = randomGen.Next(-50, 50);
             }
-            LightUpGrowAsync(0, _pixelAmount, color, color2, 1).Wait();
-            Task.Delay(100);
+            int start = randomGen.Next(0,_pixelAmount);
+            LightUpGrowAsync(start, randomInt, color, color2, 100).Wait();
+            Task.Delay(10000);
         }
         return Task.CompletedTask;
     }
