@@ -1,442 +1,517 @@
 :root {
-    font-size: 16px;
-    font-family: 'Open Sans';
-    --text-primary: #b6b6b6;
-    --text-secondary: #ececec;
-    --text-dark: #273646;
-    --bg-primary: #273646;
-    --bg-secondary: #141418;
-    --bg-white: #ffffff;
-    --page-bg-primary: #dfdfdf;
-    --transition-speed: 600ms;
+  font-size: 16px;
+  font-family: 'Open Sans';
+  --text-primary: #b6b6b6;
+  --text-secondary: #ececec;
+  --text-dark: #273646;
+  --bg-primary: #273646;
+  --bg-secondary: #141418;
+  --bg-white: #ffffff;
+  --bg-current-gamemode: #dbdbdb;
+  --page-bg-primary: #dfdfdf;
+  --transition-speed: 600ms;
 }
 
 body {
-    color: black;
-    background-color: var(--page-bg-primary);
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter', sans-serif;
+  color: black;
+  background-color: var(--page-bg-primary);
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
 }
 
 body::-webkit-scrollbar {
-    width: 0.25rem;
+  width: 0.25rem;
 }
 
 body::-webkit-scrollbar-track {
-    background: #1e1e24;
+  background: #1e1e24;
 }
 
 body::-webkit-scrollbar-thumb {
-    background: var(--bg-primary);
+  background: var(--bg-primary);
 }
 
 main {
-    margin-left: 5rem;
-    padding: 1rem;
+  margin-left: 5rem;
+  padding: 1rem;
 }
 
 .navbar {
-    position: fixed;
-    background-color: var(--bg-primary);
-    transition: width 600ms ease;
-    overflow: hidden;
+  position: fixed;
+  background-color: var(--bg-primary);
+  transition: width 600ms ease;
+  overflow: hidden;
 }
 
 .navbar-nav {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
 }
 
 .nav-item {
-    width: 100%;
+  width: 100%;
 }
 
 .nav-item:last-child {
-    margin-top: auto;
+  margin-top: auto;
 }
 
 .nav-link {
-    display: flex;
-    align-items: center;
-    height: 5rem;
-    color: var(--text-primary);
-    text-decoration: none;
-    transition: var(--transition-speed);
+  display: flex;
+  align-items: center;
+  height: 5rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: var(--transition-speed);
 }
 
 .nav-link:hover {
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
 }
 
 .link-text {
-    display: none;
-    margin-left: 1rem;
+  display: none;
+  margin-left: 1rem;
 }
 
 .nav-link svg {
-    width: 2rem;
-    min-width: 2rem;
-    margin: 0 1.5rem;
+  width: 2rem;
+  min-width: 2rem;
+  margin: 0 1.5rem;
 }
 
 .logo {
-    font-weight: bold;
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-    text-align: center;
-    color: var(--text-secondary);
-    font-size: 1.5rem;
-    letter-spacing: 0.3ch;
-    width: 100%;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  letter-spacing: 0.3ch;
+  width: 100%;
 }
 
-
 .logo-text {
-    display: inline;
-    position: absolute;
-    left: -999px;
-    font-size: 1.3rem;
-    transition: var(--transition-speed);
+  display: inline;
+  position: absolute;
+  left: -999px;
+  font-size: 1.3rem;
+  transition: var(--transition-speed);
 }
 
 .navbar:hover .logo svg {
-    transform: rotate(-180deg);
+  transform: rotate(-180deg);
 }
 
 /* GRID */
 .grid-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    place-items: center;
-    gap: 1rem;
-    max-width: 1100px;
-    /* Adjust the max-width as needed */
-    width: 100%;
-    /* Set the width to 100% */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  place-items: center;
+  gap: 1rem;
+  max-width: 1100px;
+  /* Adjust the max-width as needed */
+  width: 100%;
+  /* Set the width to 100% */
 }
 
 .grid-flex {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 95vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 95vh;
 }
 
 .grid-item {
-    width: 100%;
-    height: 300px;
-    background-color: var(--bg-white);
-    border-radius: 10px;
-    overscroll-behavior: contain;
-    margin-bottom: 10px;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    margin-bottom: 10px;
-    overflow-y: auto;
+  width: 100%;
+  height: 300px;
+  background-color: var(--bg-white);
+  border-radius: 10px;
+  overscroll-behavior: contain;
+  margin-bottom: 10px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  margin-bottom: 10px;
+  overflow-y: auto;
 }
 .grid-header {
-    display: flex;
-    align-items: center;
-    background-color: var(--bg-primary); /* Add a background color for the header row */
-    color: var(--bg-white);
+  display: flex;
+  align-items: center;
+  background-color: var(
+    --bg-primary
+  ); /* Add a background color for the header row */
+  color: var(--bg-white);
 }
-.grid-header svg{
-    margin-left: 0.5rem;
-
+.grid-header svg {
+  margin-left: 0.5rem;
 }
 .header-title {
-    margin-left: 0.5rem; /* Add some margin between the icon and the title */
-    font-size: 1rem; /* Adjust the font size as needed */
-    margin-top: .8rem;
-    margin-bottom: .8rem;
+  margin-left: 0.5rem; /* Add some margin between the icon and the title */
+  font-size: 1rem; /* Adjust the font size as needed */
+  margin-top: 0.8rem;
+  margin-bottom: 0.8rem;
 }
 
 .grid-content {
-    height: 100%;
-    background-color: var(--bg-white);
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+  height: 100%;
+  background-color: var(--bg-white);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 /*Settings dashnoard*/
-.settings-form-container{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
+.settings-form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 .grid-option {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    margin-right: 4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-right: 4rem;
 }
 .option-text {
-    margin-right: 10px;
-    font-size: 1.3rem;
-    color: var(--text-dark);
-    font-weight: 600;
-    margin-left: 3rem;
-
+  margin-right: 10px;
+  font-size: 1.3rem;
+  color: var(--text-dark);
+  font-weight: 600;
+  margin-left: 3rem;
 }
-.option-divider{
-    width: 42%;
-    height: 1px;
-    background-color: var(--bg-primary);
-    margin-bottom: 10px;
-    margin-left: 3rem;
+.option-divider {
+  width: 42%;
+  height: 1px;
+  background-color: var(--bg-primary);
+  margin-bottom: 10px;
+  margin-left: 3rem;
 }
 .toggle {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 30px;
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
 }
 .toggle input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
 .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 15px;
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 15px;
 }
 
 .slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    top: 2px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
+  position: absolute;
+  content: '';
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  top: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
 }
 input:checked + .slider {
-    background-color: var(--bg-primary);
+  background-color: var(--bg-primary);
 }
 
 input:focus + .slider {
-    box-shadow: 0 0 1px var(--bg-primary);
+  box-shadow: 0 0 1px var(--bg-primary);
 }
 
 input:checked + .slider:before {
-    transform: translateX(26px);
+  transform: translateX(26px);
 }
 
 /* Available gamemodes */
 .checkbox-container {
-    display: block;
-    position: relative;
-    padding-left: 30px;
-    /* Adjust as needed for spacing */
-    margin-top: 8px;
-    /* Adjust as needed for spacing */
-    cursor: pointer;
-    user-select: none;
+  display: block;
+  position: relative;
+  padding-left: 30px;
+  /* Adjust as needed for spacing */
+  margin-top: 8px;
+  /* Adjust as needed for spacing */
+  cursor: pointer;
+  user-select: none;
 }
 
 .checkbox-container input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
 }
 
 .checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 20px;
-    /* Adjust as needed */
-    width: 20px;
-    /* Adjust as needed */
-    background-color: var(--bg-white);
-    border: 1px solid #bbb;
-    /* Adjust border color */
-    border-radius: 3px;
-    /* Adjust border radius */
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  /* Adjust as needed */
+  width: 20px;
+  /* Adjust as needed */
+  background-color: var(--bg-white);
+  border: 1px solid #bbb;
+  /* Adjust border color */
+  border-radius: 3px;
+  /* Adjust border radius */
 }
 
-.checkbox-container:hover input~.checkmark {
-    background-color: #ccc;
+.checkbox-container:hover input ~ .checkmark {
+  background-color: #ccc;
 }
 
-.checkbox-container input:checked~.checkmark {
-    background-color: var(--bg-primary);
-    border: 1px solid var(--bg-primary);
+.checkbox-container input:checked ~ .checkmark {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--bg-primary);
 }
 
 .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
+  content: '';
+  position: absolute;
+  display: none;
 }
 
-.checkbox-container input:checked~.checkmark:after {
-    display: block;
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
 }
 
 .checkbox-container .checkmark:after {
-    left: 7px;
-    /* Adjust as needed for positioning */
-    top: 3px;
-    /* Adjust as needed for positioning */
-    width: 5px;
-    /* Adjust as needed for size */
-    height: 10px;
-    /* Adjust as needed for size */
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    transform: rotate(45deg);
+  left: 7px;
+  /* Adjust as needed for positioning */
+  top: 3px;
+  /* Adjust as needed for positioning */
+  width: 5px;
+  /* Adjust as needed for size */
+  height: 10px;
+  /* Adjust as needed for size */
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
 }
-.option-text-availablegamemodes{
-    margin-right: 10px;
-    font-size: 1.3rem;
-    color: var(--text-dark);
-    font-weight: 600;
-    margin-left: 3rem;
-    margin-top: 1rem;
-    margin-bottom: .5rem;
+.option-text-availablegamemodes {
+  margin-right: 10px;
+  font-size: 1.3rem;
+  color: var(--text-dark);
+  font-weight: 600;
+  margin-left: 3rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 }
-.available-gamemodes-container{
-    overflow-y: auto;
+.available-gamemodes-container {
+  overflow-y: auto;
 }
 .available-gamemodes-container::-webkit-scrollbar {
-    width: 0.25rem;
+  width: 0.25rem;
 }
 
 .available-gamemodes-container::-webkit-scrollbar-track {
-    background: var(--bg-white);
+  background: var(--bg-white);
 }
 
 .available-gamemodes-container::-webkit-scrollbar-thumb {
-    background: var(--bg-primary);
+  background: var(--bg-primary);
+}
+/* Current gamemode */
+.current-gamemode-container {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping to the next row */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  gap: 2rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 2.5rem;
+  padding-bottom: 1rem;
+}
+
+.gamemode-box {
+  width: 217px;
+  height: 170px;
+  margin: 5px;
+  background-color: var(--bg-current-gamemode);
+  border-radius: 10px;
+}
+.current-gamemode-container::-webkit-scrollbar {
+  width: 0.25rem;
+}
+
+.current-gamemode-container::-webkit-scrollbar-track {
+  background: var(--bg-white);
+}
+
+.current-gamemode-container::-webkit-scrollbar-thumb {
+  background: var(--bg-primary);
+}
+.row {
+  width: 100%;
+  padding: 10px;
+}
+
+.icon {
+  /* Add your specific styles for the SVG icon */
+}
+
+.title {
+  font-weight: bold;
+}
+
+.description {
+  font-style: italic;
+}
+.gamemode-box {
+  transition: background-color 0.3s ease; /* Add a transition for background-color */
+}
+.gamemode-box.selected {
+  background-color: var(
+    --bg-primary
+  ); /* Change the background color as needed */
+  cursor: pointer;
+  color: var(--bg-white);
 }
 /* Small screens */
 @media only screen and (max-width: 600px) {
-    .navbar {
-        bottom: 0;
-        width: 100vw;
-        height: 5rem;
-    }
+  .navbar {
+    bottom: 0;
+    width: 100vw;
+    height: 5rem;
+    z-index: 1000;
+  }
 
-    .logo {
-        display: none;
-    }
+  .logo {
+    display: none;
+  }
 
-    .navbar-nav {
-        flex-direction: row;
-    }
+  .navbar-nav {
+    flex-direction: row;
+  }
 
-    .nav-link {
-        justify-content: center;
-    }
+  .nav-link {
+    justify-content: center;
+  }
 
-    main {
-        margin: 0;
-    }
+  main {
+    margin: 0;
+  }
 
-    .nav-item:last-child {
-        margin: 0;
-    }
+  .nav-item:last-child {
+    margin: 0;
+  }
 }
 
 /* Large screens */
 @media only screen and (min-width: 600px) {
-    .navbar {
-        top: 0;
-        width: 5rem;
-        height: 100vh;
-    }
+  .navbar {
+    top: 0;
+    width: 5rem;
+    height: 100vh;
+  }
 
-    .navbar:hover {
-        width: 16rem;
-    }
+  .navbar:hover {
+    width: 16rem;
+  }
 
-    .navbar:hover .link-text {
-        display: inline;
-    }
+  .navbar:hover .link-text {
+    display: inline;
+  }
 
-    .navbar:hover .logo-text {
-        left: 0px;
-    }
+  .navbar:hover .logo-text {
+    left: 0px;
+  }
 }
 
 @media (max-height: 690px) {
-    .grid-container-flex {
-        margin-top: 1rem;
-    }
+  .grid-container-flex {
+    margin-top: 1rem;
+  }
 }
 
 @media (max-width: 1120px) {
-    .grid-container {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-        max-width: 510px;
-    }
+  .grid-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    max-width: 510px;
+  }
 
-    .grid-container-flex {
-        margin-top: 1rem;
-    }
+  .grid-container-flex {
+    margin-top: 1rem;
+  }
 
-    .grid-item:last-child {
-        margin-bottom: 5rem;
-    }
+  .grid-item:last-child {
+    margin-bottom: 5rem;
+  }
+  .option-text {
+    margin-right: 10px;
+    font-size: 0.8rem;
+    color: var(--text-dark);
+    font-weight: 600;
+    margin-left: 3rem;
+  }
+  .option-text-availablegamemodes {
+    margin-right: 10px;
+    font-size: 0.8rem;
+    color: var(--text-dark);
+    font-weight: 600;
+    margin-left: 3rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
 }
 
 .dark {
-    --text-primary: #b6b6b6;
-    --text-secondary: #ececec;
-    --bg-primary: #23232e;
-    --bg-secondary: #141418;
+  --text-primary: #b6b6b6;
+  --text-secondary: #ececec;
+  --bg-primary: #23232e;
+  --bg-secondary: #141418;
 }
 
 .light {
-    --text-primary: #1f1f1f;
-    --text-secondary: #000000;
-    --bg-primary: #ffffff;
-    --bg-secondary: #e4e4e4;
+  --text-primary: #1f1f1f;
+  --text-secondary: #000000;
+  --bg-primary: #ffffff;
+  --bg-secondary: #e4e4e4;
 }
 
 .solar {
-    --text-primary: #576e75;
-    --text-secondary: #35535c;
-    --bg-primary: #fdf6e3;
-    --bg-secondary: #f5e5b8;
+  --text-primary: #576e75;
+  --text-secondary: #35535c;
+  --bg-primary: #fdf6e3;
+  --bg-secondary: #f5e5b8;
 }
 
 .theme-icon {
-    display: none;
+  display: none;
 }
 
 .dark #darkIcon {
-    display: block;
+  display: block;
 }
 
 .light #lightIcon {
-    display: block;
+  display: block;
 }
 
 .solar #solarIcon {
-    display: block;
+  display: block;
 }
