@@ -13,6 +13,7 @@ public class SpiDeviceHandler : IDisposable
     private readonly IOptionsMonitor<AppSettings> _appSettings;
     private int _pixelAmount;
 
+
     public SpiDeviceHandler(IOptionsMonitor<AppSettings> appSettings)
     {
         _spiDevice = SpiDevice.Create(new SpiConnectionSettings(0,0)
@@ -42,53 +43,45 @@ public class SpiDeviceHandler : IDisposable
     
     public void SetPixel(int pixelId, byte r, byte g, byte b)
     {
-        Color color = Color.FromArgb(r, g, b);
-        var img = _ws2812B.Image;
-        img.SetPixel(pixelId, 0, color);
+        SetPixel(pixelId, Color.FromArgb(r, g, b));
     }
     
     public void SetPixel(int pixelId, Color color)
     {
-        var img = _ws2812B.Image;
-        img.SetPixel(pixelId, 0, color);
+        _ws2812B.Image.SetPixel(pixelId, 0, color);
+        
+    }
+
+    public void UpdateColors()
+    {
+        _ws2812B.Update();
     }
     
     public void LightUpPixel(int pixelId,byte r, byte g, byte b)
     {
-        Color color = Color.FromArgb(r, g, b);
-        var img = _ws2812B.Image;
-        img.SetPixel(pixelId, 0, color);
-        _ws2812B.Update();
+        SetPixel(pixelId, Color.FromArgb(r, g, b));
+        UpdateColors();
     }
     
     public void LightUpPixel(int pixelId,Color color)
     {
-        var img = _ws2812B.Image;
-        img.SetPixel(pixelId, 0, color);
-        _ws2812B.Update();
+        SetPixel(pixelId, color);
+        UpdateColors();
     }
     
     public void LightOutPixel(int pixelId)
     {
-        var img = _ws2812B.Image;
-        img.SetPixel(pixelId, 0, Color.Black);
-        _ws2812B.Update();
+        SetPixel(pixelId, Color.Black);
+        UpdateColors();
     }
 
-    public void LightUpRange(int startId, int stopId, byte r, byte g, byte b)
+    public void LightUpRange(int startId, int vector, byte r, byte g, byte b)
     {
-        var img = _ws2812B.Image;
-        for (int i = startId; i < stopId; i++)
-        {
-            img.SetPixel(i, 0, Color.FromArgb(r, g, b));
-        }
-        _ws2812B.Update();
+        LightUpRange(startId, vector, Color.FromArgb(r, g, b));
     }
     
     public void LightUpRange(int startId, int vector, Color color)
     {
-        var img = _ws2812B.Image;
-        
         var direction = (vector - startId) / Math.Abs(vector - startId);
         var length = Math.Abs(vector - startId);
 
@@ -101,7 +94,7 @@ public class SpiDeviceHandler : IDisposable
                 {
                     pixelId = _pixelAmount + pixelId;
                 }
-                img.SetPixel(pixelId, 0, color);
+                SetPixel(pixelId, color);
             } 
         }
         else
@@ -114,19 +107,31 @@ public class SpiDeviceHandler : IDisposable
                     pixelId = pixelId - _pixelAmount;
                 }
 
-                img.SetPixel(pixelId, 0, color);
+                SetPixel(pixelId, color);
             } 
         }
-        _ws2812B.Update();
+        UpdateColors();
     }
     
     public void LightOutRange(int startId, int vector)
     {
-        var img = _ws2812B.Image;
         LightUpRange(startId, vector, Color.Black);
-        
+    }
+
+    private Color ColorLerp(Color startColor, Color stopColor, int i, int length)
+    {
+        return Color.FromArgb(
+            (int)Math.Round(startColor.R + (stopColor.R - startColor.R) * ((double)i / length)),
+            (int)Math.Round(startColor.G + (stopColor.G - startColor.G) * ((double)i / length)),
+            (int)Math.Round(startColor.B + (stopColor.B - startColor.B) * ((double)i / length))
+        );
+    }
+    
+    public void LightUpLerp(int startId, int vector, Color startColor, Color stopColor)
+    {
         var direction = (vector - startId) / Math.Abs(vector - startId);
         var length = Math.Abs(vector - startId);
+        Color color;
 
         if (direction < 0)
         {
@@ -137,7 +142,7 @@ public class SpiDeviceHandler : IDisposable
                 {
                     pixelId = _pixelAmount + pixelId;
                 }
-                img.SetPixel(pixelId, 0, Color.Black);
+                SetPixel(pixelId, ColorLerp(startColor, stopColor, i, length));
             } 
         }
         else
@@ -150,24 +155,21 @@ public class SpiDeviceHandler : IDisposable
                     pixelId = pixelId - _pixelAmount;
                 }
 
-                img.SetPixel(pixelId, 0, Color.Black);
+                SetPixel(pixelId, ColorLerp(startColor, stopColor, i, length));
             } 
         }
-        _ws2812B.Update();
+        UpdateColors();
     }
-    
-    public void LightUpLerp(int startId, int stopId, Color startColor, Color stopColor)
+
+    public void LightUpAll(Color color)
     {
-        var img = _ws2812B.Image;
-        for (int i = startId; i < stopId; i++)
-        {
-            img.SetPixel(i, 0, Color.FromArgb(
-                (int) Math.Round(startColor.R + (stopColor.R - startColor.R) * ((double) i / (stopId - startId))),
-                (int) Math.Round(startColor.G + (stopColor.G - startColor.G) * ((double) i / (stopId - startId))),
-                (int) Math.Round(startColor.B + (stopColor.B - startColor.B) * ((double) i / (stopId - startId)))
-            ));
-        }
-        _ws2812B.Update();
+        LightUpRange(0, _pixelAmount, color);
+    }
+
+    public void Pinkify()
+    {
+        LightUpAll(Color.HotPink);
+        //255 50 60
     }
     
     public void Dispose()
