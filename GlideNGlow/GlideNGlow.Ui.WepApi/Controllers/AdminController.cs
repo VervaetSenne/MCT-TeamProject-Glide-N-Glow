@@ -14,7 +14,7 @@ public class AdminController : Controller
         _adminService = adminService;
     }
     
-    [HttpPost("set-available")]
+    [HttpPost("available")]
     public async Task<IActionResult> SetAvailableAsync([FromBody] List<Guid> games)
     {
         var result = await _adminService.SetAvailableGamemodesAsync(games);

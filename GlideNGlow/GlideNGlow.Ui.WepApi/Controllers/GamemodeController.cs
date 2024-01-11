@@ -27,4 +27,11 @@ public class GamemodeController : Controller
         var current = await _userService.GetActiveGamemodeAsync();
         return Ok(current);
     }
+
+    [HttpGet("available")]
+    public async Task<IActionResult> GetAvailableAsync()
+    {
+        var result = await _userService.GetGamemodesAsync();
+        return Ok(result);
+    }
 }
