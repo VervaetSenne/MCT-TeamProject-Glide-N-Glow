@@ -1,4 +1,5 @@
-﻿using GlideNGlow.Services.Abstractions;
+﻿using GlideNGlow.Core.Dto;
+using GlideNGlow.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GlideNGlow.Ui.WepApi.Controllers;
@@ -7,31 +8,54 @@ namespace GlideNGlow.Ui.WepApi.Controllers;
 [ApiController]
 public class GamemodeController : Controller
 {
-    private readonly IUserService _userService;
-
-    public GamemodeController(IUserService userService)
+    private readonly ISettingsService _settingsService;
+    private readonly IAvailableGameService _availableGameService;
+    
+    public GamemodeController(ISettingsService settingsService, IAvailableGameService availableGameService)
     {
-        _userService = userService;
+        _settingsService = settingsService;
+        _availableGameService = availableGameService;
     }
 
-    [HttpGet("all")]
-    public async Task<IActionResult> GetAync()
+    [HttpPut("allow-switching/{value:bool}")]
+    public IActionResult AllowUserSwitch([FromRoute] bool value)
     {
-        var games = await _userService.GetGamemodesAsync();
-        return Ok(games);
+        _settingsService.UpdateAllowSwitching(value);
+        return Ok();
     }
 
-    [HttpGet("active")]
-    public async Task<IActionResult> GetActive()
+    [HttpGet("settings")]
+    public async Task<IActionResult> GetSettingsAsync()
     {
-        var current = await _userService.GetActiveGamemodeAsync();
-        return Ok(current);
+        return Ok(new GamemodeSettingsDto
+        {
+            AllowUserSwitching = _settingsService.GetAllowSwitching(),
+            Gamemodes = await _availableGameService.GetAvailableGamemodesAsync()
+        });
     }
 
-    [HttpGet("available")]
-    public async Task<IActionResult> GetAvailableAsync()
+    [HttpPost("available/{gameId:guid}")]
+    public IActionResult AddAvailable([FromRoute] Guid gameId)
     {
-        var result = await _userService.GetGamemodesAsync();
-        return Ok(result);
+        if (_settingsService.TryAddAvailable(gameId))
+            return Ok();
+
+        return NoContent();
+    }
+
+    [HttpDelete("available/{gameId:guid}")]
+    public IActionResult RemoveAvailable([FromRoute] Guid gameId)
+    {
+        if (_settingsService.TryRemoveAvailable(gameId))
+            return Ok();
+
+        return NoContent();
+    }
+
+    [HttpPatch("force/{gameId:guid?}")]
+    public async Task<IActionResult> SetForceGamemode([FromRoute] Guid? gameId)
+    {
+        _settingsService.UpdateForceGamemode(gameId);
+        return Ok(await _availableGameService.GetAvailableGamemodesAsync());
     }
 }
