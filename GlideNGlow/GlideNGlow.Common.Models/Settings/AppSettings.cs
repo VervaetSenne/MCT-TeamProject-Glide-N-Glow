@@ -8,6 +8,6 @@ public class AppSettings
     public Guid? ForceGamemode { get; set; }
     public bool AllowUserSwitching { get; set; } = true;
     public bool LightingToggle { get; set; } = true;
-    public List<LightButtonData> Strips { get; set; } = new();
-    public List<LightStripData> Buttons { get; set; } = new();
+    public List<LightButtonData> Buttons { get; set; } = new();
+    public List<LightStripData> Strips { get; set; } = new();
 }

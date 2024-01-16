@@ -3,7 +3,7 @@ using MQTTnet.Protocol;
 
 namespace GlideNGlow.Mqqt.Models;
 
-public class EspHandler : IAsyncDisposable
+public class EspHandler : IDisposable
 {
 
     private readonly MqttHandler _mqttHandler;
@@ -89,12 +89,9 @@ public class EspHandler : IAsyncDisposable
 
         await _mqttHandler.SendMessage($"esp32/{macAddress}/ledcircle", string.Format(TopicRgb, r, g, b));
     }
-
-
-
-
-    public async ValueTask DisposeAsync()
+    
+    public void Dispose()
     {
-        await _mqttHandler.DisposeAsync();
+        _mqttHandler.Dispose();
     }
 }

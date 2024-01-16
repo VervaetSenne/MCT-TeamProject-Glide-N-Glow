@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{2B1D85
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Extensions.Options.Implementations", "Microsoft.Extensions.Options.Implementations\Microsoft.Extensions.Options.Implementations.csproj", "{AFFB1BEE-5356-43BB-A89C-5629754690F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Mqqt.Models", "GlideNGlow.Mqqt.Models\GlideNGlow.Mqqt.Models.csproj", "{3868AFFD-91B8-4FE3-A93A-2D5CF384CCA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Mqtt.Models", "GlideNGlow.Mqtt.Models\GlideNGlow.Mqtt.Models.csproj", "{3868AFFD-91B8-4FE3-A93A-2D5CF384CCA0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Common.Models", "GlideNGlow.Common.Models\GlideNGlow.Common.Models.csproj", "{4B6444D0-22E1-4547-99F0-D4E1F3614A9F}"
 EndProject
@@ -27,6 +27,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Core.Dto", "GlideNGlow.Core.Dto\GlideNGlow.Core.Dto.csproj", "{AB01A1EA-E26D-484C-95A2-D51CC2AB31B9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Common.Extensions", "GlideNGlow.Common.Extensions\GlideNGlow.Common.Extensions.csproj", "{30B4ED4C-70D9-4333-B501-39173C26E8DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.GPIO.Models", "GlideNGlow.GPIO.Models\GlideNGlow.GPIO.Models.csproj", "{04B94825-FAD3-4B2A-996A-37C0A4FB306D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +68,10 @@ Global
 		{4B6444D0-22E1-4547-99F0-D4E1F3614A9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B6444D0-22E1-4547-99F0-D4E1F3614A9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B6444D0-22E1-4547-99F0-D4E1F3614A9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04B94825-FAD3-4B2A-996A-37C0A4FB306D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04B94825-FAD3-4B2A-996A-37C0A4FB306D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04B94825-FAD3-4B2A-996A-37C0A4FB306D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04B94825-FAD3-4B2A-996A-37C0A4FB306D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D5519E86-A333-4C60-BA10-E44E3A5E51EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D5519E86-A333-4C60-BA10-E44E3A5E51EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5519E86-A333-4C60-BA10-E44E3A5E51EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
