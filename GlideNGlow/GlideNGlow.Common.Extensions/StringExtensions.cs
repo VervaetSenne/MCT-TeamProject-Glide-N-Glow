@@ -1,4 +1,6 @@
-﻿namespace GlideNGlow.Common.Extensions;
+﻿using System.Text;
+
+namespace GlideNGlow.Common.Extensions;
 
 public static class StringExtensions
 {
@@ -7,13 +9,13 @@ public static class StringExtensions
     public static string MacToHex(this string mac)
     {
         var hexs = mac.Replace(":", "").StringToByteArray().ToList();
-        var id = string.Empty;
+        var id = new StringBuilder();
         for (var i = 0; i < hexs.Count / 2; i++)
         {
-            id += ((hexs[i] + hexs[i + 1] + Random.Next(255)) % 255).ToString("X2");
+            id.Append(((hexs[i] + hexs[i + 1]) % 255).ToString("X2"));
         }
 
-        return id;
+        return id.ToString();
     }
     
     public static byte[] StringToByteArray(this string hex)

@@ -1,4 +1,6 @@
-﻿namespace GlideNGlow.Services.Abstractions;
+﻿using GlideNGlow.Core.Dto;
+
+namespace GlideNGlow.Services.Abstractions;
 
 public interface ISettingsService
 {
@@ -10,4 +12,6 @@ public interface ISettingsService
     bool TryRemoveAvailable(Guid gameId);
     void UpdateForceGamemode(Guid? gameId);
     void UpdateCurrentGamemode(Guid? gameId);
+    IEnumerable<ButtonDto> GetButtons();
+    void UpdateButton(string buttonId, float? distance);
 }
