@@ -3,6 +3,7 @@ using System;
 using GlideNGlow.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GlideNGlow.Core.Data.Migrations
 {
     [DbContext(typeof(GlideNGlowDbContext))]
-    partial class GlideNGlowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240116151701_add-description")]
+    partial class adddescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
