@@ -22,7 +22,7 @@ public class ButtonController : Controller
     }
 
     [HttpPut("{buttonId}")]
-    public IActionResult UpdateButton([FromRoute] string buttonId, [FromQuery] float? distance)
+    public IActionResult UpdateButton([FromRoute] string buttonId, [FromQuery] float distance)
     {
         _settingsService.UpdateButton(buttonId, distance);
         return Ok();
@@ -31,6 +31,7 @@ public class ButtonController : Controller
     [HttpDelete("{buttonId}")]
     public IActionResult DeleteButton(string buttonId)
     {
-        return UpdateButton(buttonId, null);
+        _settingsService.UpdateButton(buttonId, null);
+        return Ok();
     }
 }
