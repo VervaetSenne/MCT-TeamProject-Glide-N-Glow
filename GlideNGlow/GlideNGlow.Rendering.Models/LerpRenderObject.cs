@@ -2,7 +2,7 @@ using System.Drawing;
 
 namespace GlideNGlow.Rendering.Models;
 
-public class LerpRenderObject : IRenderObject
+public class LerpRenderObject : RenderObject
 {
     private int _direction = 0;
     private int _length = 0;
@@ -39,9 +39,9 @@ public class LerpRenderObject : IRenderObject
             for (int i = 0; i < _length; i++)
             {
                 _image.Add(Color.FromArgb(
-                    (int) (_colorEnd.R + (i * (_colorStart.R - _colorEnd.R) / (_length-1))),
-                    (int) (_colorEnd.G + (i * (_colorStart.G - _colorEnd.G) / (_length-1))),
-                    (int) (_colorEnd.B + (i * (_colorStart.B - _colorEnd.B) / (_length-1)))
+                    (int)(_colorStart.R + (i * (_colorEnd.R - _colorStart.R) / (_length - 1))),
+                    (int)(_colorStart.G + (i * (_colorEnd.G - _colorStart.G) / (_length - 1))),
+                    (int)(_colorStart.B + (i * (_colorEnd.B - _colorStart.B) / (_length - 1)))
                 ));
             }  
         }
@@ -50,9 +50,9 @@ public class LerpRenderObject : IRenderObject
             for (int i =  _length; i > 0; i--)
             {
                 _image.Add(Color.FromArgb(
-                    (int) (_colorEnd.R + (i * (_colorStart.R - _colorEnd.R) / (_length-1))),
-                    (int) (_colorEnd.G + (i * (_colorStart.G - _colorEnd.G) / (_length-1))),
-                    (int) (_colorEnd.B + (i * (_colorStart.B - _colorEnd.B) / (_length-1)))
+                    (int)(_colorStart.R + (i * (_colorEnd.R - _colorStart.R) / (_length - 1))),
+                    (int)(_colorStart.G + (i * (_colorEnd.G - _colorStart.G) / (_length - 1))),
+                    (int)(_colorStart.B + (i * (_colorEnd.B - _colorStart.B) / (_length - 1)))
                 ));
             }  
         }

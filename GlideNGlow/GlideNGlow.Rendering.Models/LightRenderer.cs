@@ -46,7 +46,7 @@ public class LightRenderer
         return _appsettings.CurrentValue;
     }
 
-    public void Render(IRenderObject renderObject)
+    public void Render(RenderObject renderObject)
     {
         int pos = renderObject.GetOffset();
         //loop over renderObjects images and add them to the lightStrips list

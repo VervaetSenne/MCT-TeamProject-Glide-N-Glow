@@ -2,7 +2,7 @@ using System.Drawing;
 
 namespace GlideNGlow.Rendering.Models;
 
-public class PointRenderObject : IRenderObject
+public class PointRenderObject : RenderObject
 {
     private Color _color;
     

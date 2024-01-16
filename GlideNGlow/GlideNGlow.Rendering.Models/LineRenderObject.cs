@@ -2,7 +2,7 @@ using System.Drawing;
 
 namespace GlideNGlow.Rendering.Models;
 
-public class LineRenderObject : IRenderObject
+public class LineRenderObject : RenderObject
 {
     private int _baseOffset = 0;
     private int _direction = 0;

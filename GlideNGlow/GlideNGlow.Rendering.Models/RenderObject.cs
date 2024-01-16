@@ -2,7 +2,7 @@ using System.Drawing;
 
 namespace GlideNGlow.Rendering.Models;
 
-public abstract class IRenderObject
+public abstract class RenderObject
 {
     public abstract List<Color> Image();
 
@@ -19,7 +19,6 @@ public abstract class IRenderObject
         Offset += x;
     }
     
-
     public int GetOffset()
     {
         return Offset;
