@@ -53,7 +53,6 @@ public class LightRenderer
         for (int i = 0; i < renderObject.Image().Count; i++)
         {
             pos++;
-            //TODO: check if the key is in the range of the lightStrips list, if not loop around
             if (pos >= _pixelAmount)
             {
                 pos %= _pixelAmount;
@@ -84,7 +83,6 @@ public class LightRenderer
     
     public async Task Show()
     {
-        //todo: send pixel id and color over mqtt
         var payload = new StringBuilder();
         //add all colors as hexadecimals to the payload string
         foreach (Color color in _lights)
@@ -102,7 +100,6 @@ public class LightRenderer
     
     public async Task Update()
     {
-        //todo: tell mqtt to update colors
         await _mqttHandler.SendMessage(TopicSetPixel, "");
     }
     private const string TopicUpdateColors = "esp32/strip/update";
