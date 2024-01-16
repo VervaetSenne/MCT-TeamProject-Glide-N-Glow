@@ -24,7 +24,8 @@ public class AvailableGameService : IAvailableGameService
         return gamemodes.Select(g => new GamemodeItemDto
         {
             Force = forcedGamemode is not null && forcedGamemode == g.Id,
-            Available = forcedGamemode is not null && availableGamemodes.Any(ag => ag == g.Id)
+            Available = forcedGamemode is not null && availableGamemodes.Any(ag => ag == g.Id),
+            Name = g.Name
         });
     }
 }
