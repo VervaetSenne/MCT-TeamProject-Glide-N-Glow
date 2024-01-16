@@ -14,20 +14,15 @@ public class GameService : IGameService
         _dbContext = dbContext;
     }
 
-    public Task<Game?> FindByIdAsync(Guid id)
-    {
-        return _dbContext.Games.SingleOrDefaultAsync(g => g.Id == id);
-    }
-
     public async Task<IEnumerable<Game>> FindAsync()
     {
         return await _dbContext.Games.ToListAsync();
     }
 
-    public async Task<Game> CreateAsync(Game entity)
+    public async Task<Game?> FindByIdAsync(Guid? gameId)
     {
-        _dbContext.Games.Add(entity);
-        await _dbContext.SaveChangesAsync();
-        return entity;
+        if (!gameId.HasValue)
+            return null;
+        return await _dbContext.Games.SingleOrDefaultAsync(g => g.Id == gameId);
     }
 }

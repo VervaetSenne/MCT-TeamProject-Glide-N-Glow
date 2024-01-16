@@ -1,5 +1,5 @@
-﻿using GlideNGlow.Core.Models;
-using GlideNGlow.Services.Abstractions;
+﻿using GlideNGlow.Core.Services.Abstractions;
+using GlideNGlow.Ui.WepApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GlideNGlow.Ui.WepApi.Controllers;
@@ -8,24 +8,17 @@ namespace GlideNGlow.Ui.WepApi.Controllers;
 [ApiController]
 public class LeaderboardController : Controller
 {
-    private readonly IUserService _userService;
+    private readonly IEntryService _entryService;
 
-    public LeaderboardController(IUserService userService)
+    public LeaderboardController(IEntryService entryService)
     {
-        _userService = userService;
+        _entryService = entryService;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAsync()
+    [HttpGet("{mode}")]
+    public async Task<IActionResult> GetAsync([FromRoute] string? mode, [FromQuery] EntryFilter filter)
     {
-        var leaderBoard = _userService.GetEntriesAsync();
-        return Ok(leaderBoard);
-    }
-
-    [HttpPost("{gameId:guid}/{name}/{score}")]
-    public async Task<IActionResult> AddScoreAsync(Guid gameId, string name, string score)
-    {
-        await _userService.AddScoreAsync(gameId, name, score);
-        return Ok();
+        var entries = await _entryService.FindFromGameAsync(mode, filter.TimeFrame, filter.Unique, filter.Username);
+        return Ok(entries);
     }
 }
