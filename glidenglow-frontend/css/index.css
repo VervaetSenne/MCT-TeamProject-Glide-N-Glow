@@ -5,11 +5,12 @@
   --text-secondary: #ececec;
   --text-dark: #273646;
   --bg-primary: #273646;
+  --bg-light-prinmary: #476786;
   --bg-secondary: #141418;
   --bg-white: #ffffff;
   --bg-current-gamemode: #dbdbdb;
   --page-bg-primary: #dfdfdf;
-  --transition-speed: 600ms;
+  --transition-speed: 300ms;
   --hover-bg-primary: #a4a4a4;
 }
 
@@ -111,29 +112,21 @@ main {
   transform: rotate(-180deg);
 }
 
-/* GRID */
+/*------------------------------------*\
+#ADMIN - GRID
+\*------------------------------------*/
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: auto 1fr;
   place-items: center;
-  gap: 1rem;
-  max-width: 1100px;
-  /* Adjust the max-width as needed */
+  gap: 2rem;
+  max-width: 1300px;
   width: 100%;
-  /* Set the width to 100% */
-}
-
-.grid-flex {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 95vh;
 }
 
 .grid-item {
   width: 100%;
-  height: 300px;
+  height: 450px;
   background-color: var(--bg-white);
   border-radius: 10px;
   overscroll-behavior: contain;
@@ -142,20 +135,39 @@ main {
   margin-bottom: 10px;
   overflow-y: auto;
 }
+
+/* First grid item span over 3 columns */
+.grid-item:first-child {
+  grid-column: span 3;
+  height: 150px;
+}
+.grid-item:not(:first-child) {
+  width: 400px;
+}
+/* Center position grid */
+.grid-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 95vh;
+}
+
 .grid-header {
   display: flex;
   align-items: center;
-  background-color: var(
-    --bg-primary
-  ); /* Add a background color for the header row */
+  background-color: var(--bg-primary);
   color: var(--bg-white);
 }
+
 .grid-header svg {
   margin-left: 0.5rem;
 }
+
 .header-title {
-  margin-left: 0.5rem; /* Add some margin between the icon and the title */
-  font-size: 1rem; /* Adjust the font size as needed */
+  margin-left: 0.5rem;
+  /* Add some margin between the icon and the title */
+  font-size: 1rem;
+  /* Adjust the font size as needed */
   margin-top: 0.8rem;
   margin-bottom: 0.8rem;
 }
@@ -164,97 +176,200 @@ main {
   height: 100%;
   background-color: var(--bg-white);
   border-radius: 10px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
-/*Settings dashnoard*/
-.settings-form-container {
+
+/*------------------------------------*\
+#ADMIN - Settings
+\*------------------------------------*/
+.settings-button-container {
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-.grid-option {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
-  margin-right: 4rem;
+  height: 100%;
+  gap: 1rem;
 }
-.option-text {
-  margin-right: 10px;
-  font-size: 1.3rem;
+
+.settings-button-startstop {
+  width: 130px;
+  height: 43px;
+  border-radius: 10px;
+  background: #9b2d2d;
+  border: none;
+  color: var(--text-secondary);
+  transition: ease var(--transition-speed);
+}
+.settings-button-startstop:hover {
+  background: #7a2323;
+  transition: ease var(--transition-speed);
+}
+.settings-button-callibrate {
+  width: 130px;
+  height: 43px;
+  border-radius: 10px;
+  background: var(--bg-primary);
+  border: none;
+  color: var(--text-secondary);
+  transition: ease var(--transition-speed);
+}
+.settings-button-callibrate:hover {
+  background: #3b526b;
+  transition: ease var(--transition-speed);
+}
+
+/*------------------------------------*\
+#ADMIN - Gamemodes
+\*------------------------------------*/
+.gamemodes-container {
+  display: flex;
+}
+.gamemodes-container-gamemodeswitch-text {
+  margin-left: 1rem;
+  margin-right: 5.5rem;
   color: var(--text-dark);
-  font-weight: 600;
-  margin-left: 3rem;
+  font-size: 1.1rem;
 }
-.option-divider {
-  width: 42%;
-  height: 1px;
-  background-color: var(--bg-primary);
-  margin-bottom: 10px;
-  margin-left: 3rem;
+/*------------------------------------*\
+#ADMIN - Button settings
+\*------------------------------------*/
+.button-settings-infotext {
+  margin-left: 1rem;
+  color: var(--text-dark);
+  font-size: 1.1rem;
 }
-.toggle {
-  position: relative;
-  display: inline-block;
-  width: 60px;
+#button-distance {
+  padding-left: 4rem;
+}
+#distance-data {
+  padding-left: 6rem;
+}
+#button-actions {
+  padding-left: 1.5rem;
+}
+#button-id {
+  padding-left: 1.5rem;
+}
+#button-id-data {
+  padding-left: 1.3rem;
+}
+/*------------------------------------*\
+#ADMIN - LedStrip settings
+\*------------------------------------*/
+.lightstrip-setting-container {
+  display: flex;
+  gap: 2.6rem;
+}
+
+.lightstrip-setting-container-text {
+  width: 2rem;
+  white-space: nowrap;
+  margin-left: 1rem;
+  font-size: 1.1rem;
+}
+#lightstrip-action {
+  padding-left: 1.5rem;
+}
+#lightstrip-pixels-data {
+  padding-left: 1.5rem;
+}
+#lightstrip-distance-data {
+  padding-left: 2.5rem;
+}
+#lightstrip-length-data {
+  padding-left: 2rem;
+}
+.ledstrip-add-icon {
+  padding-left: 50%;
+  padding-right: 50%;
+  transition: ease var(--transition-speed);
+}
+.ledstrip-add-icon:hover {
+  color: var(--bg-light-prinmary);
+  transition: ease var(--transition-speed);
+}
+/*------------------------------------*\
+#HOME - carousel
+\*------------------------------------*/
+.slick-prev,
+.slick-next {
+  z-index: 2;
+}
+.slick-prev {
+  left: 3rem;
+}
+.slick-next {
+  right: 3rem;
+}
+.slick-slide {
+  height: 500px;
+}
+.slick-slide img {
+  height: 500px;
+}
+.gamemodes-carousel-item {
+  margin: 1rem;
+}
+/*------------------------------------*\
+#Table styles
+\*------------------------------------*/
+.table-button {
+  border: none;
+  border-radius: 10px;
   height: 30px;
+  width: 30px;
+  margin-left: 0.5rem;
+  transition: ease var(--transition-speed);
 }
-.toggle input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+.table-button:hover {
+  background-color: var(--bg-light-prinmary);
+  color: var(--text-secondary);
+  transition: ease var(--transition-speed);
 }
-
-.slider {
-  position: absolute;
+.table-button svg {
+  width: 18px;
+  height: 18px;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 15px;
 }
-
-.slider:before {
-  position: absolute;
-  content: '';
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  top: 2px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-input:checked + .slider {
+.table-container {
+  overflow: hidden;
+  border-radius: 10px; /* Adjust as needed */
+  width: 95%; /* Set a specific width, adjust as needed */
+  margin: 0 auto; /* Center the table horizontally */
   background-color: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 0.7rem;
 }
 
-input:focus + .slider {
-  box-shadow: 0 0 1px var(--bg-primary);
+.rounded-table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-input:checked + .slider:before {
-  transform: translateX(26px);
+.rounded-table th,
+.rounded-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd; /* Adjust the border color */
+  font-weight: 400;
+  font-size: 1rem;
 }
 
-/* Available gamemodes */
+.rounded-table th {
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+}
+
+/*------------------------------------*\
+#Checkbox styles
+\*------------------------------------*/
 .checkbox-container {
   display: block;
   position: relative;
-  padding-left: 30px;
-  /* Adjust as needed for spacing */
-  margin-top: 8px;
-  /* Adjust as needed for spacing */
   cursor: pointer;
   user-select: none;
+  margin-bottom: 1.5rem;
+  margin-left: 1.5rem;
 }
 
 .checkbox-container input {
@@ -284,7 +399,7 @@ input:checked + .slider:before {
 }
 
 .checkbox-container input:checked ~ .checkmark {
-  background-color: var(--bg-primary);
+  background-color: var(--bg-light-prinmary);
   border: 1px solid var(--bg-primary);
 }
 
@@ -311,91 +426,63 @@ input:checked + .slider:before {
   border-width: 0 3px 3px 0;
   transform: rotate(45deg);
 }
-.option-text-availablegamemodes {
-  margin-right: 10px;
-  font-size: 1.3rem;
-  color: var(--text-dark);
-  font-weight: 600;
-  margin-left: 3rem;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
+
+/*------------------------------------*\
+#Toggle switch styles
+\*------------------------------------*/
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  margin-top: 1.2rem;
+  margin-left: 2.5rem;
 }
-.available-gamemodes-container {
-  overflow-y: auto;
-}
-.available-gamemodes-container::-webkit-scrollbar {
-  width: 0.25rem;
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-.available-gamemodes-container::-webkit-scrollbar-track {
-  background: var(--bg-white);
-}
-
-.available-gamemodes-container::-webkit-scrollbar-thumb {
-  background: var(--bg-primary);
-}
-/* Current gamemode */
-.current-gamemode-container {
-  display: flex;
-  flex-wrap: wrap; /* Allow wrapping to the next row */
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  gap: 2rem;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-top: 2.5rem;
-  padding-bottom: 1rem;
-}
-
-.gamemode-box {
-  width: 217px;
-  height: 170px;
-  margin: 5px;
-  background-color: var(--bg-current-gamemode);
-  border-radius: 10px;
-}
-.gamemode-box:hover {
-  background-color: var(--hover-bg-primary);
-}
-.current-gamemode-container::-webkit-scrollbar {
-  width: 0.25rem;
-}
-
-.current-gamemode-container::-webkit-scrollbar-track {
-  background: var(--bg-white);
-}
-
-.current-gamemode-container::-webkit-scrollbar-thumb {
-  background: var(--bg-primary);
-}
-.row {
-  width: 100%;
-  padding: 10px;
-}
-
-.icon {
-  /* Add your specific styles for the SVG icon */
-}
-
-.title {
-  font-weight: bold;
-}
-
-.description {
-  font-style: italic;
-}
-.gamemode-box {
-  transition: background-color 0.3s ease; /* Add a transition for background-color */
-}
-.gamemode-box.selected {
-  background-color: var(
-    --bg-primary
-  ); /* Change the background color as needed */
+.slider {
+  position: absolute;
   cursor: pointer;
-  color: var(--bg-white);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 15px;
 }
-/* Small screens */
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  top: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: var(--bg-primary);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--bg-primary);
+}
+
+input:checked + .slider:before {
+  transform: translateX(16px);
+}
+
+/*------------------------------------*\
+#Small screens
+\*------------------------------------*/
 @media only screen and (max-width: 600px) {
   .navbar {
     bottom: 0;
@@ -425,11 +512,12 @@ input:checked + .slider:before {
   }
 }
 
-/* Large screens */
+/*------------------------------------*\
+#Large screens
+\*------------------------------------*/
 @media only screen and (min-width: 600px) {
   .navbar {
     top: 0;
-    width: 5rem;
     height: 100vh;
   }
 
@@ -445,18 +533,20 @@ input:checked + .slider:before {
     left: 0px;
   }
 }
-
+/*------------------------------------*\
+#GRID RESPONSIVE
+\*------------------------------------*/
 @media (max-height: 690px) {
   .grid-container-flex {
     margin-top: 1rem;
   }
 }
 
-@media (max-width: 1120px) {
+@media (max-width: 1400px) {
   .grid-container {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
-    max-width: 510px;
+    max-width: 400px;
   }
 
   .grid-container-flex {
@@ -466,24 +556,21 @@ input:checked + .slider:before {
   .grid-item:last-child {
     margin-bottom: 5rem;
   }
-  .option-text {
-    margin-right: 10px;
-    font-size: 0.8rem;
-    color: var(--text-dark);
-    font-weight: 600;
-    margin-left: 3rem;
+
+  .grid-item {
+    margin-bottom: 1rem;
+    width: 350px;
   }
-  .option-text-availablegamemodes {
-    margin-right: 10px;
-    font-size: 0.8rem;
-    color: var(--text-dark);
-    font-weight: 600;
-    margin-left: 3rem;
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
+
+  .grid-item:first-child {
+    grid-column: span 1;
+    height: 150px;
+    width: 400px;
   }
 }
-
+/*------------------------------------*\
+#Future color themes
+\*------------------------------------*/
 .dark {
   --text-primary: #b6b6b6;
   --text-secondary: #ececec;

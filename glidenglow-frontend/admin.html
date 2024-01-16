@@ -93,6 +93,32 @@
             <span class="link-text">Leaderbord</span>
           </a>
         </li>
+        <li class="nav-item">
+          <a href="recentScores.html" class="nav-link">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-medal"
+            >
+              <path
+                d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"
+              />
+              <path d="M11 12 5.12 2.2" />
+              <path d="m13 12 5.88-9.8" />
+              <path d="M8 7h8" />
+              <circle cx="12" cy="17" r="5" />
+              <path d="M12 18v-2h-.5" />
+            </svg>
+            <span class="link-text">Recent scores</span>
+          </a>
+        </li>
 
         <li class="nav-item" id="userButton">
           <a href="index.html" class="nav-link">
@@ -144,42 +170,13 @@
                 </svg>
                 <span class="header-title">Settings</span>
               </div>
-              <div class="settings-form-container">
-                <div class="grid-option">
-                  <span class="option-text">User gamemode switch</span>
-                  <label class="toggle">
-                    <input type="checkbox" id="GamemodeSwitchToggle" />
-                    <span class="slider"></span>
-                  </label>
-                </div>
-                <hr class="option-divider" />
-                <div class="grid-option">
-                  <span class="option-text">Gamemode force</span>
-                  <label class="toggle">
-                    <input type="checkbox" id="GamemodeForceToggle" />
-                    <span class="slider"></span>
-                  </label>
-                </div>
-                <hr class="option-divider" />
-                <div class="grid-option">
-                  <span class="option-text">Lighting</span>
-                  <label class="toggle">
-                    <input type="checkbox" id="LightingCheckToggle" />
-                    <span class="slider"></span>
-                  </label>
-                </div>
-                <hr class="option-divider" />
-                <div class="grid-option">
-                  <span class="option-text">Start calibration</span>
-                  <label class="toggle">
-                    <input type="checkbox" id="StartCalibrationToggle" />
-                    <span class="slider"></span>
-                  </label>
-                </div>
+              <div class="settings-button-container">
+                <button class="settings-button-startstop">Start/Stop</button>
+                <button class="settings-button-callibrate">Callibrate</button>
               </div>
             </div>
           </div>
-          <!--Available gamemodes-->
+          <!--Gamemodes-->
           <div class="grid-item">
             <div class="grid-content">
               <div class="grid-header">
@@ -189,74 +186,7 @@
                   height="24"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="#ffffff"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-lock-keyhole"
-                >
-                  <circle cx="12" cy="16" r="1" />
-                  <rect x="3" y="10" width="18" height="12" rx="2" />
-                  <path d="M7 10V7a5 5 0 0 1 10 0v3" />
-                </svg>
-                <span class="header-title">Available gamemodes</span>
-              </div>
-              <div
-                class="available-gamemodes-container js-available-gamemodes-container"
-              >
-                <div class="grid-option">
-                  <span class="option-text-availablegamemodes">Gamemode 1</span>
-                  <label class="checkbox-container">
-                    <input type="checkbox" id="Gamemode 1" />
-                    <span class="checkmark"></span>
-                  </label>
-                </div>
-                <hr class="option-divider" />
-                <div class="grid-option">
-                  <span class="option-text-availablegamemodes">Gamemode 2</span>
-                  <label class="checkbox-container">
-                    <input type="checkbox" id="Gamemode 2" />
-                    <span class="checkmark"></span>
-                  </label>
-                </div>
-                <hr class="option-divider" />
-                <div class="grid-option">
-                  <span class="option-text-availablegamemodes">Gamemode 3</span>
-                  <label class="checkbox-container">
-                    <input type="checkbox" id="Gamemode 3" />
-                    <span class="checkmark"></span>
-                  </label>
-                </div>
-                <hr class="option-divider" />
-                <div class="grid-option">
-                  <span class="option-text-availablegamemodes">Gamemode 4</span>
-                  <label class="checkbox-container">
-                    <input type="checkbox" id="Gamemode 4" />
-                    <span class="checkmark"></span>
-                  </label>
-                </div>
-                <hr class="option-divider" />
-                <div class="grid-option">
-                  <span class="option-text-availablegamemodes">Gamemode 5</span>
-                  <label class="checkbox-container">
-                    <input type="checkbox" id="Gamemode 5" />
-                    <span class="checkmark"></span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!--Current gamemode-->
-          <div class="grid-item">
-            <div class="grid-content">
-              <div class="grid-header">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#ffffff"
+                  stroke="currentColor"
                   stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -270,127 +200,65 @@
                     d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"
                   />
                 </svg>
-                <span class="header-title">Current gamemode</span>
+                <span class="header-title">Gamemodes</span>
               </div>
-              <div
-                class="current-gamemode-container js-current-gamemode-container"
-              >
-                <div class="gamemode-box">
-                  <div class="row">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="40"
-                      height="40"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-gamepad-2"
-                    >
-                      <line x1="6" x2="10" y1="11" y2="11" />
-                      <line x1="8" x2="8" y1="9" y2="13" />
-                      <line x1="15" x2="15.01" y1="12" y2="12" />
-                      <line x1="18" x2="18.01" y1="10" y2="10" />
-                      <path
-                        d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"
-                      />
-                    </svg>
-                  </div>
-                  <div class="row title">Gamemode 1</div>
-                  <div class="row description">
-                    This is the description for Gamemode 1.
-                  </div>
-                </div>
-                <div class="gamemode-box">
-                  <div class="row">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="40"
-                      height="40"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-gamepad-2"
-                    >
-                      <line x1="6" x2="10" y1="11" y2="11" />
-                      <line x1="8" x2="8" y1="9" y2="13" />
-                      <line x1="15" x2="15.01" y1="12" y2="12" />
-                      <line x1="18" x2="18.01" y1="10" y2="10" />
-                      <path
-                        d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"
-                      />
-                    </svg>
-                  </div>
-                  <div class="row title">Gamemode 2</div>
-                  <div class="row description">
-                    This is the description for Gamemode 2.
-                  </div>
-                </div>
-                <div class="gamemode-box">
-                  <div class="row">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="40"
-                      height="40"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-gamepad-2"
-                    >
-                      <line x1="6" x2="10" y1="11" y2="11" />
-                      <line x1="8" x2="8" y1="9" y2="13" />
-                      <line x1="15" x2="15.01" y1="12" y2="12" />
-                      <line x1="18" x2="18.01" y1="10" y2="10" />
-                      <path
-                        d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"
-                      />
-                    </svg>
-                  </div>
-                  <div class="row title">Gamemode 3</div>
-                  <div class="row description">
-                    This is the description for Gamemode 3.
-                  </div>
-                </div>
-                <div class="gamemode-box">
-                  <div class="row">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="40"
-                      height="40"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-gamepad-2"
-                    >
-                      <line x1="6" x2="10" y1="11" y2="11" />
-                      <line x1="8" x2="8" y1="9" y2="13" />
-                      <line x1="15" x2="15.01" y1="12" y2="12" />
-                      <line x1="18" x2="18.01" y1="10" y2="10" />
-                      <path
-                        d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"
-                      />
-                    </svg>
-                  </div>
-                  <div class="row title">Gamemode 4</div>
-                  <div class="row description">
-                    This is the description for Gamemode 4.
-                  </div>
-                </div>
+              <div class="gamemodes-container">
+                <p class="gamemodes-container-gamemodeswitch-text">
+                  Allow gamemode switch
+                </p>
+                <label class="toggle">
+                  <input type="checkbox" id="AllowGamemodeToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="table-container">
+                <table class="rounded-table">
+                  <tr>
+                    <th>Name</th>
+                    <th>Set available</th>
+                    <th>Force</th>
+                  </tr>
+                  <tr>
+                    <td>Gamemode</td>
+                    <td>
+                      <label class="checkbox-container">
+                        <input type="checkbox" id="Gamemode 1" />
+                        <span class="checkmark"></span>
+                      </label>
+                    </td>
+                    <td>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-lock"
+                        >
+                          <rect
+                            width="18"
+                            height="11"
+                            x="3"
+                            y="11"
+                            rx="2"
+                            ry="2"
+                          />
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <!-- More rows -->
+                </table>
               </div>
             </div>
           </div>
-          <!--Configuration-->
+          <!--Button settings-->
           <div class="grid-item">
             <div class="grid-content">
               <div class="grid-header">
@@ -400,29 +268,475 @@
                   height="24"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="#ffffff"
+                  stroke="currentColor"
                   stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  class="lucide lucide-file-cog"
+                  class="lucide lucide-settings"
                 >
-                  <circle cx="6" cy="13" r="3" />
-                  <path d="m9.7 14.4-.9-.3" />
-                  <path d="m3.2 11.9-.9-.3" />
-                  <path d="m4.6 16.7.3-.9" />
-                  <path d="m7.6 16.7-.4-1" />
-                  <path d="m4.8 10.3-.4-1" />
-                  <path d="m2.3 14.6 1-.4" />
-                  <path d="m8.7 11.8 1-.4" />
-                  <path d="m7.4 9.3-.3.9" />
-                  <path d="M14 2v6h6" />
                   <path
-                    d="M4 5.5V4a2 2 0 0 1 2-2h8.5L20 7.5V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-1.5"
+                    d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
                   />
+                  <circle cx="12" cy="12" r="3" />
                 </svg>
-                <span class="header-title">Configuration</span>
+                <span class="header-title">Button settings</span>
               </div>
-              <div class="grid-text">4</div>
+              <div class="button-settings-container">
+                <p class="button-settings-infotext">
+                  Plug button in to add to systen.
+                </p>
+              </div>
+              <div class="table-container">
+                <table class="rounded-table">
+                  <tr>
+                    <th id="button-id">Id</th>
+                    <th id="button-distance">Distance(m)</th>
+                    <th id="button-actions">Actions</th>
+                  </tr>
+                  <tr>
+                    <td id="button-id-data">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-circle"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                      </svg>
+                    </td>
+                    <td id="distance-data">10</td>
+                    <td>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-pencil"
+                        >
+                          <path
+                            d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+                          />
+                          <path d="m15 5 4 4" />
+                        </svg>
+                      </button>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-trash-2"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                          <line x1="10" x2="10" y1="11" y2="17" />
+                          <line x1="14" x2="14" y1="11" y2="17" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td id="button-id-data">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-circle"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                      </svg>
+                    </td>
+                    <td id="distance-data">10</td>
+                    <td>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-pencil"
+                        >
+                          <path
+                            d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+                          />
+                          <path d="m15 5 4 4" />
+                        </svg>
+                      </button>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-trash-2"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                          <line x1="10" x2="10" y1="11" y2="17" />
+                          <line x1="14" x2="14" y1="11" y2="17" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td id="button-id-data">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-circle"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                      </svg>
+                    </td>
+                    <td id="distance-data">10</td>
+                    <td>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-pencil"
+                        >
+                          <path
+                            d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+                          />
+                          <path d="m15 5 4 4" />
+                        </svg>
+                      </button>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-trash-2"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                          <line x1="10" x2="10" y1="11" y2="17" />
+                          <line x1="14" x2="14" y1="11" y2="17" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <!-- More rows -->
+                </table>
+              </div>
+            </div>
+          </div>
+          <!--Lightstrip settings-->
+          <div class="grid-item">
+            <div class="grid-content">
+              <div class="grid-header">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-unlink"
+                >
+                  <path
+                    d="m18.84 12.25 1.72-1.71h-.02a5.004 5.004 0 0 0-.12-7.07 5.006 5.006 0 0 0-6.95 0l-1.72 1.71"
+                  />
+                  <path
+                    d="m5.17 11.75-1.71 1.71a5.004 5.004 0 0 0 .12 7.07 5.006 5.006 0 0 0 6.95 0l1.71-1.71"
+                  />
+                  <line x1="8" x2="8" y1="2" y2="5" />
+                  <line x1="2" x2="5" y1="8" y2="8" />
+                  <line x1="16" x2="16" y1="19" y2="22" />
+                  <line x1="19" x2="22" y1="16" y2="16" />
+                </svg>
+                <span class="header-title">Ledstrip settings</span>
+              </div>
+              <div class="lightstrip-setting-container">
+                <p class="lightstrip-setting-container-text">Same piece</p>
+                <label class="toggle">
+                  <input type="checkbox" id="AllowGamemodeToggle" />
+                  <span class="slider"></span>
+                </label>
+                <p class="lightstrip-setting-container-text">One piece</p>
+                <label class="toggle">
+                  <input type="checkbox" id="AllowGamemodeToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="table-container">
+                <table class="rounded-table">
+                  <tr>
+                    <th>Distance(m)</th>
+                    <th>Length(m)</th>
+                    <th>Pixels</th>
+                    <th id="lightstrip-action">Actions</th>
+                  </tr>
+                  <tr>
+                    <td id="lightstrip-distance-data">10</td>
+                    <td id="lightstrip-length-data">10</td>
+                    <td id="lightstrip-pixels-data">10</td>
+                    <td>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-pencil"
+                        >
+                          <path
+                            d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+                          />
+                          <path d="m15 5 4 4" />
+                        </svg>
+                      </button>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-trash-2"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                          <line x1="10" x2="10" y1="11" y2="17" />
+                          <line x1="14" x2="14" y1="11" y2="17" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td id="lightstrip-distance-data">10</td>
+                    <td id="lightstrip-length-data">10</td>
+                    <td id="lightstrip-pixels-data">10</td>
+                    <td>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-pencil"
+                        >
+                          <path
+                            d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+                          />
+                          <path d="m15 5 4 4" />
+                        </svg>
+                      </button>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-trash-2"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                          <line x1="10" x2="10" y1="11" y2="17" />
+                          <line x1="14" x2="14" y1="11" y2="17" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td id="lightstrip-distance-data">10</td>
+                    <td id="lightstrip-length-data">10</td>
+                    <td id="lightstrip-pixels-data">10</td>
+                    <td>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-pencil"
+                        >
+                          <path
+                            d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+                          />
+                          <path d="m15 5 4 4" />
+                        </svg>
+                      </button>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-trash-2"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                          <line x1="10" x2="10" y1="11" y2="17" />
+                          <line x1="14" x2="14" y1="11" y2="17" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td id="lightstrip-distance-data">10</td>
+                    <td id="lightstrip-length-data">10</td>
+                    <td id="lightstrip-pixels-data">10</td>
+                    <td>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-pencil"
+                        >
+                          <path
+                            d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+                          />
+                          <path d="m15 5 4 4" />
+                        </svg>
+                      </button>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-trash-2"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                          <line x1="10" x2="10" y1="11" y2="17" />
+                          <line x1="14" x2="14" y1="11" y2="17" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="34"
+                        height="34"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-plus-circle ledstrip-add-icon"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M8 12h8" />
+                        <path d="M12 8v8" />
+                      </svg>
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <!-- More rows -->
+                </table>
+              </div>
             </div>
           </div>
         </div>
