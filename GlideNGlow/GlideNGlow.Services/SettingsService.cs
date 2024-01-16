@@ -1,4 +1,6 @@
-﻿using GlideNGlow.Common.Models.Settings;
+﻿using GlideNGlow.Common.Extensions;
+using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Core.Dto;
 using GlideNGlow.Services.Abstractions;
 using Microsoft.Extensions.Options.Implementations;
 
@@ -68,5 +70,28 @@ public class SettingsService : ISettingsService
     public void UpdateCurrentGamemode(Guid? gameId)
     {
         _appSettings.Update(s => s.CurrentGamemode = gameId);
+    }
+
+    public IEnumerable<ButtonDto> GetButtons()
+    {
+        return AppSettings.Buttons
+            .OrderBy(l => l.ButtonNumber)
+            .Select(l => new ButtonDto
+            {
+                Id = l.MacAddress.MacToHex(),
+                Distance = l.DistanceFromStart
+            });
+    }
+
+    public void UpdateButton(string buttonId, float? distance)
+    {
+        _appSettings.Update(s =>
+        {
+            var button = s.Buttons.FirstOrDefault(l => l.MacAddress.MacToHex() == buttonId);
+            if (button is not null)
+            {
+                button.DistanceFromStart = distance;
+            }
+        });
     }
 }
