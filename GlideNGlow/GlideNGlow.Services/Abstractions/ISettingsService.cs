@@ -9,4 +9,5 @@ public interface ISettingsService
     bool TryAddAvailable(Guid gameId);
     bool TryRemoveAvailable(Guid gameId);
     void UpdateForceGamemode(Guid? gameId);
+    void UpdateCurrentGamemode(Guid? gameId);
 }

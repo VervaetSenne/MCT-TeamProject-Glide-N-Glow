@@ -1,6 +1,8 @@
 ﻿using GlideNGlow.Core.Dto;
+using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace GlideNGlow.Ui.WepApi.Controllers;
 
@@ -10,11 +12,13 @@ public class GamemodeController : Controller
 {
     private readonly ISettingsService _settingsService;
     private readonly IAvailableGameService _availableGameService;
+    private readonly IGameService _gameService;
     
-    public GamemodeController(ISettingsService settingsService, IAvailableGameService availableGameService)
+    public GamemodeController(ISettingsService settingsService, IAvailableGameService availableGameService, IGameService gameService)
     {
         _settingsService = settingsService;
         _availableGameService = availableGameService;
+        _gameService = gameService;
     }
 
     [HttpPut("allow-switching/{value:bool}")]
@@ -53,9 +57,21 @@ public class GamemodeController : Controller
     }
 
     [HttpPatch("force/{gameId:guid?}")]
-    public async Task<IActionResult> SetForceGamemode([FromRoute] Guid? gameId)
+    public async Task<IActionResult> SetForceGamemodeAsync([FromRoute] Guid? gameId)
     {
         _settingsService.UpdateForceGamemode(gameId);
         return Ok(await _availableGameService.GetAvailableGamemodesAsync());
+    }
+
+    [HttpPost("current/{gameId:guid?}")]
+    public async Task<IActionResult> SetCurrentGamemodeAsync([FromRoute] Guid? gameId)
+    {
+        _settingsService.UpdateCurrentGamemode(gameId);
+        if (gameId.HasValue)
+        {
+            var game = await _gameService.FindByIdAsync(gameId);
+            if (game is not null) return Ok(JsonConvert.DeserializeObject(game.Settings));
+        }
+        return Ok();
     }
 }

@@ -7,4 +7,5 @@ public class Game
     public required string Description { get; set; }
     public required byte[] Image { get; set; }
     public required string AssemblyName { get; set; }
+    public required string Settings { get; set; }
 }

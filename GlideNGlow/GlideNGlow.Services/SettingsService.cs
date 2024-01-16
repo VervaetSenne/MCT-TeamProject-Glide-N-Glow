@@ -64,4 +64,9 @@ public class SettingsService : ISettingsService
                 };
         });
     }
+
+    public void UpdateCurrentGamemode(Guid? gameId)
+    {
+        _appSettings.Update(s => s.CurrentGamemode = gameId);
+    }
 }

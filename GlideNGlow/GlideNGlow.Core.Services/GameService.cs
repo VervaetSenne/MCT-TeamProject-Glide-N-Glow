@@ -18,4 +18,11 @@ public class GameService : IGameService
     {
         return await _dbContext.Games.ToListAsync();
     }
+
+    public async Task<Game?> FindByIdAsync(Guid? gameId)
+    {
+        if (!gameId.HasValue)
+            return null;
+        return await _dbContext.Games.SingleOrDefaultAsync(g => g.Id == gameId);
+    }
 }
