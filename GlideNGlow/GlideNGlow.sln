@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Common.Models", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Rendering.Models", "GlideNGlow.Rendering.Models\GlideNGlow.Rendering.Models.csproj", "{F067562F-D2EF-421E-A751-CFFFBD9081AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Gamemodes.Models", "GlideNGlow.Gamemodes.Models\GlideNGlow.Gamemodes.Models.csproj", "{7C4E4A03-EBBF-44F4-8E1B-E54E7E6A273D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{F067562F-D2EF-421E-A751-CFFFBD9081AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F067562F-D2EF-421E-A751-CFFFBD9081AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F067562F-D2EF-421E-A751-CFFFBD9081AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C4E4A03-EBBF-44F4-8E1B-E54E7E6A273D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C4E4A03-EBBF-44F4-8E1B-E54E7E6A273D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C4E4A03-EBBF-44F4-8E1B-E54E7E6A273D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C4E4A03-EBBF-44F4-8E1B-E54E7E6A273D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FDF095C4-3122-4415-AA6E-4677A3A03666} = {6DC75EFE-4C31-48A5-AB13-CBD1025BE029}
