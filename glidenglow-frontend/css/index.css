@@ -345,6 +345,11 @@ main {
   color: var(--text-secondary);
   opacity: 100%;
 }
+.gamemodes-carousel-info-sign {
+  margin-top: 1rem;
+  margin-right: 1rem;
+  float: right;
+}
 /*------------------------------------*\
 #Table styles
 \*------------------------------------*/

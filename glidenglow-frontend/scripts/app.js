@@ -31,10 +31,13 @@ function checkUrl() {
 function checkAdmin() {
   // Show/hide the admin navigation item based on the user's login status
   const navItemAdmin = document.getElementById('nav-item-admin');
+  const navItemLogoutAdmin = document.querySelector('.nav-item-logout-admin');
   if (isAdminLoggedIn) {
     navItemAdmin.style.display = 'block';
+    navItemLogoutAdmin.style.display = 'block';
   } else {
     navItemAdmin.style.display = 'none';
+    navItemLogoutAdmin.style.display = 'none';
   }
 }
 function checkLogout() {
