@@ -260,13 +260,50 @@ function checkCurrentGamemodes() {
     });
 }
 
+function renderCarousel() {
+  console.log('Rendering carousel...');
+  $(document).ready(function () {
+    $('.gamemodes-carousel').slick({
+      centerMode: true,
+      centerPadding: '10px', // Adjust the center padding
+      slidesToShow: 3,
+      infinite: false,
+      initialSlide: 2,
+      dots: true,
+      arrows: true,
+      cssEase: 'ease-in-out',
+      responsive: [
+        {
+          breakpoint: 768,
+          settings: {
+            arrows: false,
+            centerMode: true,
+            centerPadding: '40px',
+            slidesToShow: 1,
+          },
+        },
+        {
+          breakpoint: 480,
+          settings: {
+            arrows: false,
+            centerMode: true,
+            centerPadding: '40px',
+            slidesToShow: 1,
+          },
+        },
+      ],
+    });
+  });
+}
+
 document.addEventListener('DOMContentLoaded', (event) => {
   checkUrl();
   checkAdmin();
   checkLogout();
-  checkSettings();
-  checkAvailableGamemodes();
-  checkCurrentGamemodes();
+  //checkSettings();
+  //checkAvailableGamemodes();
+  //checkCurrentGamemodes();
+  renderCarousel();
 
   //Available gamemodes vars
   availableGamemodes = document.querySelector(

@@ -40,6 +40,7 @@ main {
 }
 
 .navbar {
+  z-index: 1000;
   position: fixed;
   background-color: var(--bg-primary);
   transition: width 600ms ease;
@@ -293,7 +294,7 @@ main {
 \*------------------------------------*/
 .slick-prev,
 .slick-next {
-  z-index: 2;
+  z-index: 1;
 }
 .slick-prev {
   left: 3rem;
@@ -302,13 +303,47 @@ main {
   right: 3rem;
 }
 .slick-slide {
-  height: 500px;
+  height: 550px; /* Adjust the height of the slides */
+  transition: ease var(--transition-speed);
+  background-image: linear-gradient(rgba(7, 7, 32, 0.65), rgba(7, 7, 32, 0.65)),
+    url('../img/splash-art-gamemode.jpg');
+}
+.slick-center {
+  height: 580px;
+  transition: ease var(--transition-speed);
+  background-image: url('../img/splash-art-gamemode.jpg');
 }
 .slick-slide img {
-  height: 500px;
+  height: 100%; /* Make the images fill the slide */
+  width: 100%; /* Make the images fill the slide */
+  object-fit: cover; /* Maintain aspect ratio and cover the slide */
+}
+.gamemodes-carousel {
+  z-index: 1;
 }
 .gamemodes-carousel-item {
   margin: 1rem;
+}
+/*Text for all slides*/
+.slick-slide .gamemodes-carousel-item-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
+  height: 90%;
+  color: var(--text-secondary);
+  opacity: 30%;
+  font-weight: bold;
+}
+/*Text for center*/
+.slick-center .gamemodes-carousel-item-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
+  height: 90%;
+  color: var(--text-secondary);
+  opacity: 100%;
 }
 /*------------------------------------*\
 #Table styles
@@ -488,7 +523,6 @@ input:checked + .slider:before {
     bottom: 0;
     width: 100vw;
     height: 5rem;
-    z-index: 1000;
   }
 
   .logo {
