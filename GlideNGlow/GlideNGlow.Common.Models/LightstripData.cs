@@ -1,6 +1,6 @@
 namespace GlideNGlow.Common.Models;
 
-public struct LightstripData
+public class LightstripData
 {
     public int Id { get; set; }
     public float DistanceFromLast { get; set; }
