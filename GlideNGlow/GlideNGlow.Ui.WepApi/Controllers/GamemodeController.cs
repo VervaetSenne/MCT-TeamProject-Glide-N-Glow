@@ -1,4 +1,5 @@
 ﻿using GlideNGlow.Core.Dto;
+using GlideNGlow.Core.Models;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
@@ -70,7 +71,7 @@ public class GamemodeController : Controller
         if (gameId.HasValue)
         {
             var game = await _gameService.FindByIdAsync(gameId);
-            if (game is not null) return Ok(JsonConvert.DeserializeObject(game.Settings));
+            if (game is not null) return Ok(JsonConvert.DeserializeObject<IEnumerable<Setting>>(game.Settings));
         }
         return Ok();
     }
