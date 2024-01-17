@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.15" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
       <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
@@ -14,6 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GlideNGlow.Core.Data\GlideNGlow.Core.Data.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Core.Dto\GlideNGlow.Core.Dto.csproj" />
     </ItemGroup>
 
 </Project>

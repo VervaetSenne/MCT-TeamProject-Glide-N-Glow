@@ -13,8 +13,8 @@ public static class ServiceInstaller
     {
         return services
             .InstallCore(config)
-            .ConfigureWritable<AppSettings>(config, nameof(AppSettings))
-            .AddScoped<IAdminService, AdminService>()
-            .AddScoped<IUserService, UserService>();
+            .AddScoped<ISettingsService, SettingsService>()
+            .AddScoped<IAvailableGameService, AvailableGameService>()
+            .ConfigureWritable<AppSettings>(config, nameof(AppSettings));
     }
 }

@@ -2,9 +2,7 @@
 
 public class LightButtonData
 {
-    public string MacAddress { get; set; }
-    
-    public int ButtonNumber { get; set; }
-    
-    public float ButtonLocation { get; set; }
+    public int? ButtonNumber { get; set; }
+    public string MacAddress { get; init; }
+    public float? DistanceFromStart { get; set; }
 }

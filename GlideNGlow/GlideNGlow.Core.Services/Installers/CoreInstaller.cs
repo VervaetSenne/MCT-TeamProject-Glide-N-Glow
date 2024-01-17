@@ -13,8 +13,12 @@ public static class CoreInstaller
         return services
             .AddDbContextFactory<GlideNGlowDbContext>(o =>
             {
+#if DEBUG
+                o.UseInMemoryDatabase("GlideNGlow");
+#else
                 var connectionString = config.GetConnectionString("default");
                 o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+#endif
             })
             .AddScoped<IEntryService, EntryService>()
             .AddScoped<IGameService, GameService>();
