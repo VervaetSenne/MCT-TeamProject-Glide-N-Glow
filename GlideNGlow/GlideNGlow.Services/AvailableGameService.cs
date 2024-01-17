@@ -25,6 +25,7 @@ public class AvailableGameService : IAvailableGameService
         {
             Force = forcedGamemode is not null && forcedGamemode == g.Id,
             Available = forcedGamemode is null && availableGamemodes.Any(ag => ag == g.Id),
+            Id = g.Id,
             Name = g.Name,
             Description = g.Description,
             Settings = g.Settings
@@ -40,6 +41,7 @@ public class AvailableGameService : IAvailableGameService
         {
             Force = isForced,
             Available = true,
+            Id = g.Id,
             Name = g.Name,
             Description = g.Description,
             Settings = g.Settings
