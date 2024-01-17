@@ -84,6 +84,7 @@ if (app.Environment.IsDevelopment())
                 Score = "8755"
             },
         });
+        await dbContext.SaveChangesAsync();
 
         var appsettings = scope.ServiceProvider.GetRequiredService<IWritableOptions<AppSettings>>();
         appsettings.Update(s =>
