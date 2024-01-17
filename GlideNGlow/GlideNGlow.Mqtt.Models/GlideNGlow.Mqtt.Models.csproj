@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GlideNGlow.Common.Models\GlideNGlow.Common.Models.csproj" />
+    <ProjectReference Include="..\Microsoft.Extensions.Options.Implementations\Microsoft.Extensions.Options.Implementations.csproj" />
   </ItemGroup>
 
 </Project>

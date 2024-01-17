@@ -1,5 +1,9 @@
+using GlideNGlow.Common.Models;
+using GlideNGlow.Common.Models.Settings;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MQTTnet.Protocol;
+using System.Linq;
 
 namespace GlideNGlow.Mqqt.Models;
 
@@ -8,14 +12,15 @@ public class EspHandler : IDisposable
 
     private readonly MqttHandler _mqttHandler;
     private readonly ILogger _logger;
-    private Dictionary<string,LightButtons> _lightButtons = new Dictionary<string,LightButtons>();
-    
-    private const string TopicRgb = "{{r: {0},  g:{1},  b:{2}}}";
+    private readonly IOptionsMonitor<AppSettings> _appSettings;
+    private Dictionary<String,LightButtons> _lightButtons = new Dictionary<string,LightButtons>();
 
-    public EspHandler(ILogger<EspHandler> logger, MqttHandler mqttHandler)
+    public EspHandler(ILogger<EspHandler> logger, IOptionsMonitor<AppSettings> appSettings,MqttHandler mqttHandler)
     {
+        
         _mqttHandler = mqttHandler;
         _logger = logger;
+        _appSettings = appSettings;
     }
 
     #region Subscriptions
@@ -42,12 +47,41 @@ public class EspHandler : IDisposable
             }
             else
             {
-                _lightButtons.Add(macAddress, new LightButtons(macAddress, _logger, SetRgb));
+                _appSettings.CurrentValue.Buttons.Add(new LightButtonData());
+                // _lightButtons.Add(macAddress, new LightButtons(macAddress, _logger, SetRgb));
                 _logger.LogInformation($"Esp {macAddress} resigned in: {message}");
+                ReorderButtonIds().Wait();
             }
 
         }, MqttQualityOfServiceLevel.AtLeastOnce);
 
+    }
+    
+    private AppSettings GetAppSettings()
+    {
+        return _appSettings.CurrentValue;
+    }
+
+    public async Task HandleFileData(String macAddress)
+    {
+        //check if there is a Button in _appSettings.CurrentValue.Buttons with the same macAddress as the one we got
+        LightButtonData? button = GetAppSettings().Buttons.Find(x => x.MacAddress == macAddress);
+        if (button == null)
+        {
+            //if there isn't, add a new one
+            _appSettings.CurrentValue.Buttons.Add(new LightButtonData()
+            {
+                MacAddress = macAddress, ButtonNumber = -1, DistanceFromStart = 0
+            });
+            button = GetAppSettings().Buttons.Find(x => x.MacAddress == macAddress);
+            if(button == null)
+                throw new Exception("button is still null");
+        }
+        
+        //now we are sure there is one, so we can add it to _lightButtons
+        
+        
+        _lightButtons.Add(button!.MacAddress, new LightButtons(button,_logger, SetRgb));
     }
 
     public async Task AddTestConnectionsSubscription()
@@ -64,8 +98,7 @@ public class EspHandler : IDisposable
 
     public async Task AddButtonSubscription()
     {
-        string buttonTopic = "esp32/+/button";
-        await _mqttHandler.Subscribe(buttonTopic, (topic, message) =>
+        await _mqttHandler.Subscribe(ButtonTopic, (topic, message) =>
         {
             string macAddress = topic.Split('/')[1];
             //_logger.LogInformation(topic);
@@ -73,8 +106,42 @@ public class EspHandler : IDisposable
             _lightButtons[macAddress]?.Pressed();
         }, MqttQualityOfServiceLevel.AtLeastOnce);
     }
+    private const string ButtonTopic = "esp32/+/button";
 
     #endregion
+
+    //function where you can register an action to get called whenever any button gets pressed, it'll also recieve the id of the button that got pressed
+    public async Task AddPressedEvent(Action<int> callback)
+    {
+        foreach (var lightButton in _lightButtons)
+        {
+            await lightButton.Value.AddPressedEvent(callback);
+        }
+    }
+    
+    //function where we go over each button and remove all callbacks
+    public async Task RemovePressedEvent(Action<int> callback)
+    {
+        foreach (var lightButton in _lightButtons)
+        {
+            await lightButton.Value.RemoveAllPressedEvents();
+        }
+    }
+    
+    //function to go over each button, compare their location(not done yet) and give them id's based on that order
+    public async Task ReorderButtonIds()
+    {
+        int id = 0;
+        //TODO: sort buttons based on their ButtonLocation value
+        //give each button an id based on their buttonLocation value, the lower their value the lower their id
+        List<String> keys = _lightButtons.Keys.ToList();
+        foreach (var key in keys.OrderBy(x => _lightButtons[x].DistanceFromStart))
+        {
+            _lightButtons[key].ButtonNumber = id;
+            GetAppSettings().Buttons.Find(x => x.MacAddress == key)!.ButtonNumber = id;
+            id++;
+        }
+    }
 
     public async Task TestConnection()
     {
@@ -89,6 +156,7 @@ public class EspHandler : IDisposable
 
         await _mqttHandler.SendMessage($"esp32/{macAddress}/ledcircle", string.Format(TopicRgb, r, g, b));
     }
+    private const string TopicRgb = "{{r: {0},  g:{1},  b:{2}}}";
     
     public void Dispose()
     {

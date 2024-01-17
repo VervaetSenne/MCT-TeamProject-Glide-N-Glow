@@ -4,6 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>GlideNGlow.GPIO.Models</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,6 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GlideNGlow.Common.Models\GlideNGlow.Common.Models.csproj" />
+      <ProjectReference Include="..\Microsoft.Extensions.Options.Implementations\Microsoft.Extensions.Options.Implementations.csproj" />
     </ItemGroup>
 
 </Project>

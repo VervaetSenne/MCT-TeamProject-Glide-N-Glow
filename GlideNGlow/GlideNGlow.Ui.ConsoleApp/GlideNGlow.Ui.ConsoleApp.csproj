@@ -32,7 +32,9 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GlideNGlow.Core.Services\GlideNGlow.Core.Services.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Gamemodes.Models\GlideNGlow.Gamemodes.Models.csproj" />
         <ProjectReference Include="..\GlideNGlow.Mqtt.Models\GlideNGlow.Mqtt.Models.csproj" />
+        <ProjectReference Include="..\GlideNGlow.Rendering.Models\GlideNGlow.Rendering.Models.csproj" />
         <ProjectReference Include="..\GlideNGlow.Services\GlideNGlow.Services.csproj" />
     </ItemGroup>
 

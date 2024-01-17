@@ -60,6 +60,12 @@ public class MqttHandler : IDisposable
         _logger.LogInformation("MQTT application message is subscribed.");
 
     }
+    
+    public async Task Unsubscribe(string topic)
+    {
+        await _mqttClient.UnsubscribeAsync(topic);
+        
+    }
 
     public void Dispose()
     {
