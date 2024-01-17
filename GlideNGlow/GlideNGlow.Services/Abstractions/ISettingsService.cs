@@ -14,4 +14,8 @@ public interface ISettingsService
     void UpdateCurrentGamemode(Guid? gameId);
     IEnumerable<ButtonDto> GetButtons();
     void UpdateButton(string buttonId, float? distance);
+    LightstripSettingsDto GetLightstripSettings();
+    LightstripDto AddLightStrip(bool samePiece, bool onePiece);
+    bool TryRemoveLightstrip(int lightId);
+    bool UpdateLightStrip(int lightId, LightstripDto lightstrip);
 }
