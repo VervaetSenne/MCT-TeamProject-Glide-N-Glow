@@ -3,6 +3,7 @@ using GlideNGlow.Common.Models.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MQTTnet.Protocol;
+using System.Linq;
 
 namespace GlideNGlow.Mqqt.Models;
 
@@ -70,7 +71,7 @@ public class EspHandler : IDisposable
             //if there isn't, add a new one
             _appSettings.CurrentValue.Buttons.Add(new LightButtonData()
             {
-                MacAddress = macAddress, ButtonNumber = -1, ButtonLocation = 0
+                MacAddress = macAddress, ButtonNumber = -1, DistanceFromStart = 0
             });
             button = GetAppSettings().Buttons.Find(x => x.MacAddress == macAddress);
             if(button == null)
@@ -134,9 +135,7 @@ public class EspHandler : IDisposable
         //TODO: sort buttons based on their ButtonLocation value
         //give each button an id based on their buttonLocation value, the lower their value the lower their id
         List<String> keys = _lightButtons.Keys.ToList();
-        keys.Sort((x, y) => _lightButtons[x].ButtonLocation.CompareTo(_lightButtons[y].ButtonLocation));
-        
-        foreach (var key in keys)
+        foreach (var key in keys.OrderBy(x => _lightButtons[x].DistanceFromStart))
         {
             _lightButtons[key].ButtonNumber = id;
             GetAppSettings().Buttons.Find(x => x.MacAddress == key)!.ButtonNumber = id;

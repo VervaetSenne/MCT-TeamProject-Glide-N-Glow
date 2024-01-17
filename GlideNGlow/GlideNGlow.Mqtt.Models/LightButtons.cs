@@ -16,7 +16,7 @@ public class LightButtons : LightButtonData
     {
         MacAddress = data.MacAddress;
         ButtonNumber = data.ButtonNumber;
-        ButtonLocation = data.ButtonLocation;
+        DistanceFromStart = data.DistanceFromStart;
         
         _logger = logger;
         _rgbAction = rgbAction;
@@ -32,7 +32,7 @@ public class LightButtons : LightButtonData
         //await _rgbAction(MacAddress, 0, 255, 0);
         
         //execute all PressedActions
-        PressedActions?.Invoke(ButtonNumber);
+        PressedActions?.Invoke(ButtonNumber ?? 0);
     }
 
     public async Task AddPressedEvent(Action<int>? callback)
