@@ -15,7 +15,7 @@ public class AvailableGameService : IAvailableGameService
         _gameService = gameService;
     }
 
-    public async Task<IEnumerable<GamemodeItemDto>> GetAvailableGamemodesAsync()
+    public async Task<IEnumerable<GamemodeItemDto>> GetGamemodesAsync()
     {
         var availableGamemodes = _settingsService.GetAvailableGamemodes();
         var forcedGamemode = _settingsService.GetForcedGamemode();
@@ -24,8 +24,27 @@ public class AvailableGameService : IAvailableGameService
         return gamemodes.Select(g => new GamemodeItemDto
         {
             Force = forcedGamemode is not null && forcedGamemode == g.Id,
-            Available = forcedGamemode is not null && availableGamemodes.Any(ag => ag == g.Id),
-            Name = g.Name
+            Available = forcedGamemode is null && availableGamemodes.Any(ag => ag == g.Id),
+            Id = g.Id,
+            Name = g.Name,
+            Description = g.Description,
+            Settings = g.Settings
+        });
+    }
+
+    public async Task<IEnumerable<GamemodeItemDto>> GetAvailableGamemodesAsync()
+    {
+        var availableGamemodes = _settingsService.GetAvailableGamemodes().ToList();
+        var gamemodes = await _gameService.FindByIdAsync(availableGamemodes);
+        var isForced = availableGamemodes.Count == 1;
+        return gamemodes.Select(g => new GamemodeItemDto
+        {
+            Force = isForced,
+            Available = true,
+            Id = g.Id,
+            Name = g.Name,
+            Description = g.Description,
+            Settings = g.Settings
         });
     }
 }
