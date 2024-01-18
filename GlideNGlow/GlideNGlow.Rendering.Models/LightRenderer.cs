@@ -115,7 +115,7 @@ public class LightRenderer
         Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();
     }
     
-    public async Task Show(CancellationToken cancellationToken)
+    public async Task ShowAsync(CancellationToken cancellationToken)
     {
         var payload = new StringBuilder();
         //add all colors as hexadecimals to the payload string

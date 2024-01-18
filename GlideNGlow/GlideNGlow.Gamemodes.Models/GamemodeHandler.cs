@@ -22,19 +22,19 @@ public class GamemodeHandler
         _gamemode = new GhostRace(currentAppSettings, espHandler, length  ,15);
     }
     
-    public async Task Update(float deltaSeconds)
+    public async Task UpdateAsync(float deltaSeconds)
     {
         await _gamemode.Update(deltaSeconds);
     }
     
-    public async Task Render(CancellationToken cancellationToken)
+    public async Task RenderAsync(CancellationToken cancellationToken)
     {
         foreach (var renderObject in _gamemode.GetRenderObjects())
         {
             _lightRenderer.Render(renderObject);
         }
 
-        await _lightRenderer.Show(cancellationToken);
+        await _lightRenderer.ShowAsync(cancellationToken);
     }
     
     //TODO: assemble gamemodes from frontend
