@@ -4,13 +4,13 @@ namespace GlideNGlow.Rendering.Models;
 
 public class LerpIdRenderObject : IdRenderObject
 {
-    private int _direction = 0;
-    private int _length = 0;
+    private readonly int _direction;
+    private readonly int _length;
+    private readonly List<Color> _image = new();
+    
     private Color _colorStart;
     private Color _colorEnd;
-    private List<Color> _image = new List<Color>();
-    
-    private int _baseOffset = 0;
+    private int _baseOffset;
     
     public LerpIdRenderObject(int start, int vector, Color colorStart, Color colorEnd)
     {
@@ -36,23 +36,23 @@ public class LerpIdRenderObject : IdRenderObject
 
         if (_direction > 0)
         {
-            for (int i = 0; i < _length; i++)
+            for (var i = 0; i < _length; i++)
             {
                 _image.Add(Color.FromArgb(
-                    (int)(_colorStart.R + (i * (_colorEnd.R - _colorStart.R) / (_length - 1))),
-                    (int)(_colorStart.G + (i * (_colorEnd.G - _colorStart.G) / (_length - 1))),
-                    (int)(_colorStart.B + (i * (_colorEnd.B - _colorStart.B) / (_length - 1)))
+                    _colorStart.R + i * (_colorEnd.R - _colorStart.R) / (_length - 1),
+                    _colorStart.G + i * (_colorEnd.G - _colorStart.G) / (_length - 1),
+                    _colorStart.B + i * (_colorEnd.B - _colorStart.B) / (_length - 1)
                 ));
             }  
         }
         else if(_direction < 0)
         {
-            for (int i =  _length; i > 0; i--)
+            for (var i =  _length; i > 0; i--)
             {
                 _image.Add(Color.FromArgb(
-                    (int)(_colorStart.R + (i * (_colorEnd.R - _colorStart.R) / (_length - 1))),
-                    (int)(_colorStart.G + (i * (_colorEnd.G - _colorStart.G) / (_length - 1))),
-                    (int)(_colorStart.B + (i * (_colorEnd.B - _colorStart.B) / (_length - 1)))
+                    _colorStart.R + i * (_colorEnd.R - _colorStart.R) / (_length - 1),
+                    _colorStart.G + i * (_colorEnd.G - _colorStart.G) / (_length - 1),
+                    _colorStart.B + i * (_colorEnd.B - _colorStart.B) / (_length - 1)
                 ));
             }  
         }
@@ -64,8 +64,6 @@ public class LerpIdRenderObject : IdRenderObject
         _colorEnd = colorEnd;
         Update();
     }
-    
-    
     
     public void SetBaseOffset(int offset)
     {
@@ -81,5 +79,4 @@ public class LerpIdRenderObject : IdRenderObject
     {
         return _image;
     }
-    
 }

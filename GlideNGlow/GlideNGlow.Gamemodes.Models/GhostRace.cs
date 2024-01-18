@@ -1,4 +1,6 @@
 using System.Drawing;
+using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Gamemodes.Models.Enums;
 using GlideNGlow.Mqqt.Models;
 using GlideNGlow.Rendering.Models;
 
@@ -6,32 +8,29 @@ namespace GlideNGlow.Gamemodes.Models;
 
 public class GhostRace : Gamemode
 {
-    private float distanceCm = 100, timeLimit = 10;
+    private readonly AppSettings _appsettings;
+    private readonly float _distanceCm;
+    private readonly float _timeLimit;
+    private readonly List<RenderObject> _renderObjects = new();
+    private readonly MeasurementLineRenderObject _ghostLight = new(0, 0, Color.Red);
+    private readonly MeasurementLineRenderObject _countdownLight = new(0, -1, Color.White);
+    
     private float _distancePerSecond;
     private GameState _gameState;
     private int _startedButtonId;
-    private List<RenderObject> _renderObjects = new List<RenderObject>();
-    private MeasurementLineRenderObject _ghostLight = new MeasurementLineRenderObject(0, 0, Color.Red);
-    private MeasurementLineRenderObject _countdownLight = new MeasurementLineRenderObject(0, -1, Color.White);
-    
-    enum GameState
-    {
-        WaitingForStart,
-        Countdown,
-        Running,
-    }
-    
     private float _timeElapsed;
-    public GhostRace(EspHandler espHandler, float distanceCm, float timeLimit)
+    
+    public GhostRace(AppSettings appsettings, EspHandler espHandler, float distanceCm, float timeLimit) : base(espHandler)
     {
-        _espHandler = espHandler;
-        this.distanceCm = distanceCm;
-        this.timeLimit = timeLimit;
+        EspHandler = espHandler;
+        _appsettings = appsettings;
+        _distanceCm = distanceCm;
+        _timeLimit = timeLimit;
     }
 
     public override Task Start()
     {
-        _distancePerSecond = distanceCm / timeLimit;
+        _distancePerSecond = _distanceCm / _timeLimit;
         return Task.CompletedTask;
     }
 
@@ -49,7 +48,7 @@ public class GhostRace : Gamemode
                 UpdateRunning(deltaSeconds);
                 break;
             default:
-                break;
+                throw new ArgumentOutOfRangeException();
         }
         return Task.CompletedTask;
     }
@@ -57,7 +56,7 @@ public class GhostRace : Gamemode
     public void UpdateCountdown(float deltaSeconds)
     {
         _timeElapsed += deltaSeconds;
-        bool cdLightOn = _timeElapsed % 1 > 0.5;
+        var cdLightOn = _timeElapsed % 1 > 0.5;
         _countdownLight.SetColor(cdLightOn ? Color.White : Color.Black);
         if (_timeElapsed > 0)
         {
@@ -74,7 +73,7 @@ public class GhostRace : Gamemode
         //calculate the distance to move
         var distanceToMove = _distancePerSecond * deltaSeconds;
         _ghostLight.Move(distanceToMove);
-        if (_timeElapsed > timeLimit)
+        if (_timeElapsed > _timeLimit)
         {
             _gameState = GameState.WaitingForStart;
         }
@@ -88,20 +87,19 @@ public class GhostRace : Gamemode
 
     public override Task Input(int id)
     {
-        if (_gameState == GameState.WaitingForStart)
-        {
-            _timeElapsed = -3;
-            _startedButtonId = id;
+        if (_gameState != GameState.WaitingForStart) return Task.CompletedTask;
+        
+        _timeElapsed = -3;
+        _startedButtonId = id;
             
-            _renderObjects.Add(_countdownLight);
+        _renderObjects.Add(_countdownLight);
             
-            var startDistance = _espHandler.GetAppSettings().Buttons[_startedButtonId].DistanceFromStart ?? 0;
-            _ghostLight.SetStart(startDistance-2);
-            _ghostLight.SetEnd(startDistance + distanceCm + 2);
-            _renderObjects.Add(_ghostLight);
+        var startDistance = _appsettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
+        _ghostLight.SetStart(startDistance-2);
+        _ghostLight.SetEnd(startDistance + _distanceCm + 2);
+        _renderObjects.Add(_ghostLight);
             
-            _gameState = GameState.Countdown;
-        }
+        _gameState = GameState.Countdown;
         return Task.CompletedTask;
     }
 }

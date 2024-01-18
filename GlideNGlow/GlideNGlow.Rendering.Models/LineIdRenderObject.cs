@@ -4,11 +4,12 @@ namespace GlideNGlow.Rendering.Models;
 
 public class LineIdRenderObject : IdRenderObject
 {
-    private int _baseOffset = 0;
-    private int _direction = 0;
-    private int _length = 0;
+    private readonly int _direction;
+    private readonly int _length;
+    private readonly List<Color> _image = new();
+    
+    private int _baseOffset;
     private Color _color;
-    List<Color> _image = new List<Color>();
     
     public LineIdRenderObject(int start, int vector, Color color)
     {
@@ -28,6 +29,34 @@ public class LineIdRenderObject : IdRenderObject
         Update();
     }
     
+    public void Update()
+    {
+        //fill from start to end
+        _image.Clear();
+        _image.Add(_color);
+        switch (_direction)
+        {
+            case > 0:
+            {
+                for (var i = 0; i < _length; i++)
+                {
+                    _image.Add(_color);
+                }
+
+                break;
+            }
+            case < 0:
+            {
+                for (var i = _length; i > 0; i--)
+                {
+                    _image.Add(_color);
+                }
+
+                break;
+            }
+        }
+    }
+    
     public void SetBaseOffset(int offset)
     {
         _baseOffset = offset;
@@ -38,38 +67,13 @@ public class LineIdRenderObject : IdRenderObject
         Offset = x + _baseOffset;
     }
     
-    public void Update()
-    {
-        //fill from start to end
-        _image.Clear();
-        _image.Add(_color);
-        if (_direction > 0)
-        {
-            for (int i = 0; i < _length; i++)
-            {
-                _image.Add(_color);
-            }
-        }
-        else if (_direction < 0)
-        {
-            for (int i = _length; i > 0; i--)
-            {
-                _image.Add(_color);
-            }
-        }
-    }
-    
-    
     public void SetColor(Color color)
     {
         _color = color;
     }
     
-    
     public override List<Color> Image()
     {
         return _image;
     }
-    
-    
 }

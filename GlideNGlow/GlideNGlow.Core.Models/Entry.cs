@@ -7,6 +7,6 @@ public class Entry
     public DateTime DateTime { get; set; }
     public required string Name { get; set; }
     public required string Score { get; set; }
-    
-    public Game Game { get; set; }
+
+    public Game Game { get; set; } = null!;
 }

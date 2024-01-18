@@ -20,18 +20,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.InstallServices(builder.Configuration);
 
-
 #region Backend
-// builder.Services.AddLogging(builder => builder.AddConsole())
 builder.Services.AddSingleton<MqttHandler>();
 builder.Services.AddSingleton<EspHandler>();
 builder.Services.AddSingleton<LightRenderer>();
-builder.Services.AddSingleton<Engine>();
 builder.Services.AddHostedService<Engine>();
-// builder.Services.InstallServices(context.Configuration);
-
 #endregion
-
 
 builder.Services.AddCors(options =>
 {

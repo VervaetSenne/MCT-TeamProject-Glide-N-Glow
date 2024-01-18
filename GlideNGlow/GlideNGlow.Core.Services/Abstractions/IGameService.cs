@@ -2,7 +2,7 @@ using GlideNGlow.Core.Models;
 
 namespace GlideNGlow.Core.Services.Abstractions;
 
-public interface IGameService : IBaseService<Game>
+public interface IGameService
 {
     Task<IEnumerable<Game>> FindAsync();
     Task<Game?> FindByIdAsync(Guid? gameId);

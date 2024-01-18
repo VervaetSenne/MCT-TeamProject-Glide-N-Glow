@@ -7,7 +7,7 @@ namespace GlideNGlow.Gamemodes.Models;
 
 public class GamemodeHandler
 {
-    Gamemode _gamemode;
+    private Gamemode _gamemode;
     private readonly LightRenderer _lightRenderer;
     private readonly EspHandler _espHandler;
 
@@ -15,14 +15,11 @@ public class GamemodeHandler
     {
         _lightRenderer = lightRenderer;
         _espHandler = espHandler;
-        //calculate length of strip from appSettings
-        var currentValueStrips = appSettings.CurrentValue.Strips;
-        float length = 0;
-        foreach (var strip in currentValueStrips)
-        {
-            length += strip.Length + strip.DistanceFromLast;
-        }
-        _gamemode = new GhostRace(espHandler, length  ,15);
+
+        var currentAppSettings = appSettings.CurrentValue;
+        var currentValueStrips = currentAppSettings.Strips;
+        var length = currentValueStrips.Sum(strip => strip.Length + strip.DistanceFromLast);
+        _gamemode = new GhostRace(currentAppSettings, espHandler, length  ,15);
     }
     
     public async Task Update(float deltaSeconds)
@@ -30,32 +27,29 @@ public class GamemodeHandler
         await _gamemode.Update(deltaSeconds);
     }
     
-    public async Task Render()
+    public async Task Render(CancellationToken cancellationToken)
     {
         foreach (var renderObject in _gamemode.GetRenderObjects())
         {
             _lightRenderer.Render(renderObject);
         }
 
-        await _lightRenderer.Show();
+        await _lightRenderer.Show(cancellationToken);
     }
     
     //TODO: assemble gamemodes from frontend
     public void SetGamemode(Gamemode gamemode)
     {
-        
         _gamemode = gamemode;
     }
     
-    public async Task AddSubscriptions()
+    public void AddSubscriptions()
     {
-        await _espHandler.AddButtonPressedEvent(Input);
+        _espHandler.AddButtonPressedEvent(Input);
     }
     
     public void Input(int id)
     {
         _gamemode.Input(id);
     }
-    
-    
 }

@@ -2,6 +2,6 @@
 
 public class ButtonDto
 {
-    public string Id { get; set; }
-    public float? Distance { get; set; }
+    public required string Id { get; set; }
+    public required float? Distance { get; set; }
 }

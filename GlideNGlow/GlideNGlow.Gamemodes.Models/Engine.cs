@@ -8,18 +8,20 @@ namespace GlideNGlow.Gamemodes.Models;
 
 public class Engine : IHostedService
 {
-    GamemodeHandler _gamemodeHandler;
+    private readonly GamemodeHandler _gamemodeHandler;
+    
     public Engine(LightRenderer lightRenderer, IOptionsMonitor<AppSettings> appSettings, EspHandler espHandler)
     {
         _gamemodeHandler = new GamemodeHandler(lightRenderer, appSettings, espHandler);
     }
+    
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         var periodicTimer = new PeriodicTimer(TimeSpan.FromSeconds(0.3));
         while (await periodicTimer.WaitForNextTickAsync(cancellationToken))
         {
             await _gamemodeHandler.Update(0.3f);
-            await _gamemodeHandler.Render();
+            await _gamemodeHandler.Render(cancellationToken);
         }
     }
 

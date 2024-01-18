@@ -4,13 +4,12 @@ namespace GlideNGlow.Rendering.Models;
 
 public class LightStripConverter
 {
-    List<LightstripData> _lightstrips = new List<LightstripData>();
-    List<float> _lightStripDistanceStarts = new List<float>();
-    List<int> _lightStripIdStarts = new List<int>();
-    List<float> _lightStripDistanceEnds = new List<float>();
-    List<int> _lightStripIdEnds = new List<int>();
-    List<float> _lightStripPixelDensity = new List<float>();
-    
+    private List<LightstripData> _lightstrips = new();
+    private readonly List<float> _lightStripDistanceStarts = new();
+    private readonly List<int> _lightStripIdStarts = new();
+    private readonly List<float> _lightStripDistanceEnds = new();
+    private readonly List<int> _lightStripIdEnds = new();
+    private readonly List<float> _lightStripPixelDensity = new();
     
     public LightStripConverter(List<LightstripData> lightstrips)
     {
@@ -25,7 +24,7 @@ public class LightStripConverter
         _lightStripDistanceEnds.Clear();
         
         float currentStart = 0;
-        int currentId = 0;
+        var currentId = 0;
         foreach (var lightstrip in _lightstrips)
         {
             currentStart += lightstrip.DistanceFromLast;
@@ -41,6 +40,7 @@ public class LightStripConverter
             _lightStripPixelDensity.Add(lightstrip.Length / lightstrip.Leds);
         }
     }
+    
     //function tries to find an id (int) and puts it in the out parameter
     public bool TryConvertToPixelPosition(float distance, out int id)
     {
@@ -48,7 +48,7 @@ public class LightStripConverter
         distance = FitWithinRange(distance);
         
         //find the first _lightStripDistanceEnds that is greater than distance
-        int index = _lightStripDistanceEnds.FindIndex(x => x > distance);
+        var index = _lightStripDistanceEnds.FindIndex(x => x > distance);
         if (index == -1)
         {
             id = -1;
@@ -70,13 +70,13 @@ public class LightStripConverter
     private int FindExactLocation(float distance, int index)
     {
         //get the distance from the start of the lightstrip
-        float distanceFromStart = distance - _lightStripDistanceStarts[index];
+        var distanceFromStart = distance - _lightStripDistanceStarts[index];
         //get the id from the start of the lightstrip
-        int idFromStart = _lightStripIdStarts[index];
+        var idFromStart = _lightStripIdStarts[index];
         //get the pixel density of the lightstrip
-        float pixelDensity = _lightStripPixelDensity[index];
+        var pixelDensity = _lightStripPixelDensity[index];
         //get the id of the pixel
-        int pixelId = (int)(distanceFromStart / pixelDensity);
+        var pixelId = (int)(distanceFromStart / pixelDensity);
         //add the pixel id to the id from the start of the lightstrip
         return idFromStart + pixelId;
     }
@@ -86,11 +86,10 @@ public class LightStripConverter
         start = FitWithinRange(start);
         
         end = FitWithinRange(end);
-        bool displayable = false;
-        
+        var displayable = false;
         
         //find the first _lightStripDistanceEnds that is greater than start
-        int indexStart = _lightStripDistanceEnds.FindIndex(x => x > start);
+        var indexStart = _lightStripDistanceEnds.FindIndex(x => x > start);
         if (indexStart == -1)
         {
             //something went quite wrong, normally we shouldn't ever get here.
@@ -112,7 +111,7 @@ public class LightStripConverter
         }
         
         //find the first _lightStripDistanceEnds that is greater than stop
-        int indexStop = _lightStripDistanceEnds.FindIndex(x => x > end);
+        var indexStop = _lightStripDistanceEnds.FindIndex(x => x > end);
         if (indexStop == -1)
         {
             //something went quite wrong, normally we shouldn't ever get here.

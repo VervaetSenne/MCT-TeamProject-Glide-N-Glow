@@ -22,5 +22,5 @@ public abstract class IdRenderObject : RenderObject
         return Offset;
     }
 
-    protected int Offset = 0;
+    protected int Offset;
 }

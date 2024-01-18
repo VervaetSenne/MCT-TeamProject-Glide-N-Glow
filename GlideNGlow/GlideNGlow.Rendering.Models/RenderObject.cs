@@ -1,6 +1,6 @@
 ﻿namespace GlideNGlow.Rendering.Models;
 
-public abstract  class RenderObject
+public abstract class RenderObject
 {
     
 }

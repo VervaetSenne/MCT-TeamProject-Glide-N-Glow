@@ -2,6 +2,7 @@ using System.Drawing;
 using System.Text;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Mqqt.Models;
+using GlideNGlow.Mqtt.Topics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -15,25 +16,33 @@ public class LightRenderer
     private readonly IOptionsMonitor<AppSettings> _appsettings;
     private readonly MqttHandler _mqttHandler;
     //private setter public getter for List<Color> _lights
-    public List<Color> Lights;
-    
-    public LightStripConverter LightStripConverter;
 
-    public LightRenderer(ILogger<LightRenderer> logger, IOptionsMonitor<AppSettings> appsettings,
+    private AppSettings AppSettings => _appsettings.CurrentValue;
+    
+    public List<Color> Lights { get; private set; }
+    public LightStripConverter LightStripConverter { get; private set; } = null!;
+
+    private LightRenderer(ILogger<LightRenderer> logger, IOptionsMonitor<AppSettings> appsettings,
         MqttHandler mqttHandler)
     {
         _logger = logger;
         _appsettings = appsettings;
         _mqttHandler = mqttHandler;
-        UpdateSettings();
         
         //create a colorlist with _pixelAmount amount of colors
         Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();
     }
 
-    private void UpdateSettings()
+    public static async Task<LightRenderer> Create(ILogger<LightRenderer> logger, IOptionsMonitor<AppSettings> appsettings, MqttHandler mqttHandler, CancellationToken cancellationToken)
     {
-        PixelAmount = GetCurrentAppSettings().Strips.Aggregate(0, (i, strip) => i + strip.Leds);
+        var renderer = new LightRenderer(logger, appsettings, mqttHandler);
+        await renderer.UpdateSettings(cancellationToken);
+        return renderer;
+    }
+
+    private async Task UpdateSettings(CancellationToken cancellationToken)
+    {
+        PixelAmount = AppSettings.Strips.Aggregate(0, (i, strip) => i + strip.Leds);
         //_pixelAmount = size;
 
         if (PixelAmount == 0)
@@ -42,14 +51,9 @@ public class LightRenderer
             PixelAmount = 300;
         }
         
-        LightStripConverter = new LightStripConverter(GetCurrentAppSettings().Strips);
+        LightStripConverter = new LightStripConverter(AppSettings.Strips);
         
-        SetStripSize(PixelAmount);
-    }
-
-    private AppSettings GetCurrentAppSettings()
-    {
-        return _appsettings.CurrentValue;
+        await SetStripSize(PixelAmount, cancellationToken);
     }
 
     public void Render(RenderObject renderObject)
@@ -63,7 +67,7 @@ public class LightRenderer
         }
         
         //check if renderObject implements IdRenderRenderObject
-        if ((renderObject is IdRenderObject idRenderRenderObject))
+        if (renderObject is IdRenderObject idRenderRenderObject)
         {
             RenderIdObject(idRenderRenderObject);
         }
@@ -71,9 +75,9 @@ public class LightRenderer
 
     private void RenderIdObject(IdRenderObject idRenderRenderObject)
     {
-        int pos = idRenderRenderObject.GetOffset();
+        var pos = idRenderRenderObject.GetOffset();
         //loop over renderObjects images and add them to the lightStrips list
-        for (int i = 0; i < idRenderRenderObject.Image().Count; i++)
+        for (var i = 0; i < idRenderRenderObject.Image().Count; i++)
         {
             pos++;
             if (pos >= PixelAmount)
@@ -90,24 +94,20 @@ public class LightRenderer
         }
     }
 
-    public void SetStripSize(int size)
+    public async Task SetStripSize(int size, CancellationToken cancellationToken)
     {
         PixelAmount = size;
-        _mqttHandler.SendMessage(TopicSetStripSize, PixelAmount.ToString()).Wait();
+        await _mqttHandler.SendMessage(TopicEndpoints.TopicSetStripSize, PixelAmount.ToString(), cancellationToken);
     }
-
-    private const string TopicSetStripSize = "esp32strip/config";
-    private const string PayloadSetStripSize = "{0}";
     
     //on connect, send the strip size again
-    public void AddOnConnectEvent()
+    public async Task AddOnConnectEvent(CancellationToken cancellationToken)
     {
-        _mqttHandler.Subscribe(TopicOnConnect, (topic, message) =>
+        await _mqttHandler.Subscribe(TopicEndpoints.TopicOnConnect, async (_, _) =>
         {
-            _mqttHandler.SendMessage(TopicSetStripSize, PixelAmount.ToString()).Wait();
-        }).Wait();
+            await _mqttHandler.SendMessage(TopicEndpoints.TopicSetStripSize, PixelAmount.ToString(), cancellationToken);
+        }, cancellationToken);
     }
-    private const string TopicOnConnect = "esp32strip/connected";
 
     public void Clear()
     {
@@ -115,23 +115,23 @@ public class LightRenderer
         Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();
     }
     
-    public async Task Show()
+    public async Task Show(CancellationToken cancellationToken)
     {
         var payload = new StringBuilder();
         //add all colors as hexadecimals to the payload string
-        foreach (Color color in Lights)
+        foreach (var color in Lights)
         {
             payload.Append(color.R.ToString("X2"));
             payload.Append(color.G.ToString("X2"));
             payload.Append(color.B.ToString("X2"));
         }
         
+#if DEBUG
         _logger.LogInformation(payload.ToString());
-        await _mqttHandler.SendMessage(TopicSetPixel, payload.ToString());
+#endif
+        
+        await _mqttHandler.SendMessage(TopicEndpoints.TopicSetPixel, payload.ToString(), cancellationToken);
     }
-    private const string TopicSetPixel = "esp32strip/led";
-    // private const string PayloadSetPixel = "{0}";
-    
     
     // not needed, esp will automatically update after sending it the colors
     // public async Task Update()

@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using GlideNGlow.Common.Models.Settings;
+﻿using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Gamemodes.Models;
 using GlideNGlow.Mqqt.Models;
 using GlideNGlow.Rendering.Models;
@@ -8,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Options.Implementations;
 
 var builder = Host.CreateDefaultBuilder()
@@ -33,7 +31,6 @@ var builder = Host.CreateDefaultBuilder()
             .AddSingleton<MqttHandler>()
             .AddSingleton<EspHandler>()
             .AddSingleton<LightRenderer>()
-            .AddSingleton<Engine>()
             .AddHostedService<Engine>()
             .InstallServices(context.Configuration);
     }).Build();

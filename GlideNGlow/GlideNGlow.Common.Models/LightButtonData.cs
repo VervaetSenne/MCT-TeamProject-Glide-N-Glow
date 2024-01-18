@@ -3,6 +3,6 @@
 public class LightButtonData
 {
     public int? ButtonNumber { get; set; }
-    public string MacAddress { get; init; }
+    public required string MacAddress { get; init; }
     public float? DistanceFromStart { get; set; }
 }
