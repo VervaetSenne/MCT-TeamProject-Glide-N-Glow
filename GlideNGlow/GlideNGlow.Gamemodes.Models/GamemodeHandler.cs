@@ -22,6 +22,12 @@ public class GamemodeHandler
         _gamemode = new GhostRace(currentAppSettings, espHandler, length  ,15);
     }
     
+    public void Start()
+    {
+        _gamemode.Start();
+        AddSubscriptions();
+    }
+    
     public async Task UpdateAsync(float deltaSeconds)
     {
         await _gamemode.Update(deltaSeconds);

@@ -24,6 +24,8 @@ public class Engine : IHostedService
         await _espHandler.AddSubscriptions(cancellationToken);
         var gamemodeHandler = new GamemodeHandler(_lightRenderer, _appSettings, _espHandler);
         
+        gamemodeHandler.Start();
+        
         var periodicTimer = new PeriodicTimer(TimeSpan.FromSeconds(0.3));
         while (await periodicTimer.WaitForNextTickAsync(cancellationToken))
         {
