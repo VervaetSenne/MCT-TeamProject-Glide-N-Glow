@@ -231,6 +231,12 @@ main {
   color: var(--text-dark);
   font-size: 1.1rem;
 }
+.gamemode-force-active {
+  background-color: var(--bg-light-prinmary);
+}
+.gamemode-force-active svg {
+  color: var(--bg-current-gamemode);
+}
 /*------------------------------------*\
 #ADMIN - Button settings
 \*------------------------------------*/
