@@ -12,6 +12,7 @@ public class MqttHandler
     private readonly IOptionsMonitor<AppSettings> _appSettings;
     private readonly ILogger _logger;
     private readonly IMqttClient _mqttClient;
+    private readonly SemaphoreSlim _semaphore = new(1);
 
     public MqttHandler(IOptionsMonitor<AppSettings> appSettings, IMqttClient mqttClient, ILogger<MqttHandler> logger)
     {
@@ -22,6 +23,8 @@ public class MqttHandler
 
     private async Task TryConnectAsync(CancellationToken cancellationToken)
     {
+        await _semaphore.WaitAsync(cancellationToken);
+        
         if (!_mqttClient.IsConnected)
         {
             var brokerAddress = _appSettings.CurrentValue.Ip;
@@ -30,6 +33,8 @@ public class MqttHandler
                 .Build();
             await _mqttClient.ConnectAsync(mqttClientOptions, cancellationToken);
         }
+
+        _semaphore.Release();
     }
 
     public async Task SendMessage(string topic, string payload, CancellationToken cancellationToken)
