@@ -53,6 +53,8 @@ public class LightRenderer
         
         LightStripConverter = new LightStripConverter(AppSettings.Strips);
         
+        Lights.Clear();
+        Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();
         _ = SetStripSize(PixelAmount, cancellationToken);
     }
 

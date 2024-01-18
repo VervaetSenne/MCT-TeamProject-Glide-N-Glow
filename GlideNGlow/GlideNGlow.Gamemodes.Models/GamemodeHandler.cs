@@ -37,6 +37,7 @@ public class GamemodeHandler
     {
         if(_gamemode.GetRenderObjects().Count == 0)
             return;
+        _lightRenderer.Clear();
         foreach (var renderObject in _gamemode.GetRenderObjects())
         {
             _lightRenderer.Render(renderObject);

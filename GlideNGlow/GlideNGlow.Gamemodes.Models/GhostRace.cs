@@ -31,6 +31,7 @@ public class GhostRace : Gamemode
     public override Task Start()
     {
         _distancePerSecond = _distanceCm / _timeLimit;
+        _gameState = GameState.WaitingForStart;
         return Task.CompletedTask;
     }
 
@@ -55,7 +56,6 @@ public class GhostRace : Gamemode
 
     public void UpdateCountdown(float deltaSeconds)
     {
-        _timeElapsed += deltaSeconds;
         var cdLightOn = _timeElapsed % 1 > 0.5;
         _countdownLight.SetColor(cdLightOn ? Color.White : Color.Black);
         if (_timeElapsed > 0)
@@ -69,12 +69,12 @@ public class GhostRace : Gamemode
     
     public void UpdateRunning(float deltaSeconds)
     {
-        _timeElapsed += deltaSeconds;
         //calculate the distance to move
         var distanceToMove = _distancePerSecond * deltaSeconds;
         _ghostLight.Move(distanceToMove);
         if (_timeElapsed > _timeLimit)
         {
+            _renderObjects.Remove(_ghostLight);
             _gameState = GameState.WaitingForStart;
         }
         _timeElapsed = 0;

@@ -60,10 +60,15 @@ public class MeasurementLineRenderObject : RenderObject, ICustomRendering
             return;
         }
         
+        
         //now we can draw the line
         var drawPosition = startPixel;
         do
         {
+            if (renderer.Lights.Count <= drawPosition)
+            {
+                return;
+            }
             renderer.Lights[drawPosition] = _color;
             drawPosition = (drawPosition + 1) % renderer.PixelAmount;
         } while (drawPosition != endPixel);
