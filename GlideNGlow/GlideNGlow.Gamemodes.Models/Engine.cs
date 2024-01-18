@@ -18,7 +18,8 @@ public class Engine : IHostedService
         var periodicTimer = new PeriodicTimer(TimeSpan.FromSeconds(0.3));
         while (await periodicTimer.WaitForNextTickAsync(cancellationToken))
         {
-            
+            await _gamemodeHandler.Update(0.3f);
+            await _gamemodeHandler.Render();
         }
     }
 
