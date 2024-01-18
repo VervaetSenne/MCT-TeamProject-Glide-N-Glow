@@ -62,9 +62,8 @@ public class GhostRace : Gamemode
         {
             _renderObjects.Remove(_countdownLight);
             _gameState = GameState.Running;
+            _timeElapsed = 0;
         }
-        
-        _timeElapsed = 0;
     }
     
     public void UpdateRunning(float deltaSeconds)
@@ -78,7 +77,6 @@ public class GhostRace : Gamemode
             _gameState = GameState.WaitingForStart;
             _timeElapsed = 0;
         }
-        
     }
 
     public override List<RenderObject> GetRenderObjects()
