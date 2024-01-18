@@ -76,8 +76,9 @@ public class GhostRace : Gamemode
         {
             _renderObjects.Remove(_ghostLight);
             _gameState = GameState.WaitingForStart;
+            _timeElapsed = 0;
         }
-        _timeElapsed = 0;
+        
     }
 
     public override List<RenderObject> GetRenderObjects()
