@@ -23,6 +23,13 @@ public class EspHandler
     }
 
     #region Subscriptions
+
+    public async Task AddSubscriptions(CancellationToken cancellationToken)
+    {
+        await AddSignin(cancellationToken);
+        await AddTestConnectionsSubscription(cancellationToken);
+        await AddButtonSubscription(cancellationToken);
+    }
     
     public async Task AddSignin(CancellationToken cancellationToken)
     {
