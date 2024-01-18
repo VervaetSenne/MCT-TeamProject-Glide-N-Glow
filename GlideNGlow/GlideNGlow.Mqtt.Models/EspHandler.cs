@@ -70,9 +70,12 @@ public class EspHandler
                     throw new Exception("button is still null");
             }
         });
+
+        if (button is null)
+            throw new NullReferenceException("Button is null after connect!");
         
         //now we are sure there is one, so we can add it to _lightButtons
-        if (_lightButtons.ContainsKey(macAddress) && button is not null)
+        if (!_lightButtons.ContainsKey(macAddress))
         {
             _lightButtons.Add(button.MacAddress, new LightButtons(button, _logger)
             {
