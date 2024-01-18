@@ -19,6 +19,7 @@ var builder = Host.CreateDefaultBuilder()
             .AddSingleton<MqttHandler>()
             .AddSingleton<EspHandler>()
             .AddSingleton<LightRenderer>()
+            .AddSingleton<Engine>()
             .AddHostedService<Engine>()
             .InstallServices(context.Configuration);
     }).Build();

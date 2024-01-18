@@ -6,12 +6,13 @@ namespace GlideNGlow.Gamemodes.Models;
 
 public class GhostRace : Gamemode
 {
-    
-    List<RenderObject> _renderObjects = new();
     private float distanceCm = 100, timeLimit = 10;
     private float _distancePerSecond;
     private GameState _gameState;
     private int _startedButtonId;
+    private List<RenderObject> _renderObjects = new List<RenderObject>();
+    private MeasurementLineRenderObject _ghostLight = new MeasurementLineRenderObject(0, 0, Color.Red);
+    private MeasurementLineRenderObject _countdownLight = new MeasurementLineRenderObject(0, -1, Color.White);
     
     enum GameState
     {
@@ -21,7 +22,7 @@ public class GhostRace : Gamemode
     }
     
     private float _timeElapsed;
-    GhostRace(EspHandler espHandler, float distanceCm, float timeLimit)
+    public GhostRace(EspHandler espHandler, float distanceCm, float timeLimit)
     {
         _espHandler = espHandler;
         this.distanceCm = distanceCm;
@@ -56,16 +57,23 @@ public class GhostRace : Gamemode
     public void UpdateCountdown(float deltaSeconds)
     {
         _timeElapsed += deltaSeconds;
+        bool cdLightOn = _timeElapsed % 1 > 0.5;
+        _countdownLight.SetColor(cdLightOn ? Color.White : Color.Black);
         if (_timeElapsed > 0)
         {
+            _renderObjects.Remove(_countdownLight);
             _gameState = GameState.Running;
         }
+        
         _timeElapsed = 0;
     }
     
     public void UpdateRunning(float deltaSeconds)
     {
         _timeElapsed += deltaSeconds;
+        //calculate the distance to move
+        var distanceToMove = _distancePerSecond * deltaSeconds;
+        _ghostLight.Move(distanceToMove);
         if (_timeElapsed > timeLimit)
         {
             _gameState = GameState.WaitingForStart;
@@ -75,7 +83,7 @@ public class GhostRace : Gamemode
 
     public override List<RenderObject> GetRenderObjects()
     {
-        throw new NotImplementedException();
+        return _renderObjects;
     }
 
     public override Task Input(int id)
@@ -84,8 +92,16 @@ public class GhostRace : Gamemode
         {
             _timeElapsed = -3;
             _startedButtonId = id;
+            
+            _renderObjects.Add(_countdownLight);
+            
+            var startDistance = _espHandler.GetAppSettings().Buttons[_startedButtonId].DistanceFromStart ?? 0;
+            _ghostLight.SetStart(startDistance-2);
+            _ghostLight.SetEnd(startDistance + distanceCm + 2);
+            _renderObjects.Add(_ghostLight);
+            
             _gameState = GameState.Countdown;
         }
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 }

@@ -61,7 +61,7 @@ public class EspHandler : IDisposable
     
     
     
-    private AppSettings GetAppSettings()
+    public AppSettings GetAppSettings()
     {
         return _appSettings.CurrentValue;
     }

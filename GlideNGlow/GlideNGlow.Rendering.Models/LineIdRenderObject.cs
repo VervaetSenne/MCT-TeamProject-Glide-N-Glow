@@ -2,7 +2,7 @@ using System.Drawing;
 
 namespace GlideNGlow.Rendering.Models;
 
-public class LineRenderObject : RenderObject
+public class LineIdRenderObject : IdRenderObject
 {
     private int _baseOffset = 0;
     private int _direction = 0;
@@ -10,7 +10,7 @@ public class LineRenderObject : RenderObject
     private Color _color;
     List<Color> _image = new List<Color>();
     
-    public LineRenderObject(int start, int vector, Color color)
+    public LineIdRenderObject(int start, int vector, Color color)
     {
         if (vector > 0)
         {
@@ -38,7 +38,7 @@ public class LineRenderObject : RenderObject
         Offset = x + _baseOffset;
     }
     
-    public override void Update()
+    public void Update()
     {
         //fill from start to end
         _image.Clear();

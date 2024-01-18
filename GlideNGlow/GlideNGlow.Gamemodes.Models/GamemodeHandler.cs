@@ -1,5 +1,7 @@
+using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Mqqt.Models;
 using GlideNGlow.Rendering.Models;
+using Microsoft.Extensions.Options;
 
 namespace GlideNGlow.Gamemodes.Models;
 
@@ -9,10 +11,18 @@ public class GamemodeHandler
     private readonly LightRenderer _lightRenderer;
     private readonly EspHandler _espHandler;
 
-    GamemodeHandler(LightRenderer lightRenderer, EspHandler espHandler)
+    public GamemodeHandler(LightRenderer lightRenderer, IOptionsMonitor<AppSettings> appSettings, EspHandler espHandler)
     {
         _lightRenderer = lightRenderer;
         _espHandler = espHandler;
+        //calculate length of strip from appSettings
+        var currentValueStrips = appSettings.CurrentValue.Strips;
+        float length = 0;
+        foreach (var strip in currentValueStrips)
+        {
+            length += strip.Length + strip.DistanceFromLast;
+        }
+        _gamemode = new GhostRace(espHandler, length  ,15);
     }
     
     public async Task Update(float deltaSeconds)
@@ -27,7 +37,7 @@ public class GamemodeHandler
             _lightRenderer.Render(renderObject);
         }
 
-        await _lightRenderer.Update();
+        await _lightRenderer.Show();
     }
     
     //TODO: assemble gamemodes from frontend
