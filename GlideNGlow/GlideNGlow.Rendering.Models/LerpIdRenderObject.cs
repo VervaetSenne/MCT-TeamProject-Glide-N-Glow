@@ -2,7 +2,7 @@ using System.Drawing;
 
 namespace GlideNGlow.Rendering.Models;
 
-public class LerpRenderObject : RenderObject
+public class LerpIdRenderObject : IdRenderObject
 {
     private int _direction = 0;
     private int _length = 0;
@@ -12,7 +12,7 @@ public class LerpRenderObject : RenderObject
     
     private int _baseOffset = 0;
     
-    public LerpRenderObject(int start, int vector, Color colorStart, Color colorEnd)
+    public LerpIdRenderObject(int start, int vector, Color colorStart, Color colorEnd)
     {
         if (vector > 0)
         {
@@ -29,7 +29,7 @@ public class LerpRenderObject : RenderObject
         SetColor(colorStart,colorEnd);
     }
 
-    public override void Update()
+    public void Update()
     {
         //fill from start to end and lerp the colors
         _image.Clear();

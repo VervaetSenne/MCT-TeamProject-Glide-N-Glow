@@ -14,6 +14,8 @@ public class EspHandler : IDisposable
     private readonly ILogger _logger;
     private readonly IOptionsMonitor<AppSettings> _appSettings;
     private Dictionary<String,LightButtons> _lightButtons = new Dictionary<string,LightButtons>();
+    
+    public event Action<int>? ButtonPressedEvent;
 
     public EspHandler(ILogger<EspHandler> logger, IOptionsMonitor<AppSettings> appSettings,MqttHandler mqttHandler)
     {
@@ -47,17 +49,19 @@ public class EspHandler : IDisposable
             }
             else
             {
-                _appSettings.CurrentValue.Buttons.Add(new LightButtonData());
+                HandleFileData(macAddress).Wait();
                 // _lightButtons.Add(macAddress, new LightButtons(macAddress, _logger, SetRgb));
                 _logger.LogInformation($"Esp {macAddress} resigned in: {message}");
                 ReorderButtonIds().Wait();
             }
-
+            
         }, MqttQualityOfServiceLevel.AtLeastOnce);
 
     }
     
-    private AppSettings GetAppSettings()
+    
+    
+    public AppSettings GetAppSettings()
     {
         return _appSettings.CurrentValue;
     }
@@ -79,20 +83,25 @@ public class EspHandler : IDisposable
         }
         
         //now we are sure there is one, so we can add it to _lightButtons
-        
-        
-        _lightButtons.Add(button!.MacAddress, new LightButtons(button,_logger, SetRgb));
+
+        if (_lightButtons.ContainsKey(macAddress))
+        {
+            _lightButtons.Add(button!.MacAddress, new LightButtons(button,_logger, SetRgb));
+        }
     }
 
     public async Task AddTestConnectionsSubscription()
     {
-        string testTopic = "esp32/+/acknowledge";
+        const string testTopic = "esp32/+/acknowledge";
         await _mqttHandler.Subscribe(testTopic, (topic, message) =>
         {
             string macAddress = topic.Split('/')[1];
             //_logger.LogInformation(topic);
             _logger.LogInformation($"Esp {macAddress} acknowledged: {message}");
             _lightButtons[macAddress].Responded = true;
+
+            HandleFileData(macAddress).Wait();
+            ReorderButtonIds().Wait();
         }, MqttQualityOfServiceLevel.AtLeastOnce);
     }
 
@@ -104,11 +113,17 @@ public class EspHandler : IDisposable
             //_logger.LogInformation(topic);
             _logger.LogInformation($"Esp {macAddress} button pressed: {message}");
             _lightButtons[macAddress]?.Pressed();
+            ButtonPressedEvent?.Invoke(_lightButtons[macAddress].ButtonNumber ?? -1);
         }, MqttQualityOfServiceLevel.AtLeastOnce);
     }
     private const string ButtonTopic = "esp32/+/button";
 
     #endregion
+    
+    public async Task AddButtonPressedEvent(Action<int> callback)
+    {
+        ButtonPressedEvent += callback;
+    }
 
     //function where you can register an action to get called whenever any button gets pressed, it'll also recieve the id of the button that got pressed
     public async Task AddPressedEvent(Action<int> callback)
@@ -132,7 +147,6 @@ public class EspHandler : IDisposable
     public async Task ReorderButtonIds()
     {
         int id = 0;
-        //TODO: sort buttons based on their ButtonLocation value
         //give each button an id based on their buttonLocation value, the lower their value the lower their id
         List<String> keys = _lightButtons.Keys.ToList();
         foreach (var key in keys.OrderBy(x => _lightButtons[x].DistanceFromStart))
