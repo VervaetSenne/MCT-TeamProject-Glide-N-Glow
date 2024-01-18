@@ -9,6 +9,8 @@ using GlideNGlow.Services.Installers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Options.Implementations;
+using MQTTnet;
+using MQTTnet.Client;
 using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +28,8 @@ builder.Services.InstallServices(builder.Configuration);
 builder.Services.AddSingleton<MqttHandler>();
 builder.Services.AddSingleton<EspHandler>();
 builder.Services.AddSingleton<LightRenderer>(isp => LightRenderer.Create(isp.GetRequiredService<ILogger<LightRenderer>>(),
-    isp.GetRequiredService<OptionsMonitor<AppSettings>>(), isp.GetRequiredService<MqttHandler>()));
+    isp.GetRequiredService<IOptionsMonitor<AppSettings>>(), isp.GetRequiredService<MqttHandler>()));
+builder.Services.AddSingleton<IMqttClient>(_ => new MqttFactory().CreateMqttClient());
 builder.Services.AddHostedService<Engine>();
 
 #endregion
