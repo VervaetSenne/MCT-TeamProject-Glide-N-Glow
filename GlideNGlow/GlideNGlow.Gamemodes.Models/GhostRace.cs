@@ -56,7 +56,7 @@ public class GhostRace : Gamemode
 
     public void UpdateCountdown(float deltaSeconds)
     {
-        var cdLightOn = _timeElapsed % 1 > 0.5;
+        var cdLightOn = _timeElapsed % 1 > -0.5;
         _countdownLight.SetColor(cdLightOn ? Color.White : Color.Black);
         if (_timeElapsed > 0)
         {
