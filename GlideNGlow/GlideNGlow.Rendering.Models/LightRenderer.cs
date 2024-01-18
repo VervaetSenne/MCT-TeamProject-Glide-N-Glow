@@ -33,14 +33,14 @@ public class LightRenderer
         Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();
     }
 
-    public static async Task<LightRenderer> Create(ILogger<LightRenderer> logger, IOptionsMonitor<AppSettings> appsettings, MqttHandler mqttHandler, CancellationToken cancellationToken)
+    public static LightRenderer Create(ILogger<LightRenderer> logger, IOptionsMonitor<AppSettings> appsettings, MqttHandler mqttHandler, CancellationToken cancellationToken = default)
     {
         var renderer = new LightRenderer(logger, appsettings, mqttHandler);
-        await renderer.UpdateSettings(cancellationToken);
+        renderer.UpdateSettings(cancellationToken);
         return renderer;
     }
 
-    private async Task UpdateSettings(CancellationToken cancellationToken)
+    private void UpdateSettings(CancellationToken cancellationToken)
     {
         PixelAmount = AppSettings.Strips.Aggregate(0, (i, strip) => i + strip.Leds);
         //_pixelAmount = size;
@@ -53,7 +53,7 @@ public class LightRenderer
         
         LightStripConverter = new LightStripConverter(AppSettings.Strips);
         
-        await SetStripSize(PixelAmount, cancellationToken);
+        _ = SetStripSize(PixelAmount, cancellationToken);
     }
 
     public void Render(RenderObject renderObject)

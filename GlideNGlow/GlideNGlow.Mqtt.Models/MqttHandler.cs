@@ -9,31 +9,33 @@ using MQTTnet.Protocol;
 namespace GlideNGlow.Mqqt.Models;
 public class MqttHandler
 {
+    private readonly IOptionsMonitor<AppSettings> _appSettings;
     private readonly ILogger _logger;
     private readonly IMqttClient _mqttClient;
 
-    private MqttHandler(IMqttClient mqttClient, ILogger<MqttHandler> logger)
+    public MqttHandler(IOptionsMonitor<AppSettings> appSettings, IMqttClient mqttClient, ILogger<MqttHandler> logger)
     {
+        _appSettings = appSettings;
         _mqttClient = mqttClient;
         _logger = logger;
-        logger.LogInformation("MqttHandler created");
     }
 
-    public static async Task<MqttHandler> Create(IOptionsMonitor<AppSettings> appSettings, ILogger<MqttHandler> logger, IMqttClient mqttClient, CancellationToken cancellationToken)
+    private async Task TryConnectAsync(CancellationToken cancellationToken)
     {
-        var handler = new MqttHandler(mqttClient, logger);
-        
-        var brokerAddress = appSettings.CurrentValue.Ip;
-        var mqttClientOptions = new MqttClientOptionsBuilder()
-            .WithTcpServer(brokerAddress)
-            .Build();
-        await handler._mqttClient.ConnectAsync(mqttClientOptions, cancellationToken);
-        
-        return handler;
+        if (!_mqttClient.IsConnected)
+        {
+            var brokerAddress = _appSettings.CurrentValue.Ip;
+            var mqttClientOptions = new MqttClientOptionsBuilder()
+                .WithTcpServer(brokerAddress)
+                .Build();
+            await _mqttClient.ConnectAsync(mqttClientOptions, cancellationToken);
+        }
     }
 
     public async Task SendMessage(string topic, string payload, CancellationToken cancellationToken)
     {
+        await TryConnectAsync(cancellationToken);
+        
         var applicationMessage = new MqttApplicationMessageBuilder()
             .WithTopic(topic)
             .WithPayload(Encoding.ASCII.GetBytes(payload))
@@ -47,6 +49,8 @@ public class MqttHandler
     public async Task Subscribe(string topic, Func<string, string, Task> callback, CancellationToken cancellationToken,
         MqttQualityOfServiceLevel qos = MqttQualityOfServiceLevel.AtLeastOnce)
     {
+        await TryConnectAsync(cancellationToken);
+        
         await _mqttClient.SubscribeAsync(topic, qos, cancellationToken);
         var route = topic.Split('/');
         
@@ -66,6 +70,8 @@ public class MqttHandler
     public async Task Subscribe(string topic, Action<string, string> callback, CancellationToken cancellationToken,
         MqttQualityOfServiceLevel qos = MqttQualityOfServiceLevel.AtLeastOnce)
     {
+        await TryConnectAsync(cancellationToken);
+        
         await _mqttClient.SubscribeAsync(topic, qos, cancellationToken);
         var route = topic.Split('/');
         
@@ -85,6 +91,8 @@ public class MqttHandler
     
     public async Task Unsubscribe(string topic, CancellationToken cancellationToken)
     {
+        await TryConnectAsync(cancellationToken);
+        
         await _mqttClient.UnsubscribeAsync(topic, cancellationToken);
     }
 }
