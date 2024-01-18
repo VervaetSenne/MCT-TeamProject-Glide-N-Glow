@@ -35,11 +35,13 @@ public class GamemodeHandler
     
     public async Task RenderAsync(CancellationToken cancellationToken)
     {
+        if(_gamemode.GetRenderObjects().Count == 0)
+            return;
         foreach (var renderObject in _gamemode.GetRenderObjects())
         {
             _lightRenderer.Render(renderObject);
         }
-
+        
         await _lightRenderer.ShowAsync(cancellationToken);
     }
     
