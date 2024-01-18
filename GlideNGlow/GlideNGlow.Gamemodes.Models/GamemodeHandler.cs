@@ -15,9 +15,9 @@ public class GamemodeHandler
         _espHandler = espHandler;
     }
     
-    public async Task Update()
+    public async Task Update(float deltaSeconds)
     {
-        await _gamemode.Update();
+        await _gamemode.Update(deltaSeconds);
     }
     
     public async Task Render()
@@ -39,7 +39,13 @@ public class GamemodeHandler
     
     public async Task AddSubscriptions()
     {
-        
+        await _espHandler.AddButtonPressedEvent(Input);
     }
+    
+    public void Input(int id)
+    {
+        _gamemode.Input(id);
+    }
+    
     
 }

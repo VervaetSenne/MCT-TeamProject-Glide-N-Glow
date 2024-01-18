@@ -5,8 +5,11 @@ namespace GlideNGlow.Gamemodes.Models;
 
 public abstract class Gamemode
 {
-    private readonly EspHandler _espHandler;
-    public abstract Task Update();
-    public abstract List<RenderObject> GetRenderObjects();
+    protected EspHandler _espHandler;
     
+    public abstract Task Start();
+    public abstract Task Update(float deltaSeconds);
+    public abstract List<RenderObject> GetRenderObjects();
+
+    public abstract Task Input(int id);
 }

@@ -15,8 +15,6 @@ public class Engine : IHostedService
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 }
-
-//periodic timer opzoeken
