@@ -94,8 +94,8 @@ public class GhostRace : Gamemode
         _renderObjects.Add(_countdownLight);
             
         var startDistance = _appsettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
-        _ghostLight.SetStart(startDistance-2);
-        _ghostLight.SetEnd(startDistance + _distanceCm + 2);
+        _ghostLight.SetStart(startDistance);
+        _ghostLight.SetEnd((float)(startDistance +0.2));
         _renderObjects.Add(_ghostLight);
             
         _gameState = GameState.Countdown;
