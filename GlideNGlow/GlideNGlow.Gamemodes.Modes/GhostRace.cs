@@ -35,6 +35,10 @@ public class GhostRace : Gamemode, IGamemode
         _gameState = GameState.WaitingForStart;
     }
 
+    public void Stop()
+    {
+    }
+
     public Task UpdateAsync(TimeSpan timeSpan)
     {
         _timeElapsed += timeSpan.TotalSeconds();

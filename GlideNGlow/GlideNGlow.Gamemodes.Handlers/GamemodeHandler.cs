@@ -56,7 +56,7 @@ public class GamemodeHandler
 
     private void StopGame()
     {
-        
+        _gamemode.Stop();
     }
     
     public async Task AddSubscriptionsAsync(CancellationToken cancellationToken)
