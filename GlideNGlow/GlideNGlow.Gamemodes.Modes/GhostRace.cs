@@ -69,7 +69,7 @@ public class GhostRace : Gamemode, IGamemode
     public void UpdateRunning(TimeSpan timeSpan)
     {
         //calculate the distance to move
-        var distanceToMove = _distancePerSecond * timeSpan.Seconds;
+        var distanceToMove = _distancePerSecond * timeSpan.TotalSeconds();
         _ghostLight.Move(distanceToMove);
         if (_timeElapsed > _timeLimit)
         {
