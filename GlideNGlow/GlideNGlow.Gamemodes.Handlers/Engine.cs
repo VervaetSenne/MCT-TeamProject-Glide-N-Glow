@@ -1,37 +1,29 @@
-﻿using GlideNGlow.Common.Abstractions;
-using GlideNGlow.Common.Models.Settings;
-using GlideNGlow.Mqqt.Handlers;
-using GlideNGlow.Rendering.Handlers;
-using Microsoft.Extensions.Options;
+﻿using GlideNGlow.Mqqt.Handlers;
+using Microsoft.Extensions.Hosting;
 
 namespace GlideNGlow.Gamemodes.Handlers;
 
-public class Engine : IAsyncLifeCycle
+public class Engine : IHostedService
 {
-    private readonly LightRenderer _lightRenderer;
-    private readonly IOptionsMonitor<AppSettings> _appSettings;
     private readonly EspHandler _espHandler;
+    private readonly GamemodeHandler _gamemodeHandler;
     
-    public Engine(LightRenderer lightRenderer, IOptionsMonitor<AppSettings> appSettings, EspHandler espHandler)
+    public Engine(EspHandler espHandler, GamemodeHandler gamemodeHandler)
     {
-        _lightRenderer = lightRenderer;
-        _appSettings = appSettings;
         _espHandler = espHandler;
+        _gamemodeHandler = gamemodeHandler;
     }
     
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await _espHandler.AddSubscriptions(cancellationToken);
-        var gamemodeHandler = new GamemodeHandler(_lightRenderer, _appSettings, _espHandler);
-        
-        gamemodeHandler.Start();
+        await _gamemodeHandler.StartAsync(cancellationToken);
 
         var deltaTime = TimeSpan.FromMilliseconds(300);
         var periodicTimer = new PeriodicTimer(deltaTime);
         while (await periodicTimer.WaitForNextTickAsync(cancellationToken))
         {
-            await gamemodeHandler.UpdateAsync(deltaTime);
-            await gamemodeHandler.RenderAsync(cancellationToken);
+            await _gamemodeHandler.UpdateAsync(deltaTime);
+            await _gamemodeHandler.RenderAsync(cancellationToken);
         }
     }
 

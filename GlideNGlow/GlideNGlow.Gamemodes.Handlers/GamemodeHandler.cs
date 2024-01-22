@@ -24,10 +24,10 @@ public class GamemodeHandler
         _gamemode = new GhostRace(currentAppSettings, _espHandler, length  ,15);
     }
     
-    public void Start()
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
         _gamemode.Initialize();
-        AddSubscriptions();
+        await AddSubscriptionsAsync(cancellationToken);
     }
     
     public async Task UpdateAsync(TimeSpan timeSpan)
@@ -53,9 +53,15 @@ public class GamemodeHandler
     {
         _gamemode = gamemode;
     }
-    
-    public void AddSubscriptions()
+
+    private void StopGame()
     {
+        
+    }
+    
+    public async Task AddSubscriptionsAsync(CancellationToken cancellationToken)
+    {
+        await _espHandler.AddSubscriptions(cancellationToken);
         _espHandler.AddButtonPressedEvent(Input);
     }
     

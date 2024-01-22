@@ -19,6 +19,7 @@ public static class EngineInstaller
             .AddSingleton<LightRenderer>(isp => LightRenderer.Create(isp.GetRequiredService<ILogger<LightRenderer>>(),
             isp.GetRequiredService<IOptionsMonitor<AppSettings>>(), isp.GetRequiredService<MqttHandler>()))
             .AddSingleton<IMqttClient>(_ => new MqttFactory().CreateMqttClient())
-            .AddSingleton<Engine>();
+            .AddSingleton<GamemodeHandler>()
+            .AddHostedService<Engine>();
     }
 }
