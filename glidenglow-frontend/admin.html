@@ -9,7 +9,7 @@
       rel="stylesheet"
     />
     <script src="scripts/app.js"></script>
-    <title>Admin</title>
+    <title>Home</title>
   </head>
 
   <body>
@@ -17,33 +17,17 @@
       <ul class="navbar-nav">
         <li class="logo">
           <a href="#" class="nav-link">
-            <span class="link-text logo-text">Glide 'N Glow</span>
+            <span class="link-text logo-text">
+              <img
+                src="img/logo_sport_white.png"
+                alt="Logo"
+                class="logo-image"
+                height="55px"
+                width="220px"
+              />
+            </span>
           </a>
         </li>
-
-        <li class="nav-item" id="nav-item-admin">
-          <a href="admin.html" class="nav-link">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="30"
-              height="30"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="lucide lucide-layout-dashboard"
-            >
-              <rect width="7" height="9" x="3" y="3" rx="1" />
-              <rect width="7" height="5" x="14" y="3" rx="1" />
-              <rect width="7" height="9" x="14" y="12" rx="1" />
-              <rect width="7" height="5" x="3" y="16" rx="1" />
-            </svg>
-            <span class="link-text">Admin</span>
-          </a>
-        </li>
-
         <li class="nav-item">
           <a href="index.html" class="nav-link">
             <svg
@@ -61,7 +45,7 @@
               <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
               <polyline points="9 22 9 12 15 12 15 22" />
             </svg>
-            <span class="link-text">Homepage</span>
+            <span class="link-text">Gamemodes</span>
           </a>
         </li>
 
@@ -93,34 +77,31 @@
             <span class="link-text">Leaderbord</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a href="recentScores.html" class="nav-link">
+
+        <li class="nav-item nav-last" id="nav-item-admin">
+          <a href="admin.html" class="nav-link">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="30"
+              height="30"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="lucide lucide-medal"
+              class="lucide lucide-layout-dashboard"
             >
-              <path
-                d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"
-              />
-              <path d="M11 12 5.12 2.2" />
-              <path d="m13 12 5.88-9.8" />
-              <path d="M8 7h8" />
-              <circle cx="12" cy="17" r="5" />
-              <path d="M12 18v-2h-.5" />
+              <rect width="7" height="9" x="3" y="3" rx="1" />
+              <rect width="7" height="5" x="14" y="3" rx="1" />
+              <rect width="7" height="9" x="14" y="12" rx="1" />
+              <rect width="7" height="5" x="3" y="16" rx="1" />
             </svg>
-            <span class="link-text">Recent scores</span>
+            <span class="link-text">Dashboard</span>
           </a>
         </li>
 
-        <li class="nav-item nav-item-logout-admin" id="userButton">
+        <li class="nav-item" id="userButton">
           <a href="index.html" class="nav-link">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +119,7 @@
               <polyline points="16 17 21 12 16 7" />
               <line x1="21" x2="9" y1="12" y2="12" />
             </svg>
-            <span class="link-text">User</span>
+            <span class="link-text">Logout</span>
           </a>
         </li>
       </ul>
@@ -211,7 +192,7 @@
                   <span class="slider"></span>
                 </label>
               </div>
-              <div class="table-container js-gamemodes-table">
+              <div class="table-container">
                 <table class="rounded-table">
                   <tr>
                     <th>Name</th>
@@ -227,7 +208,7 @@
                       </label>
                     </td>
                     <td>
-                      <button class="table-button table-button-force-gamemodes">
+                      <button class="table-button">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -286,7 +267,7 @@
                   Plug button in to add to systen.
                 </p>
               </div>
-              <div class="table-container js-buttons-table">
+              <div class="table-container">
                 <table class="rounded-table">
                   <tr>
                     <th id="button-id">Id</th>
@@ -294,7 +275,7 @@
                     <th id="button-actions">Actions</th>
                   </tr>
                   <tr>
-                    <td class="button-id-data">
+                    <td id="button-id-data">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -310,7 +291,127 @@
                         <circle cx="12" cy="12" r="10" />
                       </svg>
                     </td>
-                    <td class="distance-data">10</td>
+                    <td id="distance-data">10</td>
+                    <td>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-pencil"
+                        >
+                          <path
+                            d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+                          />
+                          <path d="m15 5 4 4" />
+                        </svg>
+                      </button>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-trash-2"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                          <line x1="10" x2="10" y1="11" y2="17" />
+                          <line x1="14" x2="14" y1="11" y2="17" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td id="button-id-data">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-circle"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                      </svg>
+                    </td>
+                    <td id="distance-data">10</td>
+                    <td>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-pencil"
+                        >
+                          <path
+                            d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+                          />
+                          <path d="m15 5 4 4" />
+                        </svg>
+                      </button>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-trash-2"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                          <line x1="10" x2="10" y1="11" y2="17" />
+                          <line x1="14" x2="14" y1="11" y2="17" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td id="button-id-data">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-circle"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                      </svg>
+                    </td>
+                    <td id="distance-data">10</td>
                     <td>
                       <button class="table-button">
                         <svg

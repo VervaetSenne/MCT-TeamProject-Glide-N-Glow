@@ -3,13 +3,14 @@
   font-family: 'Open Sans';
   --text-primary: #b6b6b6;
   --text-secondary: #ececec;
+  --text-dark: black;
   --text-dark: #273646;
   --bg-primary: #273646;
   --bg-light-prinmary: #476786;
   --bg-secondary: #141418;
   --bg-white: #ffffff;
   --bg-current-gamemode: #dbdbdb;
-  --page-bg-primary: #dfdfdf;
+  --page-bg-primary: #f2f2f2;
   --transition-speed: 300ms;
   --hover-bg-primary: #a4a4a4;
 }
@@ -40,7 +41,6 @@ main {
 }
 
 .navbar {
-  z-index: 1000;
   position: fixed;
   background-color: var(--bg-primary);
   transition: width 600ms ease;
@@ -60,8 +60,7 @@ main {
 .nav-item {
   width: 100%;
 }
-
-.nav-item:last-child {
+.nav-last {
   margin-top: auto;
 }
 
@@ -75,8 +74,8 @@ main {
 }
 
 .nav-link:hover {
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
+  background: var(--page-bg-primary);
+  color: var(--text-dark);
 }
 
 .link-text {
@@ -91,13 +90,6 @@ main {
 }
 
 .logo {
-  font-weight: bold;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: 1.5rem;
-  letter-spacing: 0.3ch;
   width: 100%;
 }
 
@@ -109,13 +101,7 @@ main {
   transition: var(--transition-speed);
 }
 
-.navbar:hover .logo svg {
-  transform: rotate(-180deg);
-}
-
-/*------------------------------------*\
-#ADMIN - GRID
-\*------------------------------------*/
+/* GRID */
 .grid-container {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -181,9 +167,7 @@ main {
   flex-direction: column;
 }
 
-/*------------------------------------*\
-#ADMIN - Settings
-\*------------------------------------*/
+/*Settings*/
 .settings-button-container {
   display: flex;
   justify-content: center;
@@ -219,9 +203,7 @@ main {
   transition: ease var(--transition-speed);
 }
 
-/*------------------------------------*\
-#ADMIN - Gamemodes
-\*------------------------------------*/
+/* Gamemodes */
 .gamemodes-container {
   display: flex;
 }
@@ -231,15 +213,7 @@ main {
   color: var(--text-dark);
   font-size: 1.1rem;
 }
-.gamemode-force-active {
-  background-color: var(--bg-light-prinmary);
-}
-.gamemode-force-active svg {
-  color: var(--bg-current-gamemode);
-}
-/*------------------------------------*\
-#ADMIN - Button settings
-\*------------------------------------*/
+/* Button settings */
 .button-settings-infotext {
   margin-left: 1rem;
   color: var(--text-dark);
@@ -260,9 +234,7 @@ main {
 #button-id-data {
   padding-left: 1.3rem;
 }
-/*------------------------------------*\
-#ADMIN - LedStrip settings
-\*------------------------------------*/
+/* Lightstrip settings */
 .lightstrip-setting-container {
   display: flex;
   gap: 2.6rem;
@@ -295,70 +267,72 @@ main {
   color: var(--bg-light-prinmary);
   transition: ease var(--transition-speed);
 }
-/*------------------------------------*\
-#HOME - carousel
-\*------------------------------------*/
-.slick-prev,
-.slick-next {
-  z-index: 1;
-}
-.slick-prev {
-  left: 3rem;
-}
-.slick-next {
-  right: 3rem;
-}
-.slick-slide {
-  height: 550px; /* Adjust the height of the slides */
-  transition: ease var(--transition-speed);
-  background-image: linear-gradient(rgba(7, 7, 32, 0.65), rgba(7, 7, 32, 0.65)),
-    url('../img/splash-art-gamemode.jpg');
-}
-.slick-center {
-  height: 580px;
-  transition: ease var(--transition-speed);
-  background-image: url('../img/splash-art-gamemode.jpg');
-}
-.slick-slide img {
-  height: 100%; /* Make the images fill the slide */
-  width: 100%; /* Make the images fill the slide */
-  object-fit: cover; /* Maintain aspect ratio and cover the slide */
-}
-.gamemodes-carousel {
-  z-index: 1;
-}
-.gamemodes-carousel-item {
-  margin: 1rem;
-}
-/*Text for all slides*/
-.slick-slide .gamemodes-carousel-item-text {
+
+/* Gamemodes page */
+.gamemodes-header-icons {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  margin-top: 5rem;
+}
+.small-gamepad-icon {
+  width: 94px;
+  height: 94px;
+  margin-right: 1rem;
+}
+.big-gamepad-icon {
+  width: 184px;
+  height: 184px;
+  margin-right: 1rem;
+}
+.gamemodes-header-text {
+  text-align: center;
+}
+.gamemodes-card-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 5rem;
+}
+.gamemode-card {
+  width: 326px;
+  height: 390px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  background-color: var(--bg-white);
+  margin: 1.5rem;
+}
+.gamemode-card-header {
+  width: 326px;
+}
+.gamemode-card-banner-img {
+  width: 326px;
+  height: 200px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+.gamemode-card-info {
+  margin-left: 1rem;
+  height: 166px;
+}
+.gamemode-card-info p {
+  margin-bottom: 1rem;
+}
+.gamemode-name {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+.gamemode-discription {
+  color: var(--text-primary);
+}
+.gamemode-card-best-time {
+  display: flex;
   align-items: center;
-  justify-content: end;
-  height: 90%;
-  color: var(--text-secondary);
-  opacity: 30%;
   font-weight: bold;
 }
-/*Text for center*/
-.slick-center .gamemodes-carousel-item-text {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: end;
-  height: 90%;
-  color: var(--text-secondary);
-  opacity: 100%;
-}
-.gamemodes-carousel-info-sign {
-  margin-top: 1rem;
+.gamemode-card-best-time svg {
   margin-right: 1rem;
-  float: right;
 }
-/*------------------------------------*\
-#Table styles
-\*------------------------------------*/
+/* table */
 .table-button {
   border: none;
   border-radius: 10px;
@@ -406,9 +380,7 @@ main {
   color: var(--text-secondary);
 }
 
-/*------------------------------------*\
-#Checkbox styles
-\*------------------------------------*/
+/* checkbox styles */
 .checkbox-container {
   display: block;
   position: relative;
@@ -473,9 +445,7 @@ main {
   transform: rotate(45deg);
 }
 
-/*------------------------------------*\
-#Toggle switch styles
-\*------------------------------------*/
+/* Toggle switch styles */
 .toggle {
   position: relative;
   display: inline-block;
@@ -526,14 +496,13 @@ input:checked + .slider:before {
   transform: translateX(16px);
 }
 
-/*------------------------------------*\
-#Small screens
-\*------------------------------------*/
+/* Small screens */
 @media only screen and (max-width: 600px) {
   .navbar {
     bottom: 0;
     width: 100vw;
     height: 5rem;
+    z-index: 1000;
   }
 
   .logo {
@@ -557,9 +526,7 @@ input:checked + .slider:before {
   }
 }
 
-/*------------------------------------*\
-#Large screens
-\*------------------------------------*/
+/* Large screens */
 @media only screen and (min-width: 600px) {
   .navbar {
     top: 0;
@@ -578,9 +545,7 @@ input:checked + .slider:before {
     left: 0px;
   }
 }
-/*------------------------------------*\
-#GRID RESPONSIVE
-\*------------------------------------*/
+
 @media (max-height: 690px) {
   .grid-container-flex {
     margin-top: 1rem;
@@ -613,9 +578,7 @@ input:checked + .slider:before {
     width: 400px;
   }
 }
-/*------------------------------------*\
-#Future color themes
-\*------------------------------------*/
+
 .dark {
   --text-primary: #b6b6b6;
   --text-secondary: #ececec;
