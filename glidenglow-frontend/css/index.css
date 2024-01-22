@@ -390,7 +390,7 @@ main {
   box-sizing: border-box;
 }
 
-#startButton {
+.startButton {
   background-color: #28a745; /* Bootstrap's success color */
   color: #fff;
   border: none;
@@ -400,7 +400,7 @@ main {
   border-radius: 5px;
   transition: ease var(--transition-speed);
 }
-#startButton:hover {
+.startButton:hover {
   background-color: #237736;
   transition: ease var(--transition-speed);
 }
@@ -454,6 +454,58 @@ main {
 .gamemode-hardware-status svg {
   width: 24px;
   height: 24px;
+}
+/* gamemode-active page */
+.gamemodeActiveIcon {
+  height: 94px;
+  width: 94px;
+}
+.player-cards-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 5rem;
+}
+.player-card {
+  width: 348px;
+  height: 200px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background-color: var(--bg-white);
+  margin: 1rem;
+}
+.player-card-header {
+  background-color: #dad7fe; /* Choose your background color */
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 10px;
+}
+
+.player-card-header p {
+  margin: 0;
+  font-size: 1rem;
+}
+.player-score-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+.player-score-text {
+  font-weight: bold;
+  font-size: 1rem;
+}
+.player-score {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ff3a29;
+  margin-left: 5rem;
+}
+.lotti-container {
+  display: flex;
+  justify-content: center;
+}
+#lottie-container {
+  width: 400px;
 }
 /* table */
 .table-button {

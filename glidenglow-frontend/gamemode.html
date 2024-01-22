@@ -17,7 +17,7 @@
       <button id="quit-button" onclick="goBack()">Quit</button>
     </div>
     <div class="gamemode-settings-header">
-      <h1>{Mode} settings</h1>
+      <h1 class="js-gamemode-setting-header">{Mode} settings</h1>
       <p class="gamemode-setting-discription">
         Fill in the settings before starting the game
       </p>
@@ -74,24 +74,28 @@
     <!-- Gamemode settings-->
     <div class="gamemode-settings-card-container">
       <!-- Gamemode settings card amount of players -->
-      <div class="gamemode-settings-card gamemode-setting-content-hidden">
+      <div
+        class="gamemode-settings-card js-player-amount gamemode-setting-content-hidden"
+      >
         <p>Fill in the amount of players</p>
 
         <input
           type="number"
           id="playerInput"
+          class="playerInput"
           placeholder="Enter number of players"
           min="0"
         />
 
-        <button id="startButton" onclick="startGame()">Start</button>
+        <button class="startButton" onclick="startGame()">Start</button>
       </div>
       <!-- Gamemode settings card set time -->
-      <div class="gamemode-settings-card">
+      <div class="gamemode-settings-card js-set-time">
         <p class="gamemode-setting-text">Set time</p>
         <input
           type="number"
           id="playerInputTime"
+          class="playerInput"
           placeholder="Minutes"
           min="0"
         /><span>:</span
@@ -101,7 +105,7 @@
           placeholder="Seconds"
           min="0"
         />
-        <button id="startButton" onclick="startGame()">Start</button>
+        <button class="startButton" onclick="startGame()">Start</button>
       </div>
     </div>
   </body>
