@@ -31,6 +31,10 @@ public class GamemodeHandler
 
     private void AppSettingsChanged(AppSettings appSettings)
     {
+        if (_currentGamemode is not null && _currentGamemode.Game.Id == appSettings.CurrentGamemode ||
+            _currentGamemode is null && appSettings.CurrentGamemode is null)
+            return;
+        
         var game = _gameService.FindByIdAsync(appSettings.CurrentGamemode).GetAwaiter().GetResult();
         if (game is null)
         {
