@@ -1,26 +1,35 @@
-﻿using GlideNGlow.Mqqt.Handlers;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace GlideNGlow.Gamemodes.Handlers;
 
 public class Engine : IHostedService
 {
-    private readonly GamemodeHandler _gamemodeHandler;
+    private readonly IServiceScopeFactory _scopeFactory;
     
-    public Engine(GamemodeHandler gamemodeHandler)
+    public Engine(IServiceScopeFactory scopeFactory)
     {
-        _gamemodeHandler = gamemodeHandler;
+        _scopeFactory = scopeFactory;
     }
     
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
+        _ = StartInBackGround(cancellationToken);
+        return Task.CompletedTask;
+    }
+
+    public async Task StartInBackGround(CancellationToken cancellationToken)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var gamemodeHandler = scope.ServiceProvider.GetRequiredService<GamemodeHandler>();
+        
         var deltaTime = TimeSpan.FromMilliseconds(300);
         var periodicTimer = new PeriodicTimer(deltaTime);
         while (await periodicTimer.WaitForNextTickAsync(cancellationToken))
         {
-            await _gamemodeHandler.TryInitializeAsync(cancellationToken);
-            await _gamemodeHandler.UpdateAsync(deltaTime);
-            await _gamemodeHandler.RenderAsync(cancellationToken);
+            await gamemodeHandler.TryInitializeAsync(cancellationToken);
+            await gamemodeHandler.UpdateAsync(deltaTime);
+            await gamemodeHandler.RenderAsync(cancellationToken);
         }
     }
 
