@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using GlideNGlow.Rendering.Handlers;
+﻿using GlideNGlow.Rendering.Handlers;
 
 namespace GlideNGlow.Rendering.Models.Abstractions;
 

@@ -1,6 +1,4 @@
 ﻿using GlideNGlow.Common.Models.Settings;
-using GlideNGlow.Core.Services.Abstractions;
-using GlideNGlow.Core.Services.Installers;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Handlers;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,12 +14,12 @@ public static class EngineInstaller
     public static IServiceCollection InstallGamemodeEngine(this IServiceCollection services)
     {
         return services
-            .AddScoped<MqttHandler>()
-            .AddScoped<EspHandler>()
-            .AddScoped<LightRenderer>(isp => LightRenderer.Create(isp.GetRequiredService<ILogger<LightRenderer>>(),
+            .AddSingleton<MqttHandler>()
+            .AddSingleton<EspHandler>()
+            .AddSingleton<LightRenderer>(isp => LightRenderer.Create(isp.GetRequiredService<ILogger<LightRenderer>>(),
             isp.GetRequiredService<IOptionsMonitor<AppSettings>>(), isp.GetRequiredService<MqttHandler>()))
-            .AddScoped<IMqttClient>(_ => new MqttFactory().CreateMqttClient())
-            .AddScoped<GamemodeHandler>()
+            .AddSingleton<IMqttClient>(_ => new MqttFactory().CreateMqttClient())
+            .AddSingleton<GamemodeHandler>()
             .AddHostedService<Engine>();
     }
 }

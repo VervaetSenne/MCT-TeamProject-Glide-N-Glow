@@ -1,5 +1,3 @@
-using GlideNGlow.Common.Models;
-using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Core.Data;
 using GlideNGlow.Core.Models;
 using GlideNGlow.Core.Services.Installers;
@@ -7,7 +5,6 @@ using GlideNGlow.Gamemodes.Handlers.Installers;
 using GlideNGlow.Gamemodes.Modes;
 using GlideNGlow.Services.Installers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options.Implementations;
 using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);

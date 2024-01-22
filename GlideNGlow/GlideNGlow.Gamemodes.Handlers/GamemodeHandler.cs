@@ -1,7 +1,6 @@
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Gamemodes.Models;
-using GlideNGlow.Gamemodes.Models.Abstractions;
 using GlideNGlow.Gamemodes.Modes;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Handlers;
@@ -38,7 +37,7 @@ public class GamemodeHandler
         var game = _gameService.FindByIdAsync(appSettings.CurrentGamemode).GetAwaiter().GetResult();
         if (game is null)
         {
-            StopGame();
+            StopGameAsync(default).GetAwaiter().GetResult();
             return;
         }
 
@@ -98,7 +97,10 @@ public class GamemodeHandler
 
     private async Task StopGameAsync(CancellationToken cancellationToken)
     {
-        _gamemode.Stop();
+        if (_currentGamemode is null)
+            return;
+        
+        _currentGamemode.Gamemode.Stop();
         await _espHandler.RemoveSubscriptions(cancellationToken);
     }
     
