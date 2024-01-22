@@ -1,6 +1,6 @@
 ﻿using GlideNGlow.Common.Models;
 
-namespace GlideNGlow.Rendering.Models;
+namespace GlideNGlow.Rendering.Handlers.Helpers;
 
 public class LightStripConverter
 {

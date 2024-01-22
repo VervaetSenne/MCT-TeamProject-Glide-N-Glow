@@ -7,6 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\GlideNGlow.Common.Extensions\GlideNGlow.Common.Extensions.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Common.Models\GlideNGlow.Common.Models.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Gamemodes.Models\GlideNGlow.Gamemodes.Models.csproj" />
       <ProjectReference Include="..\GlideNGlow.Mqtt.Handlers\GlideNGlow.Mqtt.Handlers.csproj" />
       <ProjectReference Include="..\GlideNGlow.Rendering.Models\GlideNGlow.Rendering.Models.csproj" />
     </ItemGroup>

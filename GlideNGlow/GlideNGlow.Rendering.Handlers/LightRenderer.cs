@@ -1,12 +1,13 @@
 using System.Drawing;
 using System.Text;
 using GlideNGlow.Common.Models.Settings;
-using GlideNGlow.Mqqt.Models;
+using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Mqtt.Topics;
+using GlideNGlow.Rendering.Handlers.Helpers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace GlideNGlow.Rendering.Models;
+namespace GlideNGlow.Rendering.Handlers;
 
 public class LightRenderer
 {
@@ -56,44 +57,6 @@ public class LightRenderer
         Lights.Clear();
         Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();
         _ = SetStripSize(PixelAmount, cancellationToken);
-    }
-
-    public void Render(RenderObject renderObject)
-    {
-        //check if renderObject implements ICustomRendering
-        if (renderObject is ICustomRendering customRendering)
-        {
-            //if so, call the Render function
-            customRendering.Render(this);
-            return;
-        }
-        
-        //check if renderObject implements IdRenderRenderObject
-        if (renderObject is IdRenderObject idRenderRenderObject)
-        {
-            RenderIdObject(idRenderRenderObject);
-        }
-    }
-
-    private void RenderIdObject(IdRenderObject idRenderRenderObject)
-    {
-        var pos = idRenderRenderObject.GetOffset();
-        //loop over renderObjects images and add them to the lightStrips list
-        for (var i = 0; i < idRenderRenderObject.Image().Count; i++)
-        {
-            pos++;
-            if (pos >= PixelAmount)
-            {
-                pos %= PixelAmount;
-            }
-            else if (pos < 0)
-            {
-                //if the key is negative, loop around
-                pos = (pos % PixelAmount) + PixelAmount;
-            }
-
-            Lights[pos] = idRenderRenderObject.Image()[i];
-        }
     }
 
     public async Task SetStripSize(int size, CancellationToken cancellationToken)

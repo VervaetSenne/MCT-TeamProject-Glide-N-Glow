@@ -2,18 +2,18 @@ using System.Drawing;
 using GlideNGlow.Common.Extensions;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Gamemodes.Models.Abstractions;
-using GlideNGlow.Gamemodes.Models.Enums;
-using GlideNGlow.Mqqt.Models;
+using GlideNGlow.Gamemodes.Modes.Enums;
+using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Models;
+using GlideNGlow.Rendering.Models.Abstractions;
 
-namespace GlideNGlow.Gamemodes.Models;
+namespace GlideNGlow.Gamemodes.Modes;
 
 public class GhostRace : Gamemode, IGamemode
 {
     private readonly AppSettings _appsettings;
     private readonly float _distanceCm;
     private readonly float _timeLimit;
-    private readonly List<RenderObject> _renderObjects = new();
     private readonly MeasurementLineRenderObject _ghostLight = new(0, 0, Color.Red);
     private readonly MeasurementLineRenderObject _countdownLight = new(0, -1, Color.White);
     
@@ -60,7 +60,7 @@ public class GhostRace : Gamemode, IGamemode
         _countdownLight.SetColor(cdLightOn ? Color.White : Color.Black);
         if (_timeElapsed > 0)
         {
-            _renderObjects.Remove(_countdownLight);
+            RenderObjects.Remove(_countdownLight);
             _gameState = GameState.Running;
             _timeElapsed = 0;
         }
@@ -73,7 +73,7 @@ public class GhostRace : Gamemode, IGamemode
         _ghostLight.Move(distanceToMove);
         if (_timeElapsed > _timeLimit)
         {
-            _renderObjects.Remove(_ghostLight);
+            RenderObjects.Remove(_ghostLight);
             _gameState = GameState.WaitingForStart;
             _timeElapsed = 0;
         }
@@ -81,7 +81,7 @@ public class GhostRace : Gamemode, IGamemode
 
     public List<RenderObject> GetRenderObjects()
     {
-        return _renderObjects;
+        return RenderObjects;
     }
 
     public Task ButtonPressed(int id)
@@ -91,12 +91,12 @@ public class GhostRace : Gamemode, IGamemode
         _timeElapsed = -3;
         _startedButtonId = id;
             
-        _renderObjects.Add(_countdownLight);
+        RenderObjects.Add(_countdownLight);
             
         var startDistance = _appsettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
         _ghostLight.SetStart(startDistance);
         _ghostLight.SetEnd((float)(startDistance + 0.2));
-        _renderObjects.Add(_ghostLight);
+        RenderObjects.Add(_ghostLight);
             
         _gameState = GameState.Countdown;
         return Task.CompletedTask;

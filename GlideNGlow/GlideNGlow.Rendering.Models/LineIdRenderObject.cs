@@ -1,8 +1,9 @@
-using System.Drawing;
+/*using System.Drawing;
+using GlideNGlow.Rendering.Models.Abstractions;
 
 namespace GlideNGlow.Rendering.Models;
 
-public class LineIdRenderObject : IdRenderObject
+public class LineRenderObject : RenderObject
 {
     private readonly int _direction;
     private readonly int _length;
@@ -11,7 +12,7 @@ public class LineIdRenderObject : IdRenderObject
     private int _baseOffset;
     private Color _color;
     
-    public LineIdRenderObject(int start, int vector, Color color)
+    public LineRenderObject(int start, int vector, Color color)
     {
         if (vector > 0)
         {
@@ -76,4 +77,4 @@ public class LineIdRenderObject : IdRenderObject
     {
         return _image;
     }
-}
+}*/

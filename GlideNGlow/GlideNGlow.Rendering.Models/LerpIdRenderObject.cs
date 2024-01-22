@@ -1,8 +1,9 @@
-using System.Drawing;
+/*using System.Drawing;
+using GlideNGlow.Rendering.Models.Abstractions;
 
 namespace GlideNGlow.Rendering.Models;
 
-public class LerpIdRenderObject : IdRenderObject
+public class LerpRenderObject : RenderObject
 {
     private readonly int _direction;
     private readonly int _length;
@@ -12,7 +13,7 @@ public class LerpIdRenderObject : IdRenderObject
     private Color _colorEnd;
     private int _baseOffset;
     
-    public LerpIdRenderObject(int start, int vector, Color colorStart, Color colorEnd)
+    public LerpRenderObject(int start, int vector, Color colorStart, Color colorEnd)
     {
         if (vector > 0)
         {
@@ -79,4 +80,4 @@ public class LerpIdRenderObject : IdRenderObject
     {
         return _image;
     }
-}
+}*/

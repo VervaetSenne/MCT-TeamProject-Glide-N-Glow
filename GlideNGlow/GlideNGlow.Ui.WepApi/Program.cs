@@ -2,15 +2,10 @@ using GlideNGlow.Common.Models;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Core.Data;
 using GlideNGlow.Core.Models;
-using GlideNGlow.Gamemodes.Models;
-using GlideNGlow.Mqqt.Models;
-using GlideNGlow.Rendering.Models;
+using GlideNGlow.Gamemodes.Handlers.Installers;
 using GlideNGlow.Services.Installers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Options.Implementations;
-using MQTTnet;
-using MQTTnet.Client;
 using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,18 +16,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.InstallServices(builder.Configuration);
-
-#region Backend
-
-builder.Services.AddSingleton<MqttHandler>();
-builder.Services.AddSingleton<EspHandler>();
-builder.Services.AddSingleton<LightRenderer>(isp => LightRenderer.Create(isp.GetRequiredService<ILogger<LightRenderer>>(),
-    isp.GetRequiredService<IOptionsMonitor<AppSettings>>(), isp.GetRequiredService<MqttHandler>()));
-builder.Services.AddSingleton<IMqttClient>(_ => new MqttFactory().CreateMqttClient());
-builder.Services.AddSingleton<Engine>();
-
-#endregion
+builder.Services.InstallGamemodeEngine();
 
 builder.Services.AddCors(options =>
 {

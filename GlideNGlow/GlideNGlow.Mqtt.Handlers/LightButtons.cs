@@ -1,7 +1,7 @@
 using GlideNGlow.Common.Models;
 using Microsoft.Extensions.Logging;
 
-namespace GlideNGlow.Mqqt.Models;
+namespace GlideNGlow.Mqqt.Handlers;
 
 public class LightButtons : LightButtonData
 {

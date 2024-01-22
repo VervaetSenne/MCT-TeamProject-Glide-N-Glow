@@ -1,4 +1,4 @@
-﻿namespace GlideNGlow.Gamemodes.Models.Enums;
+﻿namespace GlideNGlow.Gamemodes.Modes.Enums;
 
 public enum GameState
 {

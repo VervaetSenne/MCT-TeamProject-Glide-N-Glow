@@ -1,10 +1,10 @@
 ﻿using GlideNGlow.Common.Abstractions;
 using GlideNGlow.Common.Models.Settings;
-using GlideNGlow.Mqqt.Models;
-using GlideNGlow.Rendering.Models;
+using GlideNGlow.Mqqt.Handlers;
+using GlideNGlow.Rendering.Handlers;
 using Microsoft.Extensions.Options;
 
-namespace GlideNGlow.Gamemodes.Models;
+namespace GlideNGlow.Gamemodes.Handlers;
 
 public class Engine : IAsyncLifeCycle
 {

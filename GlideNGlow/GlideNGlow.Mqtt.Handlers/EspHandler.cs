@@ -4,7 +4,7 @@ using GlideNGlow.Mqtt.Topics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options.Implementations;
 
-namespace GlideNGlow.Mqqt.Models;
+namespace GlideNGlow.Mqqt.Handlers;
 
 public class EspHandler
 {

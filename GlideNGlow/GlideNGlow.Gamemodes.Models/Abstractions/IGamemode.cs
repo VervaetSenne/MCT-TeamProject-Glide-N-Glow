@@ -1,4 +1,4 @@
-using GlideNGlow.Rendering.Models;
+using GlideNGlow.Rendering.Models.Abstractions;
 
 namespace GlideNGlow.Gamemodes.Models.Abstractions;
 

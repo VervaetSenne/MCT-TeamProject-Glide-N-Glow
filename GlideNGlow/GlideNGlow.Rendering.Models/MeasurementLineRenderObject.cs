@@ -1,8 +1,10 @@
 ﻿using System.Drawing;
+using GlideNGlow.Rendering.Handlers;
+using GlideNGlow.Rendering.Models.Abstractions;
 
 namespace GlideNGlow.Rendering.Models;
 
-public class MeasurementLineRenderObject : RenderObject, ICustomRendering
+public class MeasurementLineRenderObject : RenderObject
 {
     private float _startPosition;
     private float _endPosition;
@@ -41,8 +43,7 @@ public class MeasurementLineRenderObject : RenderObject, ICustomRendering
         _color = Color.FromArgb(r,g,b);
     }
 
-
-    public void Render(LightRenderer renderer)
+    public override void Render(LightRenderer renderer)
     {
         //first we must convert our start and end positions to the correct pixel positions
         if (!renderer.LightStripConverter.TryConvertToPixelLine(_startPosition, _endPosition, out var startPixel,
@@ -59,7 +60,6 @@ public class MeasurementLineRenderObject : RenderObject, ICustomRendering
         {
             return;
         }
-        
         
         //now we can draw the line
         var drawPosition = startPixel;

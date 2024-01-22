@@ -6,7 +6,7 @@ using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Protocol;
 
-namespace GlideNGlow.Mqqt.Models;
+namespace GlideNGlow.Mqqt.Handlers;
 public class MqttHandler
 {
     private readonly IOptionsMonitor<AppSettings> _appSettings;

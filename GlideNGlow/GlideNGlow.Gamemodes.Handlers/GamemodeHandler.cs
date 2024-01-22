@@ -1,10 +1,11 @@
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Gamemodes.Models.Abstractions;
-using GlideNGlow.Mqqt.Models;
-using GlideNGlow.Rendering.Models;
+using GlideNGlow.Gamemodes.Modes;
+using GlideNGlow.Mqqt.Handlers;
+using GlideNGlow.Rendering.Handlers;
 using Microsoft.Extensions.Options;
 
-namespace GlideNGlow.Gamemodes.Models;
+namespace GlideNGlow.Gamemodes.Handlers;
 
 public class GamemodeHandler
 {
@@ -41,7 +42,7 @@ public class GamemodeHandler
         _lightRenderer.Clear();
         foreach (var renderObject in _gamemode.GetRenderObjects())
         {
-            _lightRenderer.Render(renderObject);
+            renderObject.Render(_lightRenderer);
         }
         
         await _lightRenderer.ShowAsync(cancellationToken);
