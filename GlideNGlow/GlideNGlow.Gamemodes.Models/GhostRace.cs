@@ -1,12 +1,14 @@
 using System.Drawing;
+using GlideNGlow.Common.Extensions;
 using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Gamemodes.Models.Abstractions;
 using GlideNGlow.Gamemodes.Models.Enums;
 using GlideNGlow.Mqqt.Models;
 using GlideNGlow.Rendering.Models;
 
 namespace GlideNGlow.Gamemodes.Models;
 
-public class GhostRace : Gamemode
+public class GhostRace : Gamemode, IGamemode
 {
     private readonly AppSettings _appsettings;
     private readonly float _distanceCm;
@@ -20,33 +22,31 @@ public class GhostRace : Gamemode
     private int _startedButtonId;
     private float _timeElapsed;
     
-    public GhostRace(AppSettings appsettings, EspHandler espHandler, float distanceCm, float timeLimit) : base(espHandler)
+    public GhostRace(AppSettings appsettings, EspHandler espHandler, float distanceCm, float timeLimit) : base(espHandler, appsettings)
     {
-        EspHandler = espHandler;
         _appsettings = appsettings;
         _distanceCm = distanceCm;
         _timeLimit = timeLimit;
     }
 
-    public override Task Start()
+    public void Initialize()
     {
         _distancePerSecond = _distanceCm / _timeLimit;
         _gameState = GameState.WaitingForStart;
-        return Task.CompletedTask;
     }
 
-    public override Task Update(float deltaSeconds)
+    public Task UpdateAsync(TimeSpan timeSpan)
     {
-        _timeElapsed += deltaSeconds;
+        _timeElapsed += timeSpan.TotalSeconds();
         switch (_gameState)
         {
             case GameState.WaitingForStart:
                 break;
             case GameState.Countdown:
-                UpdateCountdown(deltaSeconds);
+                UpdateCountdown(timeSpan);
                 break;
             case GameState.Running:
-                UpdateRunning(deltaSeconds);
+                UpdateRunning(timeSpan);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -54,7 +54,7 @@ public class GhostRace : Gamemode
         return Task.CompletedTask;
     }
 
-    public void UpdateCountdown(float deltaSeconds)
+    public void UpdateCountdown(TimeSpan timeSpan)
     {
         var cdLightOn = _timeElapsed % 1 > -0.5;
         _countdownLight.SetColor(cdLightOn ? Color.White : Color.Black);
@@ -66,10 +66,10 @@ public class GhostRace : Gamemode
         }
     }
     
-    public void UpdateRunning(float deltaSeconds)
+    public void UpdateRunning(TimeSpan timeSpan)
     {
         //calculate the distance to move
-        var distanceToMove = _distancePerSecond * deltaSeconds;
+        var distanceToMove = _distancePerSecond * timeSpan.Seconds;
         _ghostLight.Move(distanceToMove);
         if (_timeElapsed > _timeLimit)
         {
@@ -79,12 +79,12 @@ public class GhostRace : Gamemode
         }
     }
 
-    public override List<RenderObject> GetRenderObjects()
+    public List<RenderObject> GetRenderObjects()
     {
         return _renderObjects;
     }
 
-    public override Task Input(int id)
+    public Task ButtonPressed(int id)
     {
         if (_gameState != GameState.WaitingForStart) return Task.CompletedTask;
         
@@ -95,7 +95,7 @@ public class GhostRace : Gamemode
             
         var startDistance = _appsettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
         _ghostLight.SetStart(startDistance);
-        _ghostLight.SetEnd((float)(startDistance +0.2));
+        _ghostLight.SetEnd((float)(startDistance + 0.2));
         _renderObjects.Add(_ghostLight);
             
         _gameState = GameState.Countdown;

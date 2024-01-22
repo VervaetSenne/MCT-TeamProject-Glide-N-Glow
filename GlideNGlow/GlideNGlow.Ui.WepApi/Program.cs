@@ -30,7 +30,7 @@ builder.Services.AddSingleton<EspHandler>();
 builder.Services.AddSingleton<LightRenderer>(isp => LightRenderer.Create(isp.GetRequiredService<ILogger<LightRenderer>>(),
     isp.GetRequiredService<IOptionsMonitor<AppSettings>>(), isp.GetRequiredService<MqttHandler>()));
 builder.Services.AddSingleton<IMqttClient>(_ => new MqttFactory().CreateMqttClient());
-builder.Services.AddHostedService<Engine>();
+builder.Services.AddSingleton<Engine>();
 
 #endregion
 

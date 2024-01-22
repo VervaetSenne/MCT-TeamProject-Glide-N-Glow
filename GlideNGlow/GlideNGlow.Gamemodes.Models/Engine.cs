@@ -1,12 +1,12 @@
-﻿using GlideNGlow.Common.Models.Settings;
+﻿using GlideNGlow.Common.Abstractions;
+using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Mqqt.Models;
 using GlideNGlow.Rendering.Models;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace GlideNGlow.Gamemodes.Models;
 
-public class Engine : IHostedService
+public class Engine : IAsyncLifeCycle
 {
     private readonly LightRenderer _lightRenderer;
     private readonly IOptionsMonitor<AppSettings> _appSettings;
@@ -25,11 +25,12 @@ public class Engine : IHostedService
         var gamemodeHandler = new GamemodeHandler(_lightRenderer, _appSettings, _espHandler);
         
         gamemodeHandler.Start();
-        
-        var periodicTimer = new PeriodicTimer(TimeSpan.FromSeconds(0.3));
+
+        var deltaTime = TimeSpan.FromMilliseconds(300);
+        var periodicTimer = new PeriodicTimer(deltaTime);
         while (await periodicTimer.WaitForNextTickAsync(cancellationToken))
         {
-            await gamemodeHandler.UpdateAsync(0.3f);
+            await gamemodeHandler.UpdateAsync(deltaTime);
             await gamemodeHandler.RenderAsync(cancellationToken);
         }
     }

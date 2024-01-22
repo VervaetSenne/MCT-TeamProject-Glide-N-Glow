@@ -22,33 +22,11 @@ public class EspHandler
         _appSettings = appSettings;
     }
 
-    #region Subscriptions
-
     public async Task AddSubscriptions(CancellationToken cancellationToken)
     {
-        await AddSignin(cancellationToken);
-        await AddTestConnectionsSubscription(cancellationToken);
-        await AddButtonSubscription(cancellationToken);
-    }
-    
-    public async Task AddSignin(CancellationToken cancellationToken)
-    {
-        await _mqttHandler.Subscribe(TopicEndpoints.SigninTopic, (topic, message) =>
-        {
-            var macAddress = topic.Split('/')[1];
-            if(_lightButtons.ContainsKey(macAddress))
-            {
-                _logger.LogInformation($"Esp {macAddress} signed in: {message}");
-            }
-            else
-            {
-                HandleFileData(macAddress);
-                // _lightButtons.Add(macAddress, new LightButtons(macAddress, _logger, SetRgb));
-                _logger.LogInformation($"Esp {macAddress} resigned in: {message}");
-                ReorderButtonIds();
-            }
-            
-        }, cancellationToken);
+        await _mqttHandler.Subscribe(TopicEndpoints.SigninTopic, OnSignin, cancellationToken);
+        await _mqttHandler.Subscribe(TopicEndpoints.TestTopic, OnTestSubscription, cancellationToken);
+        await _mqttHandler.Subscribe(TopicEndpoints.ButtonTopic, OnButtonSubscription, cancellationToken);
     }
 
     public void HandleFileData(string macAddress)
@@ -84,32 +62,46 @@ public class EspHandler
         }
     }
 
-    public async Task AddTestConnectionsSubscription(CancellationToken cancellationToken)
-    {
-        await _mqttHandler.Subscribe(TopicEndpoints.TestTopic, (topic, message) =>
-        {
-            var macAddress = topic.Split('/')[1];
-            _logger.LogInformation($"Esp {macAddress} acknowledged: {message}");
-            _lightButtons[macAddress].Responded = true;
+#region Subscriptions
 
+    private void OnSignin(string topic, string message)
+    {
+        var macAddress = topic.Split('/')[1];
+        if (_lightButtons.ContainsKey(macAddress))
+        {
+            _logger.LogInformation($"Esp {macAddress} signed in: {message}");
+        }
+        else
+        {
             HandleFileData(macAddress);
+            // _lightButtons.Add(macAddress, new LightButtons(macAddress, _logger, SetRgb));
+            _logger.LogInformation($"Esp {macAddress} resigned in: {message}");
             ReorderButtonIds();
-        }, cancellationToken);
+        }
     }
 
-    public async Task AddButtonSubscription(CancellationToken cancellationToken)
+    private void OnTestSubscription(string topic, string message)
     {
-        await _mqttHandler.Subscribe(TopicEndpoints.ButtonTopic, (topic, message) =>
-        {
-            var macAddress = topic.Split('/')[1];
-            _logger.LogInformation("Esp {macAddress} button pressed: {message}", macAddress, message);
-            if (_lightButtons.TryGetValue(macAddress, out var button)) button.Pressed();
-            else _logger.LogCritical("Button pressed but not registered uwu!"); // TODO this should notifiy clients
-            ButtonPressedEvent?.Invoke(_lightButtons[macAddress].ButtonNumber ?? -1);
-        }, cancellationToken);
+        var macAddress = topic.Split('/')[1];
+        _logger.LogInformation($"Esp {macAddress} acknowledged: {message}");
+        _lightButtons[macAddress].Responded = true;
+
+        HandleFileData(macAddress);
+        ReorderButtonIds();
     }
 
-    #endregion
+    private void OnButtonSubscription(string topic, string message)
+    {
+        var macAddress = topic.Split('/')[1];
+        _logger.LogInformation("Esp {macAddress} button pressed: {message}", macAddress, message);
+        if (_lightButtons.TryGetValue(macAddress, out var button))
+            button.Pressed();
+        else
+            _logger.LogCritical("Button pressed but not registered uwu!"); // TODO this should notifiy clients
+        ButtonPressedEvent?.Invoke(_lightButtons[macAddress].ButtonNumber ?? -1);
+    }
+
+#endregion
     
     public void AddButtonPressedEvent(Action<int> callback)
     {

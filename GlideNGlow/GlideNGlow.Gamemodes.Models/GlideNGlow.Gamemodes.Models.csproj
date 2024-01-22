@@ -11,6 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\GlideNGlow.Common.Abstractions\GlideNGlow.Common.Abstractions.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Common.Extensions\GlideNGlow.Common.Extensions.csproj" />
       <ProjectReference Include="..\GlideNGlow.Rendering.Models\GlideNGlow.Rendering.Models.csproj" />
     </ItemGroup>
 

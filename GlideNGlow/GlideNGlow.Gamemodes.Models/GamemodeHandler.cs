@@ -1,4 +1,5 @@
 using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Gamemodes.Models.Abstractions;
 using GlideNGlow.Mqqt.Models;
 using GlideNGlow.Rendering.Models;
 using Microsoft.Extensions.Options;
@@ -7,7 +8,7 @@ namespace GlideNGlow.Gamemodes.Models;
 
 public class GamemodeHandler
 {
-    private Gamemode _gamemode;
+    private IGamemode _gamemode;
     private readonly LightRenderer _lightRenderer;
     private readonly EspHandler _espHandler;
 
@@ -19,18 +20,18 @@ public class GamemodeHandler
         var currentAppSettings = appSettings.CurrentValue;
         var currentValueStrips = currentAppSettings.Strips;
         var length = currentValueStrips.Sum(strip => strip.Length + strip.DistanceFromLast);
-        _gamemode = new GhostRace(currentAppSettings, espHandler, length  ,15);
+        _gamemode = new GhostRace(currentAppSettings, _espHandler, length  ,15);
     }
     
     public void Start()
     {
-        _gamemode.Start();
+        _gamemode.Initialize();
         AddSubscriptions();
     }
     
-    public async Task UpdateAsync(float deltaSeconds)
+    public async Task UpdateAsync(TimeSpan timeSpan)
     {
-        await _gamemode.Update(deltaSeconds);
+        await _gamemode.UpdateAsync(timeSpan);
     }
     
     public async Task RenderAsync(CancellationToken cancellationToken)
@@ -47,7 +48,7 @@ public class GamemodeHandler
     }
     
     //TODO: assemble gamemodes from frontend
-    public void SetGamemode(Gamemode gamemode)
+    public void SetGamemode(IGamemode gamemode)
     {
         _gamemode = gamemode;
     }
@@ -59,6 +60,6 @@ public class GamemodeHandler
     
     public void Input(int id)
     {
-        _gamemode.Input(id);
+        _gamemode.ButtonPressed(id);
     }
 }
