@@ -16,12 +16,11 @@ public class Engine : IHostedService
     
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await _gamemodeHandler.StartAsync(cancellationToken);
-
         var deltaTime = TimeSpan.FromMilliseconds(300);
         var periodicTimer = new PeriodicTimer(deltaTime);
         while (await periodicTimer.WaitForNextTickAsync(cancellationToken))
         {
+            await _gamemodeHandler.TryInitializeAsync(cancellationToken);
             await _gamemodeHandler.UpdateAsync(deltaTime);
             await _gamemodeHandler.RenderAsync(cancellationToken);
         }
