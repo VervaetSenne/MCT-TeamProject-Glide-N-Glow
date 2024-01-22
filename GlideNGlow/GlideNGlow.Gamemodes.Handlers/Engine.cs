@@ -5,12 +5,10 @@ namespace GlideNGlow.Gamemodes.Handlers;
 
 public class Engine : IHostedService
 {
-    private readonly EspHandler _espHandler;
     private readonly GamemodeHandler _gamemodeHandler;
     
-    public Engine(EspHandler espHandler, GamemodeHandler gamemodeHandler)
+    public Engine(GamemodeHandler gamemodeHandler)
     {
-        _espHandler = espHandler;
         _gamemodeHandler = gamemodeHandler;
     }
     
