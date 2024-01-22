@@ -1,4 +1,5 @@
 ﻿using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Core.Services.Installers;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Handlers;
 using Microsoft.Extensions.DependencyInjection;
