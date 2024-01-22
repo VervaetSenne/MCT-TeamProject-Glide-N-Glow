@@ -300,7 +300,10 @@ main {
   border-radius: 10px;
   background-color: var(--bg-white);
   margin: 1.5rem;
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Use the default text color */
 }
+
 .gamemode-card-header {
   width: 326px;
 }
@@ -331,6 +334,126 @@ main {
 }
 .gamemode-card-best-time svg {
   margin-right: 1rem;
+}
+/* gamemode-set-settings page */
+#quit-button {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background-color: #dc3545; /* Bootstrap's danger color */
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  width: 100px;
+  margin: 1rem;
+  transition: ease var(--transition-speed);
+}
+#quit-button:hover {
+  background-color: #63232a;
+  transition: ease var(--transition-speed);
+}
+.gamemode-settings-header {
+  text-align: center;
+}
+.gamemode-setting-discription {
+  color: var(--text-primary);
+}
+.gamemode-setting-icon {
+  width: 94px;
+  height: 94px;
+}
+.gamemode-settings-card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  margin-top: 7rem;
+}
+
+.gamemode-settings-card {
+  background-color: #f8f9fa; /* Light grey background color */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+#playerInput {
+  width: 200px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ced4da; /* Bootstrap's border color */
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+#startButton {
+  background-color: #28a745; /* Bootstrap's success color */
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: ease var(--transition-speed);
+}
+#startButton:hover {
+  background-color: #237736;
+  transition: ease var(--transition-speed);
+}
+.gamemode-setting-content-hidden {
+  display: none;
+}
+#startButtonTime {
+  margin-left: 10rem;
+  margin-top: 1rem;
+  background-color: #28a745; /* Bootstrap's success color */
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: ease var(--transition-speed);
+}
+#startButtonTime:hover {
+  background-color: #237736;
+  transition: ease var(--transition-speed);
+}
+.gamemode-setting-text {
+  margin-left: 1rem;
+}
+#playerInputTime {
+  width: 100px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ced4da; /* Bootstrap's border color */
+  border-radius: 5px;
+  box-sizing: border-box;
+  margin-right: 1rem;
+  margin-left: 1rem;
+}
+/* gamemode-hardware-status */
+.gamemode-hardware-status {
+  position: fixed;
+  top: 1rem;
+  right: 2rem;
+  z-index: 1000;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #e8ffe8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gamemode-hardware-status svg {
+  width: 24px;
+  height: 24px;
 }
 /* table */
 .table-button {
