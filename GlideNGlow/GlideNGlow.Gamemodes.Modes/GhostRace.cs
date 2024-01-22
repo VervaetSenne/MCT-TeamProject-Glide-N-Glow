@@ -27,7 +27,6 @@ public class GhostRace : Gamemode, IGamemode
         _appsettings = appsettings;
         _distanceCm = distanceCm;
         _timeLimit = timeLimit;
-        Initialize();
     }
 
     public void Initialize()
