@@ -22,10 +22,10 @@ public class GhostRace : Gamemode, IGamemode
     private int _startedButtonId;
     private float _timeElapsed;
     
-    public GhostRace(AppSettings appsettings, EspHandler espHandler, float distanceCm, float timeLimit) : base(espHandler, appsettings)
+    public GhostRace(EspHandler espHandler, AppSettings appsettings, float timeLimit) : base(espHandler, appsettings)
     {
         _appsettings = appsettings;
-        _distanceCm = distanceCm;
+        _distanceCm = appsettings.Strips.Sum(strip => strip.Length + strip.DistanceFromLast);
         _timeLimit = timeLimit;
     }
 

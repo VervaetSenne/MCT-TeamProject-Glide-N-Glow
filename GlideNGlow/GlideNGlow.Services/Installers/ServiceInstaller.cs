@@ -12,7 +12,6 @@ public static class ServiceInstaller
     public static IServiceCollection InstallServices(this IServiceCollection services, IConfiguration config)
     {
         return services
-            .InstallCore(config)
             .AddScoped<ISettingsService, SettingsService>()
             .AddScoped<IAvailableGameService, AvailableGameService>()
             .ConfigureWritable<AppSettings>(config, nameof(AppSettings));
