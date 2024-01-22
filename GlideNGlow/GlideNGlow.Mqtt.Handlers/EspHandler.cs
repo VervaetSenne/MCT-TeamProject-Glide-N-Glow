@@ -28,6 +28,13 @@ public class EspHandler
         await _mqttHandler.Subscribe(TopicEndpoints.TestTopic, OnTestSubscription, cancellationToken);
         await _mqttHandler.Subscribe(TopicEndpoints.ButtonTopic, OnButtonSubscription, cancellationToken);
     }
+    
+    public async Task RemoveSubscriptions(CancellationToken cancellationToken)
+    {
+        await _mqttHandler.Unsubscribe(TopicEndpoints.SigninTopic, cancellationToken);
+        await _mqttHandler.Unsubscribe(TopicEndpoints.TestTopic, cancellationToken);
+        await _mqttHandler.Unsubscribe(TopicEndpoints.ButtonTopic, cancellationToken);
+    }
 
     public void HandleFileData(string macAddress)
     {

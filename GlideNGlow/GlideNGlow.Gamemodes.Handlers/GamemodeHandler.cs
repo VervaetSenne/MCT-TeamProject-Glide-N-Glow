@@ -54,9 +54,10 @@ public class GamemodeHandler
         _gamemode = gamemode;
     }
 
-    private void StopGame()
+    private async Task StopGameAsync(CancellationToken cancellationToken)
     {
         _gamemode.Stop();
+        await _espHandler.RemoveSubscriptions(cancellationToken);
     }
     
     public async Task AddSubscriptionsAsync(CancellationToken cancellationToken)
