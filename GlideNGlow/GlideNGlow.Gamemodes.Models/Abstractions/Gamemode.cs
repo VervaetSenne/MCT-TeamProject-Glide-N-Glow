@@ -5,18 +5,31 @@ using Newtonsoft.Json;
 
 namespace GlideNGlow.Gamemodes.Models.Abstractions;
 
-public abstract class Gamemode
+public abstract class Gamemode : IGamemode
 {
     protected readonly List<RenderObject> RenderObjects = new();
     
-    protected EspHandler EspHandler;
-    protected AppSettings AppSettings;
+    protected readonly EspHandler EspHandler;
+    protected readonly AppSettings AppSettings;
 
     protected Gamemode(EspHandler espHandler, AppSettings appSettings)
     {
         EspHandler = espHandler;
         AppSettings = appSettings;
     }
+
+    public abstract void Initialize();
+
+    public abstract void Stop();
+
+    public abstract Task UpdateAsync(TimeSpan timeSpan);
+
+    public virtual List<RenderObject> GetRenderObjects()
+    {
+        return RenderObjects;
+    }
+
+    public abstract Task ButtonPressed(int id);
 }
 
 public abstract class Gamemode<TSettings> : Gamemode

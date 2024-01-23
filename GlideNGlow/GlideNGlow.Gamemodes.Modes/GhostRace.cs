@@ -6,11 +6,10 @@ using GlideNGlow.Gamemodes.Modes.Enums;
 using GlideNGlow.Gamemodes.Modes.Settings;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Models;
-using GlideNGlow.Rendering.Models.Abstractions;
 
 namespace GlideNGlow.Gamemodes.Modes;
 
-public class GhostRace : Gamemode<GhostRaceSetting>, IGamemode
+public class GhostRace : Gamemode<GhostRaceSetting>
 {
     private readonly float _distanceCm;
     private readonly MeasurementLineRenderObject _ghostLight = new(0, 0, Color.Red);
@@ -26,17 +25,17 @@ public class GhostRace : Gamemode<GhostRaceSetting>, IGamemode
         _distanceCm = appsettings.Strips.Sum(strip => strip.Length + strip.DistanceFromLast);
     }
 
-    public void Initialize()
+    public override void Initialize()
     {
         _distancePerSecond = _distanceCm / Settings.TimeLimit;
         _gameState = GameState.WaitingForStart;
     }
 
-    public void Stop()
+    public override void Stop()
     {
     }
 
-    public Task UpdateAsync(TimeSpan timeSpan)
+    public override Task UpdateAsync(TimeSpan timeSpan)
     {
         _timeElapsed += timeSpan.TotalSeconds();
         switch (_gameState)
@@ -80,12 +79,7 @@ public class GhostRace : Gamemode<GhostRaceSetting>, IGamemode
         }
     }
 
-    public List<RenderObject> GetRenderObjects()
-    {
-        return RenderObjects;
-    }
-
-    public Task ButtonPressed(int id)
+    public override Task ButtonPressed(int id)
     {
         if (_gameState != GameState.WaitingForStart) return Task.CompletedTask;
         
