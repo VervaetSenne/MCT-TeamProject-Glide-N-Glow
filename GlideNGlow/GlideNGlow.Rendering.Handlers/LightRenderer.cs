@@ -34,6 +34,10 @@ public class LightRenderer
         
         //create a colorlist with _pixelAmount amount of colors
         Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();
+        if (PixelAmount <= 0)
+        {
+            _logger.LogError("Pixel amount is 0 or less");
+        }
     }
 
     public static LightRenderer Create(ILogger<LightRenderer> logger, IOptionsMonitor<AppSettings> appsettings, MqttHandler mqttHandler, CancellationToken cancellationToken = default)
@@ -48,9 +52,9 @@ public class LightRenderer
         PixelAmount = AppSettings.Strips.Aggregate(0, (i, strip) => i + strip.Leds);
         //_pixelAmount = size;
 
-        if (PixelAmount == 0)
+        if (PixelAmount <= 0)
         {
-            _logger.LogError("Pixel amount is 0");
+            _logger.LogError("Pixel amount is 0 or less");
             PixelAmount = 300;
         }
         
@@ -85,6 +89,8 @@ public class LightRenderer
     
     public async Task ShowAsync(CancellationToken cancellationToken)
     {
+        if (!_isDirty) return;
+        _isDirty = false;
         var payload = new StringBuilder();
         //add all colors as hexadecimals to the payload string
         foreach (var color in Lights)
@@ -107,7 +113,7 @@ public class LightRenderer
     //     await _mqttHandler.SendMessage(TopicSetPixel, "");
     // }
     // private const string TopicUpdateColors = "esp32/strip/update";
-    public void makeDirty()
+    public void MakeDirty()
     {
         _isDirty = true;
     }
