@@ -73,6 +73,11 @@ public class SettingsService : ISettingsService
         _appSettings.Update(s => s.CurrentGamemode = gameId);
     }
 
+    public Guid? GetCurrentGamemode()
+    {
+        return AppSettings.CurrentGamemode;
+    }
+
     public IEnumerable<ButtonDto> GetButtons()
     {
         return AppSettings.Buttons

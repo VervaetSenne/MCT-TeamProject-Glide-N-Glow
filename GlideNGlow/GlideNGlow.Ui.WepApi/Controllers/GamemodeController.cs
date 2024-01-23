@@ -71,6 +71,13 @@ public class GamemodeController : Controller
         return Ok(await _availableGameService.GetGamemodesAsync());
     }
 
+    [HttpGet("current")]
+    public async Task<IActionResult> GetCurrentGamemodeAsync()
+    {
+        var currentId = _settingsService.GetCurrentGamemode();
+        return Ok(await _gameService.FindByIdAsync(currentId));
+    }
+
     [HttpPost("current/{gameId:guid?}")]
     public async Task<IActionResult> SetCurrentGamemodeAsync([FromRoute] Guid? gameId)
     {

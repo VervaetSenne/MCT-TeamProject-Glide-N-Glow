@@ -12,6 +12,7 @@ public interface ISettingsService
     bool TryRemoveAvailable(Guid gameId);
     void UpdateForceGamemode(Guid? gameId);
     void UpdateCurrentGamemode(Guid? gameId);
+    Guid? GetCurrentGamemode();
     IEnumerable<ButtonDto> GetButtons();
     void UpdateButton(string buttonId, float? distance);
     LightstripSettingsDto GetLightstripSettings();
