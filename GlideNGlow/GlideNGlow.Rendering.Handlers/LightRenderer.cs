@@ -18,6 +18,8 @@ public class LightRenderer
     private readonly MqttHandler _mqttHandler;
     //private setter public getter for List<Color> _lights
 
+    private bool _isDirty = true;
+
     private AppSettings AppSettings => _appsettings.CurrentValue;
     
     public List<Color> Lights { get; private set; }
@@ -76,6 +78,7 @@ public class LightRenderer
 
     public void Clear()
     {
+        _isDirty = true;
         //set entire _light
         Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();
     }
@@ -104,6 +107,10 @@ public class LightRenderer
     //     await _mqttHandler.SendMessage(TopicSetPixel, "");
     // }
     // private const string TopicUpdateColors = "esp32/strip/update";
+    public void makeDirty()
+    {
+        _isDirty = true;
+    }
     public void SetPixel(int drawPosition, Color color)
     {
         if (drawPosition >= PixelAmount)
