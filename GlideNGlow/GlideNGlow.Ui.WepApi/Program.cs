@@ -18,7 +18,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.InstallCore(builder.Configuration);
 builder.Services.InstallServices(builder.Configuration);
-builder.Services.InstallGamemodeEngine();
+builder.Services.InstallGamemodeEngine(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {

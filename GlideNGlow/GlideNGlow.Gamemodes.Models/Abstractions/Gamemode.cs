@@ -27,7 +27,7 @@ public abstract class Gamemode : IGamemode
 
     public virtual List<RenderObject> GetRenderObjects()
     {
-        return RenderObjects;
+        return RenderObjects.ToList();
     }
 
     public abstract Task ButtonPressed(int id);

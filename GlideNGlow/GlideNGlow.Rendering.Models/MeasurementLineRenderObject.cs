@@ -37,19 +37,12 @@ public class MeasurementLineRenderObject : RenderObject
     //clamp color values between 0 and 128
     private static Color ClampColor(Color color, int clampValue = 128)
     {
-        //check if the highest value is above 128
-        if (color.R > clampValue || color.G > clampValue || color.B > clampValue)
-        {
-            //find the highest value
-            var highest = Math.Max(color.R, Math.Max(color.G, color.B));
-            //find the ratio between the highest value and 128
-            var ratio = highest / (float)clampValue;
-            //divide all values by the ratio
-            return Color.FromArgb((int)(color.R / ratio), (int)(color.G / ratio), (int)(color.B / ratio));
-        }
-        
-        return color;
+        var ratio = clampValue / 255f;
+
+        //remap values in color
+        return Color.FromArgb((int)(color.R * ratio), (int)(color.G * ratio), (int)(color.B * ratio));
     }
+
     
     public void SetColor(Color color)
     {
