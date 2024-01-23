@@ -62,6 +62,9 @@ public class MeasurementLineRenderObject : RenderObject
             IsDirty = false;
             renderer.MakeDirty();
         }
+
+        if (!IsVisible) return;
+        
         //first we must convert our start and end positions to the correct pixel positions
         if (!renderer.LightStripConverter.TryConvertToPixelLine(_startPosition, _endPosition, out var startPixel,
                 out var endPixel)) return;
@@ -89,5 +92,11 @@ public class MeasurementLineRenderObject : RenderObject
             renderer.Lights[drawPosition] = _color;
             drawPosition = (drawPosition + 1) % renderer.PixelAmount;
         } while (drawPosition != endPixel);
+    }
+
+    public override void SetVisibility(bool visibility)
+    {
+        IsVisible = visibility;
+        IsDirty = true;
     }
 }
