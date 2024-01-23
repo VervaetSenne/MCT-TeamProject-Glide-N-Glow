@@ -2,18 +2,14 @@
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>GlideNGlow.Rendering.Handlers</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Iot.Device.Bindings" Version="3.1.0" />
-      <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
-      <PackageReference Include="System.Device.Gpio" Version="3.1.0" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\GlideNGlow.Common.Models\GlideNGlow.Common.Models.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Mqtt.Handlers\GlideNGlow.Mqtt.Handlers.csproj" />
     </ItemGroup>
 
 </Project>

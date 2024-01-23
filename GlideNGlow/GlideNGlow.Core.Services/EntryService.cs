@@ -16,7 +16,7 @@ public class EntryService : IEntryService
         _dbContext = dbContext;
     }
     
-    private bool IsWithinTimeFrame(Entry entry, TimeFrame timeFrame)
+    private static bool IsWithinTimeFrame(Entry entry, TimeFrame timeFrame)
     {
         var timeSpan = DateTime.Now - entry.DateTime;
         return timeFrame switch

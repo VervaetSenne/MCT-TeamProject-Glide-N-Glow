@@ -4,8 +4,6 @@ namespace GlideNGlow.Common.Extensions;
 
 public static class StringExtensions
 {
-    private static readonly Random Random = new();
-    
     public static string MacToHex(this string mac)
     {
         var hexs = mac.Replace(":", "").StringToByteArray().ToList();

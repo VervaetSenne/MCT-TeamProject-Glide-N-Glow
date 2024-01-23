@@ -9,18 +9,15 @@ public class WritableOptions<T> : IWritableOptions<T> where T : class, new()
 	private readonly IHostEnvironment _environment;
 	private readonly IOptionsMonitor<T> _options;
 	private readonly string _section;
-	private readonly string _path;
 
 	public WritableOptions(
 		IHostEnvironment environment,
 		IOptionsMonitor<T> options,
-		string section,
-		string path)
+		string section)
 	{
 		_environment = environment;
 		_options = options;
 		_section = section;
-		_path = path;
 	}
 
 	public T CurrentValue => _options.CurrentValue;
@@ -37,7 +34,9 @@ public class WritableOptions<T> : IWritableOptions<T> where T : class, new()
 		var fileInfo = fileProvider.GetFileInfo("appsettings.Development.json");
 		var physicalPath = fileInfo.PhysicalPath;
 #else
-		var physicalPath = _path;
+		var fileProvider = _environment.ContentRootFileProvider;
+		var fileInfo = fileProvider.GetFileInfo("appsettings.json");
+		var physicalPath = fileInfo.PhysicalPath;
 #endif
 
 		if (physicalPath == null)

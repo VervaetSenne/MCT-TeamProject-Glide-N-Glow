@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GlideNGlow.Common.Abstractions\GlideNGlow.Common.Abstractions.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Core.Models\GlideNGlow.Core.Models.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Core.Services\GlideNGlow.Core.Services.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Gamemodes.Models\GlideNGlow.Gamemodes.Models.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Gamemodes.Modes\GlideNGlow.Gamemodes.Modes.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Mqtt.Handlers\GlideNGlow.Mqtt.Handlers.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Rendering.Handlers\GlideNGlow.Rendering.Handlers.csproj" />
+    </ItemGroup>
+
+</Project>
