@@ -2,9 +2,11 @@ using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Gamemodes.Models;
 using GlideNGlow.Gamemodes.Modes;
+using GlideNGlow.Gamemodes.Modes.Settings;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Handlers;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace GlideNGlow.Gamemodes.Handlers;
 
@@ -51,7 +53,10 @@ public class GamemodeHandler
         _currentGamemode = new GamemodeData
         {
             Game = game,
-            Gamemode = new GhostRace(_espHandler, appSettings, 15)
+            Gamemode = new GhostRace(_espHandler, appSettings, JsonConvert.SerializeObject(new GhostRaceSetting
+            {
+                TimeLimit = 15
+            }))
         };
         _completionSource.SetResult();
     }
