@@ -88,9 +88,11 @@ public class GamemodeHandler
     {
         if (_currentGamemode is null)
             return;
-        
-        if(_currentGamemode.Gamemode.GetRenderObjects().Count == 0)
-            return;
+
+        if (_currentGamemode.Gamemode.ShouldForceRender())
+        {
+            _lightRenderer.MakeDirty();
+        }
         _lightRenderer.Clear();
         foreach (var renderObject in _currentGamemode.Gamemode.GetRenderObjects())
         {

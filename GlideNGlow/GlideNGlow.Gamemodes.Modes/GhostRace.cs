@@ -76,6 +76,7 @@ public class GhostRace : Gamemode<GhostRaceSetting>
             RenderObjects.Remove(_ghostLight);
             _gameState = GameState.WaitingForStart;
             _timeElapsed = 0;
+            ForceRenderUpdate = true;
         }
     }
 

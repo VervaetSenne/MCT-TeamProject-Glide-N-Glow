@@ -11,6 +11,7 @@ public abstract class Gamemode : IGamemode
     
     protected readonly EspHandler EspHandler;
     protected readonly AppSettings AppSettings;
+    protected bool ForceRenderUpdate = true;
 
     protected Gamemode(EspHandler espHandler, AppSettings appSettings)
     {
@@ -30,6 +31,17 @@ public abstract class Gamemode : IGamemode
     }
 
     public abstract Task ButtonPressed(int id);
+
+    public bool ShouldForceRender()
+    {
+        if (ForceRenderUpdate)
+        {
+            ForceRenderUpdate= false;
+            return true;
+        }
+
+        return false;
+    }
 }
 
 public abstract class Gamemode<TSettings> : Gamemode

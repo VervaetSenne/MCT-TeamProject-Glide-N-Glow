@@ -10,5 +10,10 @@ public interface IGamemode
     Task UpdateAsync(TimeSpan timeSpan);
     List<RenderObject> GetRenderObjects();
 
+    /// <summary>
+    /// Forces the renderer to update the display, can be used when all objects just got removed.
+    /// </summary>
+    bool ShouldForceRender();
+
     Task ButtonPressed(int id);
 }
