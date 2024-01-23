@@ -167,7 +167,7 @@ main {
   flex-direction: column;
 }
 
-/*Settings*/
+/* ADMIN - Settings */
 .settings-button-container {
   display: flex;
   justify-content: center;
@@ -203,7 +203,7 @@ main {
   transition: ease var(--transition-speed);
 }
 
-/* Gamemodes */
+/* ADMIN - Gamemodes */
 .gamemodes-container {
   display: flex;
 }
@@ -213,7 +213,10 @@ main {
   color: var(--text-dark);
   font-size: 1.1rem;
 }
-/* Button settings */
+.table-button-force-gamemodes.gamemode-force-active {
+  background-color: var(--bg-light-prinmary);
+}
+/* ADMIN - Button settings */
 .button-settings-infotext {
   margin-left: 1rem;
   color: var(--text-dark);
@@ -234,7 +237,7 @@ main {
 #button-id-data {
   padding-left: 1.3rem;
 }
-/* Lightstrip settings */
+/* ADMIN - Lightstrip settings */
 .lightstrip-setting-container {
   display: flex;
   gap: 2.6rem;

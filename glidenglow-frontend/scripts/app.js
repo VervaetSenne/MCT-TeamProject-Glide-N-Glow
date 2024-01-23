@@ -318,7 +318,7 @@ function handleButtons() {
                     </td>
                     <td id="distance-data">${button.distance}</td>
                     <td>
-                      <button class="table-button">
+                      <button id="${button.id}" class="table-button" onclick="editDistance(this)">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -329,7 +329,8 @@ function handleButtons() {
                           stroke-width="2"
                           stroke-linecap="round"
                           stroke-linejoin="round"
-                          class="lucide lucide-pencil"
+                          class="lucide lucide-pencil editDistanceButtonsSVG"
+                          data-state="state1"
                         >
                           <path
                             d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
@@ -337,7 +338,7 @@ function handleButtons() {
                           <path d="m15 5 4 4" />
                         </svg>
                       </button>
-                      <button class="table-button">
+                      <button id="${button.id}" class="table-button" onclick="deleteButton(this)">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -365,6 +366,98 @@ function handleButtons() {
       buttonTable.innerHTML = html;
     });
 }
+function deleteButton(button) {
+  // Get the parent <tr> element
+  const tableRow = button.closest('tr');
+
+  // Get the button ID from the data attribute
+  const buttonId = tableRow.dataset.buttonId;
+
+  // Confirm deletion with the user
+  const confirmDelete = confirm('Are you sure you want to delete this button?');
+
+  if (confirmDelete) {
+    // Assuming you have an API endpoint for deleting a button
+    const apiUrl = `${fetchdom}/button/${buttonId}`;
+
+    // Make a DELETE request to the API endpoint
+    fetch(apiUrl, {
+      method: 'DELETE',
+    })
+      .then((data) => {
+        console.log('Button deleted successfully:', data);
+        tableRow.remove();
+      })
+      .catch((error) => {
+        console.error('Error deleting button:', error);
+      });
+  }
+}
+function editDistance(button) {
+  //CHANGE SVG
+
+  // Get the SVG element inside the clicked button
+  const svgElement = button.querySelector('.editDistanceButtonsSVG');
+
+  // Check the current state based on the SVG content or class
+  const currentState = svgElement.getAttribute('data-state');
+
+  // Toggle between two states
+  if (currentState === 'state1') {
+    // Change to state 2
+    svgElement.setAttribute('data-state', 'state2');
+    svgElement.innerHTML = '<path d="M20 6 9 17l-5-5"/>'; // Change SVG path data for state 2
+  } else {
+    // Change to state 1
+    svgElement.setAttribute('data-state', 'state1');
+    svgElement.innerHTML =
+      '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>'; // Change SVG path data for state 1
+  }
+
+  //CHANGE DISTANCE TO INPUT FIELD
+
+  // Get the parent <tr> element
+  const tableRow = button.closest('tr');
+
+  // Get the distance data <td> element and its current value
+  const distanceTd = tableRow.querySelector('#distance-data');
+  const currentDistance = distanceTd.textContent;
+
+  // Check if the distance data is already in edit mode
+  if (distanceTd.classList.contains('edit-mode')) {
+    // Save the updated distance from the input
+    const newDistance = distanceTd.querySelector('input').value;
+    // Send to api
+    updateDistanceOnAPI(tableRow.dataset.buttonId, newDistance);
+    // Update the distance data and exit edit mode
+    distanceTd.textContent = newDistance;
+    distanceTd.classList.remove('edit-mode');
+  } else {
+    // Enter edit mode by replacing the distance data with an input field
+    distanceTd.innerHTML = `<input type="text" style="width:25px" value="${currentDistance}" />`;
+    distanceTd.classList.add('edit-mode');
+  }
+}
+function updateDistanceOnAPI(buttonId, newDistance) {
+  // Assuming you have an API endpoint for updating the distance
+  const apiUrl = `${fetchdom}/button/${buttonId}`;
+
+  // Make a PUT request to the API endpoint with the new distance data
+  fetch(apiUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ distance: newDistance }),
+  })
+    .then((data) => {
+      console.log('Distance updated successfully:', data);
+    })
+    .catch((error) => {
+      console.error('Error updating distance:', error);
+    });
+}
+
 function handleLightstrips() {
   /*
     LIGHTSTRIPS  -  GET ALL STRIPS
