@@ -14,12 +14,12 @@ public static class EngineInstaller
     public static IServiceCollection InstallGamemodeEngine(this IServiceCollection services)
     {
         return services
-            .AddSingleton<MqttHandler>()
-            .AddSingleton<EspHandler>()
-            .AddSingleton<LightRenderer>(isp => LightRenderer.Create(isp.GetRequiredService<ILogger<LightRenderer>>(),
+            .AddScoped<MqttHandler>()
+            .AddScoped<EspHandler>()
+            .AddScoped<LightRenderer>(isp => LightRenderer.Create(isp.GetRequiredService<ILogger<LightRenderer>>(),
             isp.GetRequiredService<IOptionsMonitor<AppSettings>>(), isp.GetRequiredService<MqttHandler>()))
-            .AddSingleton<IMqttClient>(_ => new MqttFactory().CreateMqttClient())
-            .AddSingleton<GamemodeHandler>()
+            .AddScoped<IMqttClient>(_ => new MqttFactory().CreateMqttClient())
+            .AddScoped<GamemodeHandler>()
             .AddHostedService<Engine>();
     }
 }
