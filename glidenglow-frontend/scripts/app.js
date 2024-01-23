@@ -299,7 +299,7 @@ function handleButtons() {
 
       for (const button of buttons) {
         html += `
-          <tr>
+          <tr data-button-id="${button.id}">
                     <td id="button-id-data">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -318,7 +318,7 @@ function handleButtons() {
                     </td>
                     <td id="distance-data">${button.distance}</td>
                     <td>
-                      <button id="${button.id}" class="table-button" onclick="editDistance(this)">
+                      <button class="table-button" onclick="editDistance(this)">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -440,7 +440,7 @@ function editDistance(button) {
 }
 function updateDistanceOnAPI(buttonId, newDistance) {
   // Assuming you have an API endpoint for updating the distance
-  const apiUrl = `${fetchdom}/button/${buttonId}`;
+  const apiUrl = `${fetchdom}/button/${buttonId}?distance=${newDistance}`;
 
   // Make a PUT request to the API endpoint with the new distance data
   fetch(apiUrl, {
@@ -448,7 +448,6 @@ function updateDistanceOnAPI(buttonId, newDistance) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ distance: newDistance }),
   })
     .then((data) => {
       console.log('Distance updated successfully:', data);
