@@ -21,7 +21,8 @@ function getParameters() {
   console.log(gameId);
   gamemodeSettingHeader.innerHTML = `${gameMode} settings`;
 
-  if (gameMode == 'TimeRace') {
+  //Based on selected gamemode -- show/hide settings content
+  if (gameMode == ' GhostRace') {
     document
       .querySelector('.js-no-setting')
       .classList.add('gamemode-setting-content-hidden');

@@ -9,6 +9,9 @@ let AllowGamemodeSwitchLoadState;
 //Buttons var
 let buttonTable;
 
+//Lightstrips var
+let lightstripsTable;
+
 //Current gamemode vars
 
 function checkUrl() {
@@ -362,41 +365,87 @@ function handleButtons() {
       buttonTable.innerHTML = html;
     });
 }
+function handleLightstrips() {
+  /*
+    LIGHTSTRIPS  -  GET ALL STRIPS
+  */
+  fetch(`${fetchdom}/lightstrip/settings`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch lightstrips. Status: ${response.status}`
+        );
+      }
+      return response.json();
+    })
+    .then((lightstrips) => {
+      console.log(lightstrips);
+      let html = '<table class="rounded-table">';
 
-function renderCarousel() {
-  console.log('Rendering carousel...');
-  $(document).ready(function () {
-    $('.gamemodes-carousel').slick({
-      centerMode: true,
-      centerPadding: '10px', // Adjust the center padding
-      slidesToShow: 3,
-      infinite: false,
-      initialSlide: 2,
-      dots: true,
-      arrows: true,
-      cssEase: 'ease-in-out',
-      responsive: [
-        {
-          breakpoint: 768,
-          settings: {
-            arrows: false,
-            centerMode: true,
-            centerPadding: '40px',
-            slidesToShow: 1,
-          },
-        },
-        {
-          breakpoint: 480,
-          settings: {
-            arrows: false,
-            centerMode: true,
-            centerPadding: '40px',
-            slidesToShow: 1,
-          },
-        },
-      ],
+      // Add table headers
+      html += `
+        <tr>
+                    <th>Distance(m)</th>
+                    <th>Length(m)</th>
+                    <th>Pixels</th>
+                    <th id="lightstrip-action">Actions</th>
+                  </tr>
+      `;
+
+      for (const strip of lightstrips.lightstrips) {
+        console.log(strip);
+        html += `
+         <tr>
+                    <td id="lightstrip-distance-data">${strip.distance}</td>
+                    <td id="lightstrip-length-data">${strip.length}</td>
+                    <td id="lightstrip-pixels-data">${strip.pixels}</td>
+                    <td>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-pencil"
+                        >
+                          <path
+                            d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+                          />
+                          <path d="m15 5 4 4" />
+                        </svg>
+                      </button>
+                      <button class="table-button">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-trash-2"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                          <line x1="10" x2="10" y1="11" y2="17" />
+                          <line x1="14" x2="14" y1="11" y2="17" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>`;
+      }
+
+      html += '</table>';
+      lightstripsTable.innerHTML = html;
     });
-  });
 }
 function toggleDropdown() {
   var dropdown = document.getElementById('customDropdown');
@@ -408,12 +457,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
   //Gamemode vars
   gamemodesTable = document.querySelector('.js-gamemodes-table');
   buttonTable = document.querySelector('.js-buttons-table');
+  lightstripsTable = document.querySelector('.js-lightstrips-table');
   //Functions
   checkUrl();
   checkAdmin();
   checkLogout();
   handleGamemodes();
   handleButtons();
-  //handleButtons();
-  renderCarousel();
+  handleLightstrips();
 });

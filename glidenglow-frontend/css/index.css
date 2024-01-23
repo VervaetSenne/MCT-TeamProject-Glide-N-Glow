@@ -550,7 +550,33 @@ main {
   display: flex;
   justify-content: center;
 }
+/* Custom styles for the dropdown */
+.filter-dropdown {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: var(--bg-primary);
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 8px;
+  font-family: 'Inter', sans-serif;
+}
 
+.filter-dropdown label {
+  margin-right: 8px;
+  font-weight: bold;
+  color: var(--text-secondary);
+}
+
+.filter-dropdown select {
+  padding: 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: #fff;
+  color: #333;
+}
 /* table */
 .table-button {
   border: none;
