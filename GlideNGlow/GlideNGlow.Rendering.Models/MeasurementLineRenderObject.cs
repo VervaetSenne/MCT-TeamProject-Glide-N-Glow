@@ -34,14 +34,32 @@ public class MeasurementLineRenderObject : RenderObject
         _endPosition += x;
     }
     
+    //clamp color values between 0 and 128
+    private static Color ClampColor(Color color, int clampValue = 128)
+    {
+        //check if the highest value is above 128
+        if (color.R > clampValue || color.G > clampValue || color.B > clampValue)
+        {
+            //find the highest value
+            var highest = Math.Max(color.R, Math.Max(color.G, color.B));
+            //find the ratio between the highest value and 128
+            var ratio = highest / (float)clampValue;
+            //divide all values by the ratio
+            return Color.FromArgb((int)(color.R / ratio), (int)(color.G / ratio), (int)(color.B / ratio));
+        }
+        
+        return color;
+    }
+    
     public void SetColor(Color color)
     {
+        color = ClampColor(color);
         _color = color;
     }
     
     public void SetColor(int r, int g, int b)
     {
-        _color = Color.FromArgb(r,g,b);
+        SetColor(Color.FromArgb(r,g,b));
     }
 
     public override void Render(LightRenderer renderer)
