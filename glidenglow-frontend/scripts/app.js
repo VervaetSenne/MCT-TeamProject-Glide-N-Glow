@@ -398,6 +398,11 @@ function renderCarousel() {
     });
   });
 }
+function toggleDropdown() {
+  var dropdown = document.getElementById('customDropdown');
+  dropdown.style.display =
+    dropdown.style.display === 'block' ? 'none' : 'block';
+}
 
 document.addEventListener('DOMContentLoaded', (event) => {
   //Gamemode vars

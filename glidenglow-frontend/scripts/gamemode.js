@@ -1,4 +1,5 @@
 var gameMode;
+var gameId;
 var gamemodeSettingHeader;
 
 var gameModeCardsContainer;
@@ -14,8 +15,10 @@ function getParameters() {
 
   // Get the value of the 'name' parameter
   gameMode = urlParams.get('name');
+  gameId = urlParams.get('id');
 
   console.log(gameMode);
+  console.log(gameId);
   gamemodeSettingHeader.innerHTML = `${gameMode} settings`;
 
   if (gameMode == 'TimeRace') {
@@ -57,13 +60,33 @@ function goBack() {
 }
 function startGame() {
   // Get the parameter from the input field
-  var playersCount = document.getElementById('playerInput').value;
+  var amountOfPlayers = document.getElementById('playerInputAmount').value;
+  var inputTimeMinutes = document.getElementById(
+    'playerInputTimeMinutes'
+  ).value;
+  var inputTimeSeconds = document.getElementById(
+    'playerInputTimeSeconds'
+  ).value;
 
-  // Validate that the playersCount is not negative
-  if (playersCount < 0) {
-    alert('Players count cannot be negative!');
-    return;
-  }
+  //Send gamemode settings when game starts
+  fetch(`${fetchdom}/gamemode/current/${gameId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      body: JSON.stringify(amountOfPlayers, inputTimeMinutes, inputTimeSeconds),
+    },
+  })
+    .then((result) => {
+      // Handle the API response if needed
+      console.log('API Response - send gamemode settings:', result);
+    })
+    .catch((error) => {
+      // Handle errors
+      console.error(
+        'Error sending data to API - send gamemode settings:',
+        error
+      );
+    });
 
   // Redirect to the new page with the parameter
   window.location.href = `gamemodeActive.html?name=${gameMode}`;
@@ -89,7 +112,7 @@ function handleGamemodes() {
       for (const gamemode of gamemodes.gamemodes) {
         console.log(gamemode);
         html += `
-          <a href="gamemode.html?name=${gamemode.name}" class="gamemode-card">
+          <a href="gamemode.html?name=${gamemode.name}&id=${gamemode.id}" class="gamemode-card">
           <div class="gamemode-card-banner">
             <img
               src="img/gamemode-img.jpg"
