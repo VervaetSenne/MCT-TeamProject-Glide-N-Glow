@@ -34,6 +34,10 @@ public class LightRenderer
         
         //create a colorlist with _pixelAmount amount of colors
         Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();
+        if (PixelAmount <= 0)
+        {
+            _logger.LogError("Pixel amount is 0 or less");
+        }
     }
 
     public static LightRenderer Create(ILogger<LightRenderer> logger, IOptionsMonitor<AppSettings> appsettings, MqttHandler mqttHandler, CancellationToken cancellationToken = default)
@@ -48,9 +52,9 @@ public class LightRenderer
         PixelAmount = AppSettings.Strips.Aggregate(0, (i, strip) => i + strip.Leds);
         //_pixelAmount = size;
 
-        if (PixelAmount == 0)
+        if (PixelAmount <= 0)
         {
-            _logger.LogError("Pixel amount is 0");
+            _logger.LogError("Pixel amount is 0 or less");
             PixelAmount = 300;
         }
         

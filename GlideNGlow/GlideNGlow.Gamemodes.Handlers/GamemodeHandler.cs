@@ -89,6 +89,9 @@ public class GamemodeHandler
         if (_currentGamemode is null)
             return;
 
+        if (_lightRenderer.PixelAmount <= 0)
+            return;
+
         if (_currentGamemode.Gamemode.ShouldForceRender())
         {
             _lightRenderer.MakeDirty();
