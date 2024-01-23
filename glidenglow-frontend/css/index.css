@@ -275,13 +275,13 @@ main {
   margin-top: 5rem;
 }
 .small-gamepad-icon {
-  width: 94px;
-  height: 94px;
+  width: 64px;
+  height: 64px;
   margin-right: 1rem;
 }
 .big-gamepad-icon {
-  width: 184px;
-  height: 184px;
+  width: 154px;
+  height: 154px;
   margin-right: 1rem;
 }
 .gamemodes-header-text {
@@ -363,8 +363,8 @@ main {
   color: var(--text-primary);
 }
 .gamemode-setting-icon {
-  width: 94px;
-  height: 94px;
+  height: 74px;
+  width: 74px;
 }
 .gamemode-settings-card-container {
   display: flex;
@@ -457,8 +457,8 @@ main {
 }
 /* gamemode-active page */
 .gamemodeActiveIcon {
-  height: 94px;
-  width: 94px;
+  height: 54px;
+  width: 54px;
 }
 .player-cards-container {
   display: flex;
@@ -507,6 +507,45 @@ main {
 #lottie-container {
   width: 400px;
 }
+/* recent games table*/
+.recent-scores-claim-text {
+  text-align: center;
+}
+.recent-scores-container {
+  width: 1050px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2rem;
+}
+
+.table-caption-container {
+  text-align: center;
+}
+
+.recent-games-table-title svg {
+  margin-right: 0.5rem; /* Adjust margin as needed */
+}
+
+.recent-scores-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  border-radius: 10px; /* Add border-radius for the table */
+  overflow: hidden; /* Ensure overflow is hidden for rounded corners */
+}
+
+.recent-scores-container th,
+.recent-scores-container td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.recent-scores-container th {
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+}
+
 /* table */
 .table-button {
   border: none;
@@ -515,6 +554,7 @@ main {
   width: 30px;
   margin-left: 0.5rem;
   transition: ease var(--transition-speed);
+  background-color: var(--hover-bg-primary);
 }
 .table-button:hover {
   background-color: var(--bg-light-prinmary);
@@ -698,6 +738,9 @@ input:checked + .slider:before {
 
   .nav-item:last-child {
     margin: 0;
+  }
+  .gamemodes-card-container {
+    margin-bottom: 4rem;
   }
 }
 
