@@ -1,3 +1,5 @@
+using GlideNGlow.Common.Models;
+using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Core.Data;
 using GlideNGlow.Core.Models;
 using GlideNGlow.Core.Services.Installers;
@@ -5,6 +7,7 @@ using GlideNGlow.Gamemodes.Handlers.Installers;
 using GlideNGlow.Gamemodes.Modes;
 using GlideNGlow.Services.Installers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options.Implementations;
 using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,7 +52,7 @@ if (app.Environment.IsDevelopment())
             new Game
             {
                 Id = default,
-                Name = "Ghost Race",
+                Name = "GhostRace",
                 Description = "Face your record head on in a 1 on 1 race!",
                 Image = Array.Empty<byte>(),
                 AssemblyName = typeof(GhostRace).AssemblyQualifiedName ?? throw new Exception(),
@@ -62,8 +65,43 @@ if (app.Environment.IsDevelopment())
                         Required = true
                     }
                 })
-            } // Add more for testing
-        });/*
+            },
+            new Game
+            {
+            Id = default,
+            Name = "Collect",
+            Description = "Collect buttons faster than anyone else!",
+            Image = Array.Empty<byte>(),
+            AssemblyName = typeof(GhostRace).AssemblyQualifiedName ?? throw new Exception(),
+            Settings = JsonConvert.SerializeObject(new Setting[]
+            {
+                new()
+                {
+                    Type = nameof(Single),
+                    Name = "Time",
+                    Required = true
+                }
+            })
+            },
+            new Game
+            {
+                Id = default,
+                Name = "TimeTrial",
+                Description = "Click the start button and record your own lap time.",
+                Image = Array.Empty<byte>(),
+                AssemblyName = typeof(GhostRace).AssemblyQualifiedName ?? throw new Exception(),
+                Settings = JsonConvert.SerializeObject(new Setting[]
+                {
+                    new()
+                    {
+                        Type = nameof(Single),
+                        Name = "Time",
+                        Required = true
+                    }
+                })
+            }
+            // Add more for testing
+        });
         dbContext.Entries.AddRange(new []
         {
             new Entry
@@ -86,10 +124,10 @@ if (app.Environment.IsDevelopment())
                 Name = "Senne",
                 Score = "8755"
             },
-        });*/
+        });
         await dbContext.SaveChangesAsync();
 
-        /*var appsettings = scope.ServiceProvider.GetRequiredService<IWritableOptions<AppSettings>>();
+        var appsettings = scope.ServiceProvider.GetRequiredService < IWritableOptions<AppSettings>>();
         appsettings.Update(s =>
         {
             s.Strips = new List<LightstripData>
@@ -137,10 +175,12 @@ if (app.Environment.IsDevelopment())
                     DistanceFromStart = 30
                 },
             };
-        });*/
+        });
     }
 #endif
 }
+
+app.UseCors();
 
 app.UseHttpsRedirection();
 
