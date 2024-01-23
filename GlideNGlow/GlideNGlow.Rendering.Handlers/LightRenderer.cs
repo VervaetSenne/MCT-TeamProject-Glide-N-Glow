@@ -82,7 +82,7 @@ public class LightRenderer
 
     public void Clear()
     {
-        _isDirty = true;
+        //_isDirty = true;
         //set entire _light
         Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();
     }
