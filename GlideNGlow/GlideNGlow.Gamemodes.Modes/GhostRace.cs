@@ -3,17 +3,16 @@ using GlideNGlow.Common.Extensions;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Gamemodes.Models.Abstractions;
 using GlideNGlow.Gamemodes.Modes.Enums;
+using GlideNGlow.Gamemodes.Modes.Settings;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Models;
 using GlideNGlow.Rendering.Models.Abstractions;
 
 namespace GlideNGlow.Gamemodes.Modes;
 
-public class GhostRace : Gamemode, IGamemode
+public class GhostRace : Gamemode<GhostRaceSetting>, IGamemode
 {
-    private readonly AppSettings _appsettings;
     private readonly float _distanceCm;
-    private readonly float _timeLimit;
     private readonly MeasurementLineRenderObject _ghostLight = new(0, 0, Color.Red);
     private readonly MeasurementLineRenderObject _countdownLight = new(0, -1, Color.White);
     
@@ -22,16 +21,14 @@ public class GhostRace : Gamemode, IGamemode
     private int _startedButtonId;
     private float _timeElapsed;
     
-    public GhostRace(EspHandler espHandler, AppSettings appsettings, float timeLimit) : base(espHandler, appsettings)
+    public GhostRace(EspHandler espHandler, AppSettings appsettings, string settingsJson) : base(espHandler, appsettings, settingsJson)
     {
-        _appsettings = appsettings;
         _distanceCm = appsettings.Strips.Sum(strip => strip.Length + strip.DistanceFromLast);
-        _timeLimit = timeLimit;
     }
 
     public void Initialize()
     {
-        _distancePerSecond = _distanceCm / _timeLimit;
+        _distancePerSecond = _distanceCm / Settings.TimeLimit;
         _gameState = GameState.WaitingForStart;
     }
 
@@ -75,7 +72,7 @@ public class GhostRace : Gamemode, IGamemode
         //calculate the distance to move
         var distanceToMove = _distancePerSecond * timeSpan.TotalSeconds();
         _ghostLight.Move(distanceToMove);
-        if (_timeElapsed > _timeLimit)
+        if (_timeElapsed > Settings.TimeLimit)
         {
             RenderObjects.Remove(_ghostLight);
             _gameState = GameState.WaitingForStart;
@@ -97,7 +94,7 @@ public class GhostRace : Gamemode, IGamemode
             
         RenderObjects.Add(_countdownLight);
             
-        var startDistance = _appsettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
+        var startDistance = AppSettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
         _ghostLight.SetStart(startDistance);
         _ghostLight.SetEnd((float)(startDistance + 0.2));
         RenderObjects.Add(_ghostLight);
