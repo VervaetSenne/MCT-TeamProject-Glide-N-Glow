@@ -85,6 +85,8 @@ public class LightRenderer
     
     public async Task ShowAsync(CancellationToken cancellationToken)
     {
+        if (!_isDirty) return;
+        _isDirty = false;
         var payload = new StringBuilder();
         //add all colors as hexadecimals to the payload string
         foreach (var color in Lights)
@@ -107,7 +109,7 @@ public class LightRenderer
     //     await _mqttHandler.SendMessage(TopicSetPixel, "");
     // }
     // private const string TopicUpdateColors = "esp32/strip/update";
-    public void makeDirty()
+    public void MakeDirty()
     {
         _isDirty = true;
     }

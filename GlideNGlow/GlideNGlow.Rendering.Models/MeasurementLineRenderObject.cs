@@ -29,6 +29,7 @@ public class MeasurementLineRenderObject : RenderObject
     
     public void Move(float x)
     {
+        isDirty = true;
         _startPosition += x;
         _endPosition += x;
     }
@@ -45,6 +46,11 @@ public class MeasurementLineRenderObject : RenderObject
 
     public override void Render(LightRenderer renderer)
     {
+        if(isDirty)
+        {
+            isDirty = false;
+            renderer.MakeDirty();
+        }
         //first we must convert our start and end positions to the correct pixel positions
         if (!renderer.LightStripConverter.TryConvertToPixelLine(_startPosition, _endPosition, out var startPixel,
                 out var endPixel)) return;
