@@ -29,7 +29,7 @@ public class MeasurementLineRenderObject : RenderObject
     
     public void Move(float x)
     {
-        isDirty = true;
+        IsDirty = true;
         _startPosition += x;
         _endPosition += x;
     }
@@ -46,9 +46,9 @@ public class MeasurementLineRenderObject : RenderObject
 
     public override void Render(LightRenderer renderer)
     {
-        if(isDirty)
+        if(IsDirty)
         {
-            isDirty = false;
+            IsDirty = false;
             renderer.MakeDirty();
         }
         //first we must convert our start and end positions to the correct pixel positions
