@@ -47,13 +47,13 @@ public class GhostRace : Gamemode<GhostRaceSetting>
             case GameState.WaitingForStart:
                 break;
             case GameState.Countdown:
-                UpdateCountdown(timeSpan);
+                UpdateCountdown();
                 break;
             case GameState.Running:
                 UpdateRunning(timeSpan);
                 break;
             case GameState.Ending:
-                UpdateEnding(timeSpan);
+                UpdateEnding();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -61,15 +61,13 @@ public class GhostRace : Gamemode<GhostRaceSetting>
         return Task.CompletedTask;
     }
 
-    private void UpdateCountdown(TimeSpan timeSpan)
+    private void UpdateCountdown()
     {
         var cdLightOn = _timeElapsed % 1 > -0.5;
         _countdownLight.SetVisibility(cdLightOn);
         if (_timeElapsed > 0)
         {
-            _countdownLight.SetVisibility(false);
-            _gameState = GameState.Running;
-            _timeElapsed = 0;
+            SwitchGameState(GameState.Running);
         }
     }
 
@@ -80,21 +78,54 @@ public class GhostRace : Gamemode<GhostRaceSetting>
         _ghostLight.Move(distanceToMove);
         if (_timeElapsed > Settings.TimeLimit)
         {
-            _countdownLight.SetVisibility(true);
-            _gameState = GameState.Ending;
-            _timeElapsed = -3;
-            ForceRenderUpdate = true;
+            SwitchGameState(GameState.Ending);
         }
     }
+
+    private void SwitchGameState(GameState newState)
+    {
+        switch (newState)
+        {
+            case GameState.WaitingForStart:
+                _ghostLight.SetVisibility(false);
+                _countdownLight.SetVisibility(false);
+                
+                _timeElapsed = 0;
+                break;
+            case GameState.Countdown:
+                _timeElapsed = -3;
+                _ghostLight.SetVisibility(true);
+                _countdownLight.SetVisibility(false);
+                var startDistance = AppSettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
+                _ghostLight.SetStart(startDistance);
+                _ghostLight.SetEnd(startDistance + _distancePerSecond * 0.3f);
+            
+                _countdownLight.SetStart(startDistance - _distancePerSecond);
+                _countdownLight.SetEnd(startDistance + _distancePerSecond);
+                break;
+            case GameState.Running:
+                _ghostLight.SetVisibility(true);
+                _countdownLight.SetVisibility(false);
+                _gameState = GameState.Running;
+                _timeElapsed = 0;
+                break;
+            case GameState.Ending:
+                _ghostLight.SetVisibility(true);
+                _countdownLight.SetVisibility(true);
+                _timeElapsed = -3;
+                ForceRenderUpdate = true;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
+        }
+        _gameState = newState;
+    }
     
-    private void UpdateEnding(TimeSpan timeSpan)
+    private void UpdateEnding()
     {
         if (_timeElapsed > 0)
         {
-            _ghostLight.SetVisibility(false);
-            _countdownLight.SetVisibility(false);
-            _gameState = GameState.WaitingForStart;
-            _timeElapsed = 0;
+            SwitchGameState(GameState.WaitingForStart);
         }
     }
 
@@ -102,18 +133,9 @@ public class GhostRace : Gamemode<GhostRaceSetting>
     {
         if (_gameState != GameState.WaitingForStart) return Task.CompletedTask;
         
-        _timeElapsed = -3;
         _startedButtonId = id;
+        SwitchGameState(GameState.Countdown);
         
-            
-        var startDistance = AppSettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
-        _ghostLight.SetStart(startDistance);
-        _ghostLight.SetEnd(startDistance + _distancePerSecond * 0.3f);
-        _ghostLight.SetVisibility(true);
-            
-        _countdownLight.SetStart(startDistance - _distancePerSecond);
-        _countdownLight.SetEnd(startDistance + _distancePerSecond);
-        _gameState = GameState.Countdown;
         return Task.CompletedTask;
     }
 }
