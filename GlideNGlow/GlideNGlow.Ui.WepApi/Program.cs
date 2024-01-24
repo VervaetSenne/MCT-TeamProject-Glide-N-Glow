@@ -32,7 +32,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policyBuilder =>
     {
         policyBuilder
-            .WithOrigins("127.0.0.1", "localhost", builder.Configuration.GetValue<string>($"{nameof(AppSettings)}:{nameof(AppSettings.Ip)}") ?? "10.10.10.13")
+            .WithOrigins("127.0.0.1", "localhost", builder.Configuration.GetSection($"{nameof(AppSettings)}:{nameof(AppSettings.Ip)}").Get<string>() ?? "10.10.10.13")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
