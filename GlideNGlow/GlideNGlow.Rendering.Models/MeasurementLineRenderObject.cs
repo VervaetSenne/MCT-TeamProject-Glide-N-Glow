@@ -46,6 +46,7 @@ public class MeasurementLineRenderObject : RenderObject
     
     public void SetColor(Color color)
     {
+        IsDirty = true;
         color = ClampColor(color);
         _color = color;
     }
