@@ -188,7 +188,7 @@ public class SettingsService : ISettingsService
             var index = s.Strips.IndexOf(strip);
             s.Strips[index] = new LightstripData
             {
-                Id = lightstrip.Id,
+                Id = lightId,
                 DistanceFromLast = lightstrip.Distance,
                 Length = lightstrip.Length,
                 Leds = lightstrip.Pixels
