@@ -1,3 +1,5 @@
+using GlideNGlow.Common.Models;
+using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Core.Data;
 using GlideNGlow.Core.Models;
 using GlideNGlow.Core.Models.Enums;
@@ -7,6 +9,7 @@ using GlideNGlow.Gamemodes.Modes;
 using GlideNGlow.Services.Installers;
 using GlideNGlow.Socket.Wrappers.Installers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options.Implementations;
 using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,7 +32,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policyBuilder =>
     {
         policyBuilder
-            .AllowAnyOrigin()
+            .WithOrigins("127.0.0.1", "localhost", builder.Configuration.GetValue<string>($"{nameof(AppSettings)}:{nameof(AppSettings.Ip)}") ?? "10.10.10.13")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -110,14 +113,14 @@ if (app.Environment.IsDevelopment())
                 },
                 new()
                 {
-                    Id = 0,
+                    Id = 1,
                     Leds = 100,
                     Length = 3,
                     DistanceFromLast = 0
                 },
                 new()
                 {
-                    Id = 0,
+                    Id = 2,
                     Leds = 100,
                     Length = 3,
                     DistanceFromLast = 0
