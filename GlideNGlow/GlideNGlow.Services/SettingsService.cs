@@ -129,10 +129,11 @@ public class SettingsService : ISettingsService
     public LightstripDto AddLightStrip(bool samePiece, bool onePiece)
     {
         var lightstrips = GetLightstrips();
+        var largestId = lightstrips.MaxBy(l => l.Id)!.Id + 1;
         var lightstrip = new LightstripData
         {
             Id = lightstrips.Count > 1
-                ? Enumerable.Range(0, lightstrips.MaxBy(l => l.Id)!.Id + 1).Except(lightstrips.Select(l => l.Id)).First()
+                ? Enumerable.Range(0, largestId + 1).Except(lightstrips.Select(l => l.Id)).First()
                 : 0
         };
 
