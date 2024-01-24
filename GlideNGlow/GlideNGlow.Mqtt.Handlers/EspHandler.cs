@@ -181,5 +181,12 @@ public class EspHandler
         await SetRgb(_appSettings.CurrentValue.Buttons[buttonId].MacAddress, color.R, color.G, color.B, cancellationToken);
     }
     
+    public async Task SetAllRgb(int r, int g, int b, CancellationToken cancellationToken)
+    {
+        foreach (var esp in _lightButtons)
+        {
+            await SetRgb(esp.Key, r, g, b, cancellationToken);
+        }
+    }
     
 }
