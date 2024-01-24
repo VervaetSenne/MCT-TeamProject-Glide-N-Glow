@@ -20,8 +20,4 @@
       <ProjectReference Include="..\GlideNGlow.Socket.Wrappers\GlideNGlow.Socket.Wrappers.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Hubs\" />
-    </ItemGroup>
-
 </Project>
