@@ -1,3 +1,4 @@
+using System.Drawing;
 using GlideNGlow.Common.Models;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Mqtt.Topics;
@@ -163,5 +164,10 @@ public class EspHandler
     public async Task SetRgb(string macAddress,int r, int g, int b, CancellationToken cancellationToken)
     {
         await _mqttHandler.SendMessage($"esp32/{macAddress}/ledcircle", string.Format(TopicEndpoints.TopicRgb, r, g, b), cancellationToken);
+    }
+    
+    public async Task SetRgb(string macAddress, Color color, CancellationToken cancellationToken)
+    {
+        await SetRgb(macAddress, color.R, color.G, color.B, cancellationToken);
     }
 }
