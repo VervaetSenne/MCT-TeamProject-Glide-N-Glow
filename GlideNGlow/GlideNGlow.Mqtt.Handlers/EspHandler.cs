@@ -170,4 +170,16 @@ public class EspHandler
     {
         await SetRgb(macAddress, color.R, color.G, color.B, cancellationToken);
     }
+    
+    public async Task SetRgb(int buttonId, int r, int g, int b, CancellationToken cancellationToken)
+    {
+        await SetRgb(_appSettings.CurrentValue.Buttons[buttonId].MacAddress, r, g, b, cancellationToken);
+    }
+    
+    public async Task SetRgb(int buttonId, Color color, CancellationToken cancellationToken)
+    {
+        await SetRgb(_appSettings.CurrentValue.Buttons[buttonId].MacAddress, color.R, color.G, color.B, cancellationToken);
+    }
+    
+    
 }
