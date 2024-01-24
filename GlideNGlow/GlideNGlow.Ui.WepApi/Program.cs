@@ -4,6 +4,7 @@ using GlideNGlow.Core.Services.Installers;
 using GlideNGlow.Gamemodes.Handlers.Installers;
 using GlideNGlow.Gamemodes.Modes;
 using GlideNGlow.Services.Installers;
+using GlideNGlow.Socket.Wrappers.Installers;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -16,9 +17,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.InstallCore(builder.Configuration);
-builder.Services.InstallServices(builder.Configuration);
-builder.Services.InstallGamemodeEngine(builder.Configuration);
+builder.Services
+    .InstallCore(builder.Configuration)
+    .InstallServices(builder.Configuration)
+    .InstallSockets()
+    .InstallGamemodeEngine(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {
@@ -146,6 +149,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseCors();
+
 app.MapControllers();
+app.MapHubs();
 
 app.Run();
