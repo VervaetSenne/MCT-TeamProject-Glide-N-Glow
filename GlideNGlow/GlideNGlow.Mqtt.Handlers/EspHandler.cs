@@ -189,4 +189,12 @@ public class EspHandler
         }
     }
     
+    public async Task SetAllRgb(Color color, CancellationToken cancellationToken)
+    {
+        foreach (var esp in _lightButtons)
+        {
+            await SetRgb(esp.Key, color.R, color.G, color.B, cancellationToken);
+        }
+    }
+    
 }
