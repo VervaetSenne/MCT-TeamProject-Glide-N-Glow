@@ -1,5 +1,6 @@
 using GlideNGlow.Core.Data;
 using GlideNGlow.Core.Models;
+using GlideNGlow.Core.Models.Enums;
 using GlideNGlow.Core.Services.Installers;
 using GlideNGlow.Gamemodes.Handlers.Installers;
 using GlideNGlow.Gamemodes.Modes;
@@ -27,9 +28,11 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policyBuilder =>
     {
-        policyBuilder.AllowAnyOrigin();
-        policyBuilder.AllowAnyHeader();
-        policyBuilder.AllowAnyMethod();
+        policyBuilder
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -64,7 +67,8 @@ if (app.Environment.IsDevelopment())
                         Name = "Time",
                         Required = true
                     }
-                })
+                }),
+                ScoreImportance = ScoreImportance.Lowest
             } // Add more for testing
         });/*
         dbContext.Entries.AddRange(new []

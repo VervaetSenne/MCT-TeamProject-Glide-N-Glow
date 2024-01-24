@@ -1,11 +1,9 @@
 ﻿using GlideNGlow.Core.Dto;
-using GlideNGlow.Core.Models;
 using GlideNGlow.Core.Models.Extensions;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Services.Abstractions;
 using GlideNGlow.Socket.Wrappers.Abstractions;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace GlideNGlow.Ui.WepApi.Controllers;
 

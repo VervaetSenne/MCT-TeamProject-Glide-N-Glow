@@ -16,7 +16,7 @@ public class LeaderboardController : Controller
     }
 
     [HttpGet("{mode}")]
-    public async Task<IActionResult> GetAsync([FromRoute] string? mode, [FromQuery] EntryFilter filter)
+    public async Task<IActionResult> GetAsync([FromRoute] Guid mode, [FromQuery] EntryFilter filter)
     {
         var entries = await _entryService.FindFromGameAsync(mode, filter.TimeFrame, filter.Unique, filter.Username);
         return Ok(entries);
