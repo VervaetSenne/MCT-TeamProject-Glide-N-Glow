@@ -16,10 +16,12 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     private TimeSpan _timeElapsed;
     private GameState _gameState = GameState.WaitingForStart;
     private readonly List<int> _buttonAssignments = new();
-    private readonly Random _random = new Random();
+    private readonly Random _random = new();
     private readonly List<int> _scores = new();
     private readonly float _countdownTime = 3f;
-    private List<MeasurementLineRenderObject> _displayLines = new();
+    private readonly Dictionary<int,MeasurementLineRenderObject> _displayLines = new();
+    private float _buttonWidth = 25f;
+    private int _countdownStep;
     
     public ChaoticCollect(LightButtonHandler lightButtonHandler, AppSettings appSettings, string settingsJson) : base(lightButtonHandler, appSettings, settingsJson)
     {
@@ -41,10 +43,14 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
         {
             if (lightButtonsValue.ButtonNumber != -1)
             {
-                _buttonIds.Add(lightButtonsValue.ButtonNumber ?? -1, lightButtonsValue.DistanceFromStart ?? -1);
-                //_displayLines.
+                var buttonNumber = lightButtonsValue.ButtonNumber ?? -1;
+                var distance = lightButtonsValue.DistanceFromStart ?? -1;
+                _buttonIds.Add(buttonNumber, distance);
+                var mlro = new MeasurementLineRenderObject(distance - _buttonWidth / 2, distance + _buttonWidth / 2,
+                    Color.Black);
+                RenderObjects.Add(mlro);
+                _displayLines.Add(buttonNumber,mlro);
             }
-            
         }
 
         if (_buttonIds.Count < 2)
@@ -94,6 +100,31 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     
     private async Task UpdateCountdown()
     {
+        switch (_countdownStep)
+        {
+            case 0 :
+                if(_timeElapsed.TotalSeconds >= -_countdownTime/3*2)
+                {
+                    _countdownStep = 1;
+                    await SetAllColor(Color.Red, default);
+                }
+                break;
+            case 1 : 
+                if(_timeElapsed.TotalSeconds >= -_countdownTime/3*2)
+                {
+                    _countdownStep = 2;
+                    await SetAllColor(Color.Orange, default);
+                }
+                break;
+            case 2 :
+                if(_timeElapsed.TotalSeconds >= -_countdownTime/3*2)
+                {
+                    _countdownStep = 3;
+                    await SetAllColor(Color.Yellow, default);
+                }
+                break;
+        }
+        
         if (_timeElapsed.TotalSeconds >= 0)
         {
             await ChangeStateAsync(GameState.Running);
@@ -115,16 +146,18 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
         {
             newState = GameState.Error;
         }
-            
+        
         switch(newState)
         {
             case GameState.WaitingForStart:
                 _scores.ForEach(x => x = 0);
-                await LightButtonHandler.SetAllRgb(Color.White, new CancellationToken());
+                await LightButtonHandler.SetAllRgb(Color.White, default);
+                SetAllColor(Color.White, new CancellationToken()).Wait();
                 break;
             case GameState.Countdown:
+                _countdownStep = 0;
                 _timeElapsed = TimeSpan.FromSeconds(-_countdownTime);
-                await LightButtonHandler.SetAllRgb(Color.White, new CancellationToken());
+                //await LightButtonHandler.SetAllRgb(Color.White, new CancellationToken());
                 break;
             case GameState.Running:
                 await RunningStart();
@@ -132,11 +165,12 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
             case GameState.Ending:
                 break;
             case GameState.Error:
-                await LightButtonHandler.SetAllRgb(Color.Orange, new CancellationToken());
+                await LightButtonHandler.SetAllRgb(Color.Orange, default);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
         }
+        _gameState = newState;
     }
 
     private async Task RunningStart()
@@ -164,16 +198,31 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
         //assign the button to the player
         _buttonAssignments[randomButtonId] = playerId;
         //set the button to the player's color
-        await LightButtonHandler.SetRgb(randomButtonId, _playerColors[playerId], new CancellationToken());
+        await SetColor(randomButtonId, _playerColors[playerId], new CancellationToken());
     }
     
     private async Task RemoveAssignment(int buttonId)
     {
-        //set the button to black
-        await LightButtonHandler.SetRgb(buttonId, Color.Black, new CancellationToken());
+        await SetColor(buttonId, Color.Black, new CancellationToken());
         //set the button assignment to 0
         _buttonAssignments[buttonId] = 0;
     }
+    
+    private async Task SetAllColor(Color color, CancellationToken cancellationToken)
+    {
+        foreach (var buttonId in _buttonAssignments)
+        {
+            await SetColor(buttonId, color, cancellationToken);
+        }
+    }
+    
+
+    private async Task SetColor(int buttonId, Color color, CancellationToken cancellationToken)
+    {
+        await LightButtonHandler.SetRgb(buttonId, color, cancellationToken);
+        _displayLines[buttonId].SetColor(color);
+    }
+    
 
     private async Task ButtonPressedRun(int id)
     {
