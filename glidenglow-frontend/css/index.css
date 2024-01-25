@@ -204,6 +204,8 @@ main {
   align-items: center;
   background-color: var(--bg-primary);
   color: var(--bg-white);
+  position: sticky;
+  top: 0;
 }
 
 .grid-header svg {
@@ -611,11 +613,80 @@ main {
   background-color: var(--bg-primary);
   color: var(--text-secondary);
 }
+
 /* Leaderbord page */
 .leaderbord-podium {
   display: flex;
   justify-content: center;
 }
+
+.leaderbord-podium div h1{
+  font-size: 6rem;
+  font-weight: bold;
+  color: var(--text-dark);
+}
+
+.first-place{
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 12rem;
+  align-items: center;
+
+}
+
+.second-place{
+  position: absolute;
+  top: 15rem;
+  align-items: center;
+  margin-right: 31rem;
+}
+
+.third-place{
+  position: absolute;
+  top: 16rem;
+  margin-left: 31rem;
+  justify-content: center;
+}
+
+.leaderbord-podium .first-place h1{
+  font-size: 6rem;
+  margin: 0;
+  padding: 0;
+}
+
+.leaderbord-podium .first-place p{
+  font-size: 2rem;
+  margin: 0;
+  padding: 0;
+  margin-top: -1rem;
+}
+
+.leaderbord-podium .second-place h1{
+  font-size: 5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.leaderbord-podium .second-place p{
+  font-size: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.leaderbord-podium .third-place h1{
+  font-size: 4rem;
+  margin: 0;
+  padding: 0;
+}
+
+.leaderbord-podium .third-place p{
+  font-size: 4rem;
+  margin: 0;
+  padding: 0;
+}
+
+
 /* Custom styles for the dropdown */
 .filter-dropdown {
   position: fixed;
@@ -664,7 +735,7 @@ main {
   cursor: pointer;
 }
 .table-container {
-  overflow: hidden;
+  /* overflow: hidden; */
   border-radius: 10px; /* Adjust as needed */
   width: 95%; /* Set a specific width, adjust as needed */
   margin: 0 auto; /* Center the table horizontally */
