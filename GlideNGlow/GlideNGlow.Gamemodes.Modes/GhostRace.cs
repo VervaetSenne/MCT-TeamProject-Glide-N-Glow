@@ -37,9 +37,10 @@ public class GhostRace : Gamemode<GhostRaceSetting>
 
     public override void Stop()
     {
+        LightButtonHandler.SetAllRgb(Color.Black, new CancellationToken()).Wait();
     }
 
-    public override Task UpdateAsync(TimeSpan timeSpan)
+    public override async Task UpdateAsync(TimeSpan timeSpan)
     {
         _timeElapsed += timeSpan.TotalSeconds();
         switch (_gameState)
@@ -47,55 +48,55 @@ public class GhostRace : Gamemode<GhostRaceSetting>
             case GameState.WaitingForStart:
                 break;
             case GameState.Countdown:
-                UpdateCountdown();
+                await UpdateCountdown();
                 break;
             case GameState.Running:
-                UpdateRunning(timeSpan);
+                await UpdateRunning(timeSpan);
                 break;
             case GameState.Ending:
-                UpdateEnding();
+                await UpdateEnding();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        return Task.CompletedTask;
     }
 
-    private void UpdateCountdown()
+    private async Task UpdateCountdown()
     {
         var cdLightOn = _timeElapsed % 1 > -0.5;
         _countdownLight.SetVisibility(cdLightOn);
         if (_timeElapsed > 0)
         {
-            SwitchGameState(GameState.Running);
+            await SwitchGameState(GameState.Running);
         }
     }
 
-    private void UpdateRunning(TimeSpan timeSpan)
+    private async Task UpdateRunning(TimeSpan timeSpan)
     {
         //calculate the distance to move
         var distanceToMove = _distancePerSecond * timeSpan.TotalSeconds();
         _ghostLight.Move(distanceToMove);
         if (_timeElapsed > Settings.TimeLimit)
         {
-            SwitchGameState(GameState.Ending);
+            await SwitchGameState(GameState.Ending);
         }
     }
 
-    private void SwitchGameState(GameState newState)
+    private async Task SwitchGameState(GameState newState)
     {
         switch (newState)
         {
             case GameState.WaitingForStart:
                 _ghostLight.SetVisibility(false);
                 _countdownLight.SetVisibility(false);
-                
+                await LightButtonHandler.SetAllRgb(Color.White, new CancellationToken());
                 _timeElapsed = 0;
                 break;
             case GameState.Countdown:
                 _timeElapsed = -3;
                 _ghostLight.SetVisibility(true);
                 _countdownLight.SetVisibility(false);
+                await LightButtonHandler.SetAllRgb(Color.Black, new CancellationToken());
                 var startDistance = AppSettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
                 _ghostLight.SetStart(startDistance);
                 _ghostLight.SetEnd(startDistance + _distancePerSecond * 0.3f);
@@ -121,21 +122,21 @@ public class GhostRace : Gamemode<GhostRaceSetting>
         _gameState = newState;
     }
     
-    private void UpdateEnding()
+    private async Task UpdateEnding()
     {
         if (_timeElapsed > 0)
         {
-            SwitchGameState(GameState.WaitingForStart);
+            await SwitchGameState(GameState.WaitingForStart);
         }
     }
 
-    public override Task ButtonPressed(int id)
+    public override async Task ButtonPressed(int id)
     {
-        if (_gameState != GameState.WaitingForStart) return Task.CompletedTask;
+        if (_gameState != GameState.WaitingForStart) return;
         
         _startedButtonId = id;
-        SwitchGameState(GameState.Countdown);
+        await SwitchGameState(GameState.Countdown);
         
-        return Task.CompletedTask;
+        
     }
 }
