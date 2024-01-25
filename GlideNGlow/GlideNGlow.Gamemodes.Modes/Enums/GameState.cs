@@ -5,5 +5,6 @@ public enum GameState
     WaitingForStart,
     Countdown,
     Running,
-    Ending
+    Ending,
+    Error
 }
