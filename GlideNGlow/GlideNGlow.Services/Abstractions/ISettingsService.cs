@@ -1,4 +1,7 @@
 ﻿using GlideNGlow.Core.Dto;
+using GlideNGlow.Core.Dto.Abstractions;
+using GlideNGlow.Core.Dto.Requests;
+using GlideNGlow.Core.Dto.Results;
 
 namespace GlideNGlow.Services.Abstractions;
 
@@ -21,7 +24,7 @@ public interface ISettingsService
     bool TryRemoveAvailable(Guid gameId);
     
     LightstripSettingsDto GetLightstripSettings();
-    LightstripDto AddLightStrip(bool samePiece, bool onePiece);
+    LightstripResultDto AddLightStrip(bool samePiece, bool onePiece);
     bool TryRemoveLightstrip(int lightId);
-    bool UpdateLightStrip(int lightId, LightstripDto lightstrip);
+    bool UpdateLightStrip(int lightId, LightstripRequestsDto lightstrip);
 }
