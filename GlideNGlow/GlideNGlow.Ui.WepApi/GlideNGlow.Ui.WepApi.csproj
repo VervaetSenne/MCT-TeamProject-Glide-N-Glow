@@ -15,6 +15,7 @@
     <ItemGroup>
       <ProjectReference Include="..\GlideNGlow.Gamemodes.Handlers\GlideNGlow.Gamemodes.Handlers.csproj" />
       <ProjectReference Include="..\GlideNGlow.Services\GlideNGlow.Services.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Socket\GlideNGlow.Socket.csproj" />
     </ItemGroup>
 
 </Project>

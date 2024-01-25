@@ -10,4 +10,5 @@ public class AppSettings
     public bool LightingToggle { get; set; } = true;
     public List<LightButtonData> Buttons { get; set; } = new();
     public List<LightstripData> Strips { get; set; } = new();
+    public string CurrentSettings { get; set; } = string.Empty;
 }

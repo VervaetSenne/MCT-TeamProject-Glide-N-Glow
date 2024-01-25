@@ -13,7 +13,7 @@ public class EspHandler
     private readonly IWritableOptions<AppSettings> _appSettings;
     private readonly Dictionary<string,LightButtons> _lightButtons = new();
     
-    public event Action<int>? ButtonPressedEvent;
+    public event Func<int, Task>? ButtonPressedEvent;
 
     public EspHandler(ILogger<EspHandler> logger, IWritableOptions<AppSettings> appSettings, MqttHandler mqttHandler)
     {
@@ -97,7 +97,7 @@ public class EspHandler
         ReorderButtonIds();
     }
 
-    private void OnButtonSubscription(string topic, string message)
+    private async Task OnButtonSubscription(string topic, string message)
     {
         var macAddress = topic.Split('/')[1];
         _logger.LogInformation("Esp {macAddress} button pressed: {message}", macAddress, message);
@@ -105,12 +105,14 @@ public class EspHandler
             button.Pressed();
         else
             _logger.LogCritical("Button pressed but not registered uwu!"); // TODO this should notifiy clients
-        ButtonPressedEvent?.Invoke(_lightButtons[macAddress].ButtonNumber ?? -1);
+        
+        if (ButtonPressedEvent is not null)
+            await ButtonPressedEvent.Invoke(_lightButtons[macAddress].ButtonNumber ?? -1);
     }
 
 #endregion
     
-    public void AddButtonPressedEvent(Action<int> callback)
+    public void AddButtonPressedEvent(Func<int, Task> callback)
     {
         ButtonPressedEvent += callback;
     }

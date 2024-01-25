@@ -1,9 +1,9 @@
 ﻿using GlideNGlow.Core.Dto;
-using GlideNGlow.Core.Models;
+using GlideNGlow.Core.Models.Extensions;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Services.Abstractions;
+using GlideNGlow.Socket.Abstractions;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace GlideNGlow.Ui.WepApi.Controllers;
 
@@ -14,12 +14,15 @@ public class GamemodeController : Controller
     private readonly ISettingsService _settingsService;
     private readonly IAvailableGameService _availableGameService;
     private readonly IGameService _gameService;
-    
-    public GamemodeController(ISettingsService settingsService, IAvailableGameService availableGameService, IGameService gameService)
+    private readonly ISocketWrapper _socketWrapper;
+
+    public GamemodeController(ISettingsService settingsService, IAvailableGameService availableGameService,
+        IGameService gameService, ISocketWrapper socketWrapper)
     {
         _settingsService = settingsService;
         _availableGameService = availableGameService;
         _gameService = gameService;
+        _socketWrapper = socketWrapper;
     }
 
     [HttpPut("allow-switching/{value:bool}")]
@@ -29,7 +32,7 @@ public class GamemodeController : Controller
         return Ok();
     }
 
-    [HttpGet("settings")]
+    [HttpGet("admin-settings")]
     public async Task<IActionResult> GetSettingsAsync()
     {
         return Ok(new GamemodeSettingsDto
@@ -64,22 +67,44 @@ public class GamemodeController : Controller
         return NoContent();
     }
 
-    [HttpPatch("force/{gameId:guid?}")]
+    [HttpPatch("force/{gameId}")]
     public async Task<IActionResult> SetForceGamemodeAsync([FromRoute] Guid? gameId)
     {
         _settingsService.UpdateForceGamemode(gameId);
         return Ok(await _availableGameService.GetGamemodesAsync());
     }
 
-    [HttpPost("current/{gameId:guid?}")]
+    [HttpGet("settings")]
+    public async Task<IActionResult> GetGamemodeSettings([FromRoute] Guid gameId)
+    {
+        var game = await _gameService.FindByIdAsync(gameId);
+        if (game is null)
+            return BadRequest();
+
+        return Ok(game.GetSettingsObject());
+    }
+
+    [HttpGet("current")]
+    public async Task<IActionResult> GetCurrentGamemodeAsync()
+    {
+        var currentId = _settingsService.GetCurrentGamemode();
+        return Ok(await _gameService.FindByIdAsync(currentId));
+    }
+
+    [HttpPost("current/{gameId}")]
     public async Task<IActionResult> SetCurrentGamemodeAsync([FromRoute] Guid? gameId)
     {
+        if (!_settingsService.GetAllowSwitching() && _settingsService.GetCurrentGamemode().HasValue)
+            return NoContent();
+        
         _settingsService.UpdateCurrentGamemode(gameId);
         if (gameId.HasValue)
         {
             var game = await _gameService.FindByIdAsync(gameId);
-            if (game is not null) return Ok(JsonConvert.DeserializeObject<IEnumerable<Setting>>(game.Settings));
+            if (game is not null) return Ok(game.GetSettingsObject());
         }
+
+        await _socketWrapper.PublishUpdateGamemode(gameId);
         return Ok();
     }
 }

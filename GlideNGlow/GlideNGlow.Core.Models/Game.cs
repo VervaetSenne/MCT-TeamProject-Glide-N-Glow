@@ -1,4 +1,6 @@
-﻿namespace GlideNGlow.Core.Models;
+﻿using GlideNGlow.Core.Models.Enums;
+
+namespace GlideNGlow.Core.Models;
 
 public class Game
 {
@@ -8,4 +10,5 @@ public class Game
     public required byte[] Image { get; set; }
     public required string AssemblyName { get; set; }
     public required string Settings { get; set; }
+    public required ScoreImportance ScoreImportance { get; set; }
 }

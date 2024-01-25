@@ -2,6 +2,9 @@
 using GlideNGlow.Common.Models;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Core.Dto;
+using GlideNGlow.Core.Dto.Abstractions;
+using GlideNGlow.Core.Dto.Requests;
+using GlideNGlow.Core.Dto.Results;
 using GlideNGlow.Services.Abstractions;
 using Microsoft.Extensions.Options.Implementations;
 
@@ -73,6 +76,11 @@ public class SettingsService : ISettingsService
         _appSettings.Update(s => s.CurrentGamemode = gameId);
     }
 
+    public Guid? GetCurrentGamemode()
+    {
+        return AppSettings.CurrentGamemode;
+    }
+
     public IEnumerable<ButtonDto> GetButtons()
     {
         return AppSettings.Buttons
@@ -96,10 +104,10 @@ public class SettingsService : ISettingsService
         });
     }
 
-    private List<LightstripDto> GetLightstrips()
+    private List<LightstripResultDto> GetLightstrips()
     {
         return AppSettings.Strips
-            .Select(l => new LightstripDto
+            .Select(l => new LightstripResultDto
             {
                 Id = l.Id,
                 Distance = l.DistanceFromLast,
@@ -121,13 +129,14 @@ public class SettingsService : ISettingsService
         };
     }
 
-    public LightstripDto AddLightStrip(bool samePiece, bool onePiece)
+    public LightstripResultDto AddLightStrip(bool samePiece, bool onePiece)
     {
         var lightstrips = GetLightstrips();
+        var largestId = lightstrips.MaxBy(l => l.Id)!.Id + 1;
         var lightstrip = new LightstripData
         {
             Id = lightstrips.Count > 1
-                ? Enumerable.Range(0, lightstrips.MaxBy(l => l.Id)!.Id + 1).Except(lightstrips.Select(l => l.Id)).First()
+                ? Enumerable.Range(0, largestId + 1).Except(lightstrips.Select(l => l.Id)).First()
                 : 0
         };
 
@@ -151,7 +160,7 @@ public class SettingsService : ISettingsService
             s.Strips.Add(lightstrip);
         });
         
-        return new LightstripDto
+        return new LightstripResultDto
         {
             Id = lightstrip.Id,
             Distance = lightstrip.DistanceFromLast,
@@ -167,7 +176,7 @@ public class SettingsService : ISettingsService
         return isRemoved;
     }
 
-    public bool UpdateLightStrip(int lightId, LightstripDto lightstrip)
+    public bool UpdateLightStrip(int lightId, LightstripRequestsDto lightstrip)
     {
         var isUpdated = true;
         _appSettings.Update(s =>
@@ -182,7 +191,7 @@ public class SettingsService : ISettingsService
             var index = s.Strips.IndexOf(strip);
             s.Strips[index] = new LightstripData
             {
-                Id = lightstrip.Id,
+                Id = lightId,
                 DistanceFromLast = lightstrip.Distance,
                 Length = lightstrip.Length,
                 Leds = lightstrip.Pixels

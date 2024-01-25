@@ -1,21 +1,30 @@
 ﻿using GlideNGlow.Core.Dto;
+using GlideNGlow.Core.Dto.Abstractions;
+using GlideNGlow.Core.Dto.Requests;
+using GlideNGlow.Core.Dto.Results;
 
 namespace GlideNGlow.Services.Abstractions;
 
 public interface ISettingsService
 {
-    bool UpdateAllowSwitching(bool value);
-    IEnumerable<Guid> GetAvailableGamemodes();
-    Guid? GetForcedGamemode();
     bool GetAllowSwitching();
-    bool TryAddAvailable(Guid gameId);
-    bool TryRemoveAvailable(Guid gameId);
+    bool UpdateAllowSwitching(bool value);
+    
+    Guid? GetForcedGamemode();
     void UpdateForceGamemode(Guid? gameId);
+    
+    Guid? GetCurrentGamemode();
     void UpdateCurrentGamemode(Guid? gameId);
+    
     IEnumerable<ButtonDto> GetButtons();
     void UpdateButton(string buttonId, float? distance);
+    
+    IEnumerable<Guid> GetAvailableGamemodes();
+    bool TryAddAvailable(Guid gameId);
+    bool TryRemoveAvailable(Guid gameId);
+    
     LightstripSettingsDto GetLightstripSettings();
-    LightstripDto AddLightStrip(bool samePiece, bool onePiece);
+    LightstripResultDto AddLightStrip(bool samePiece, bool onePiece);
     bool TryRemoveLightstrip(int lightId);
-    bool UpdateLightStrip(int lightId, LightstripDto lightstrip);
+    bool UpdateLightStrip(int lightId, LightstripRequestsDto lightstrip);
 }

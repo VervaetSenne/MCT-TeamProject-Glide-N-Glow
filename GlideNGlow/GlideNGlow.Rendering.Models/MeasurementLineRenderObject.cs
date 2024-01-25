@@ -29,22 +29,39 @@ public class MeasurementLineRenderObject : RenderObject
     
     public void Move(float x)
     {
+        IsDirty = true;
         _startPosition += x;
         _endPosition += x;
     }
     
+    //clamp color values between 0 and 128
+    private static Color ClampColor(Color color, int clampValue = 128)
+    {
+        var ratio = clampValue / 255f;
+
+        //remap values in color
+        return Color.FromArgb((int)(color.R * ratio), (int)(color.G * ratio), (int)(color.B * ratio));
+    }
+
+    
     public void SetColor(Color color)
     {
+        color = ClampColor(color);
         _color = color;
     }
     
     public void SetColor(int r, int g, int b)
     {
-        _color = Color.FromArgb(r,g,b);
+        SetColor(Color.FromArgb(r,g,b));
     }
 
     public override void Render(LightRenderer renderer)
     {
+        if(IsDirty)
+        {
+            IsDirty = false;
+            renderer.MakeDirty();
+        }
         //first we must convert our start and end positions to the correct pixel positions
         if (!renderer.LightStripConverter.TryConvertToPixelLine(_startPosition, _endPosition, out var startPixel,
                 out var endPixel)) return;

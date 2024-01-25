@@ -1,12 +1,10 @@
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Gamemodes.Models;
-using GlideNGlow.Gamemodes.Modes;
-using GlideNGlow.Gamemodes.Modes.Settings;
+using GlideNGlow.Gamemodes.Models.Abstractions;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Handlers;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 
 namespace GlideNGlow.Gamemodes.Handlers;
 
@@ -15,12 +13,12 @@ public class GamemodeHandler
     private readonly IGameService _gameService;
     private readonly LightRenderer _lightRenderer;
     private readonly EspHandler _espHandler;
-    private readonly TaskCompletionSource _completionSource;
     
+    private TaskCompletionSource _completionSource;
     private GamemodeData? _currentGamemode;
 
-    public GamemodeHandler(IOptionsMonitor<AppSettings> appSettings, IGameService gameService,
-        LightRenderer lightRenderer, EspHandler espHandler)
+    public GamemodeHandler(IOptionsMonitor<AppSettings> appSettings,
+        IGameService gameService, LightRenderer lightRenderer, EspHandler espHandler)
     {
         _gameService = gameService;
         _lightRenderer = lightRenderer;
@@ -44,32 +42,47 @@ public class GamemodeHandler
         }
 
         var gameType = Type.GetType(game.AssemblyName);
-        if (gameType is null)
+        if (gameType is null || !gameType.IsAssignableTo(typeof(IGamemode)))
             throw new ArgumentNullException(nameof(gameType), "Database was initialized wrongly!");
-        var ctors = gameType.GetConstructors();
-        
-        //var gamemode = (IGamemode) ctors.FirstOrDefault(i => i.GetParameters().)?.Invoke()
+
+        IGamemode gamemode;
+        if (gameType.BaseType?.IsGenericType ?? false) // gamemode requires settings
+        {
+            var constructorInfo = gameType.GetConstructor(new[] { typeof(EspHandler), typeof(AppSettings), typeof(string) });
+            if (constructorInfo is null) throw new Exception("Every gamemode requires this constructor!");
+            
+            gamemode = (IGamemode)constructorInfo.Invoke(new object?[] {_espHandler, appSettings, appSettings.CurrentSettings});
+        }
+        else
+        {
+            var constructorInfo = gameType.GetConstructor(new[] { typeof(EspHandler), typeof(AppSettings) });
+            if (constructorInfo is null) throw new Exception("Every gamemode requires this constructor!");
+            
+            gamemode = (IGamemode)constructorInfo.Invoke(new object?[] {_espHandler, appSettings});
+        }
 
         _currentGamemode = new GamemodeData
         {
             Game = game,
-            Gamemode = new GhostRace(_espHandler, appSettings, JsonConvert.SerializeObject(new GhostRaceSetting
-            {
-                TimeLimit = 15
-            }))
+            Gamemode = gamemode
         };
         _completionSource.SetResult();
+        _completionSource = new TaskCompletionSource();
     }
     
     public async Task TryInitializeAsync(CancellationToken cancellationToken)
     {
+        cancellationToken.Register(() => _completionSource.SetCanceled(cancellationToken));
         if (_currentGamemode is null)
             await _completionSource.Task;
         else
             return;
 
         if (_currentGamemode is null)
-            throw new Exception();
+            return;
+
+        if (cancellationToken.IsCancellationRequested)
+            return;
         
         _currentGamemode!.Gamemode.Initialize();
         await _espHandler.AddSubscriptions(cancellationToken);
@@ -88,15 +101,20 @@ public class GamemodeHandler
     {
         if (_currentGamemode is null)
             return;
-        
-        if(_currentGamemode.Gamemode.GetRenderObjects().Count == 0)
+
+        if (_lightRenderer.PixelAmount <= 0)
             return;
+
+        if (_currentGamemode.Gamemode.ShouldForceRender())
+        {
+            _lightRenderer.MakeDirty();
+        }
         _lightRenderer.Clear();
         foreach (var renderObject in _currentGamemode.Gamemode.GetRenderObjects())
         {
             renderObject.Render(_lightRenderer);
         }
-        
+
         await _lightRenderer.ShowAsync(cancellationToken);
     }
 
@@ -107,10 +125,11 @@ public class GamemodeHandler
         
         _currentGamemode.Gamemode.Stop();
         await _espHandler.RemoveSubscriptions(cancellationToken);
+        _currentGamemode = null;
     }
     
-    public void Input(int id)
+    public async Task Input(int id)
     {
-        _currentGamemode?.Gamemode.ButtonPressed(id);
+        if (_currentGamemode is not null) await _currentGamemode.Gamemode.ButtonPressed(id);
     }
 }

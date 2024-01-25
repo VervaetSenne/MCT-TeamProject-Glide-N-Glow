@@ -1,11 +1,13 @@
-using GlideNGlow.Common.Models;
 using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Common.Models;;
 using GlideNGlow.Core.Data;
 using GlideNGlow.Core.Models;
+using GlideNGlow.Core.Models.Enums;
 using GlideNGlow.Core.Services.Installers;
 using GlideNGlow.Gamemodes.Handlers.Installers;
 using GlideNGlow.Gamemodes.Modes;
 using GlideNGlow.Services.Installers;
+using GlideNGlow.Socket.Installers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options.Implementations;
 using Newtonsoft.Json;
@@ -19,17 +21,21 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.InstallCore(builder.Configuration);
-builder.Services.InstallServices(builder.Configuration);
-builder.Services.InstallGamemodeEngine();
+builder.Services
+    .InstallCore(builder.Configuration)
+    .InstallServices(builder.Configuration)
+    .InstallSockets()
+    .InstallGamemodeEngine(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policyBuilder =>
     {
-        policyBuilder.AllowAnyOrigin();
-        policyBuilder.AllowAnyHeader();
-        policyBuilder.AllowAnyMethod();
+        policyBuilder
+            .WithOrigins("127.0.0.1", "localhost", builder.Configuration.GetSection($"{nameof(AppSettings)}:{nameof(AppSettings.Ip)}").Get<string>() ?? "10.10.10.13")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -52,7 +58,7 @@ if (app.Environment.IsDevelopment())
             new Game
             {
                 Id = default,
-                Name = "GhostRace",
+                Name = "Ghost Race",
                 Description = "Face your record head on in a 1 on 1 race!",
                 Image = Array.Empty<byte>(),
                 AssemblyName = typeof(GhostRace).AssemblyQualifiedName ?? throw new Exception(),
@@ -64,24 +70,26 @@ if (app.Environment.IsDevelopment())
                         Name = "Time",
                         Required = true
                     }
-                })
+                }),
+                ScoreImportance = ScoreImportance.Lowest
             },
             new Game
             {
-            Id = default,
-            Name = "Collect",
-            Description = "Collect buttons faster than anyone else!",
-            Image = Array.Empty<byte>(),
-            AssemblyName = typeof(GhostRace).AssemblyQualifiedName ?? throw new Exception(),
-            Settings = JsonConvert.SerializeObject(new Setting[]
-            {
-                new()
+                Id = default,
+                Name = "Collect",
+                Description = "Collect buttons faster than anyone else!",
+                Image = Array.Empty<byte>(),
+                AssemblyName = typeof(GhostRace).AssemblyQualifiedName ?? throw new Exception(),
+                Settings = JsonConvert.SerializeObject(new Setting[]
                 {
-                    Type = nameof(Single),
-                    Name = "Time",
-                    Required = true
-                }
-            })
+                    new()
+                    {
+                        Type = nameof(Single),
+                        Name = "Time",
+                        Required = true
+                    }
+                }),
+                ScoreImportance = ScoreImportance.Lowest
             },
             new Game
             {
@@ -98,7 +106,8 @@ if (app.Environment.IsDevelopment())
                         Name = "Time",
                         Required = true
                     }
-                })
+                }),
+                ScoreImportance = ScoreImportance.Lowest
             }
             // Add more for testing
         });
@@ -141,14 +150,14 @@ if (app.Environment.IsDevelopment())
                 },
                 new()
                 {
-                    Id = 0,
+                    Id = 1,
                     Leds = 100,
                     Length = 3,
                     DistanceFromLast = 0
                 },
                 new()
                 {
-                    Id = 0,
+                    Id = 2,
                     Leds = 100,
                     Length = 3,
                     DistanceFromLast = 0
@@ -180,12 +189,13 @@ if (app.Environment.IsDevelopment())
 #endif
 }
 
-app.UseCors();
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseCors();
+
 app.MapControllers();
+app.MapHubs();
 
 app.Run();

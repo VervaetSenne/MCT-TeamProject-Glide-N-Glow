@@ -8,11 +8,13 @@ public class AvailableGameService : IAvailableGameService
 {
     private readonly ISettingsService _settingsService;
     private readonly IGameService _gameService;
+    private readonly IEntryService _entryService;
 
-    public AvailableGameService(ISettingsService settingsService, IGameService gameService)
+    public AvailableGameService(ISettingsService settingsService, IGameService gameService, IEntryService entryService)
     {
         _settingsService = settingsService;
         _gameService = gameService;
+        _entryService = entryService;
     }
 
     public async Task<IEnumerable<GamemodeItemDto>> GetGamemodesAsync()
@@ -35,16 +37,19 @@ public class AvailableGameService : IAvailableGameService
     public async Task<IEnumerable<GamemodeItemDto>> GetAvailableGamemodesAsync()
     {
         var availableGamemodes = _settingsService.GetAvailableGamemodes().ToList();
+        var forcedGamemode = _settingsService.GetForcedGamemode();
         var gamemodes = await _gameService.FindByIdAsync(availableGamemodes);
-        var isForced = availableGamemodes.Count == 1;
+        var bestScores = await _entryService.GetBestScores(availableGamemodes).ToListAsync();
+        
         return gamemodes.Select(g => new GamemodeItemDto
         {
-            Force = isForced,
+            Force = forcedGamemode is not null && forcedGamemode == g.Id,
             Available = true,
             Id = g.Id,
             Name = g.Name,
             Description = g.Description,
-            Settings = g.Settings
+            Settings = g.Settings,
+            BestScore = bestScores.FirstOrDefault(e => e.GameId == g.Id)?.Score ?? "----"
         });
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace GlideNGlow.Core.Dto;
+﻿namespace GlideNGlow.Core.Dto.Abstractions;
 
-public class LightstripDto
+public abstract class Lightstrip
 {
-    public required int Id { get; set; }
     public required float Distance { get; set; }
     public required float Length { get; set; }
     public required int Pixels { get; set; }
