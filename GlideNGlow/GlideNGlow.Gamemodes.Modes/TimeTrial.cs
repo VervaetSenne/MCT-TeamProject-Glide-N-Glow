@@ -23,7 +23,7 @@ public class TimeTrial : Gamemode
     {
     }
 
-    public override void Initialize()
+    public override void Initialize(CancellationToken cancellationToken)
     {
         RenderObjects.Add(_countdownLight);
         _countdownLight.SetVisibility(false);
@@ -34,7 +34,7 @@ public class TimeTrial : Gamemode
     {
     }
 
-    public override async Task UpdateAsync(TimeSpan timeSpan)
+    public override async Task UpdateAsync(TimeSpan timeSpan, CancellationToken cancellationToken)
     {
         switch (_gameState)
         {
@@ -93,7 +93,7 @@ public class TimeTrial : Gamemode
         }
     }
 
-    public override async Task ButtonPressed(int id)
+    public override async Task ButtonPressed(int id, CancellationToken cancellationToken)
     {
         switch (_gameState)
         {
@@ -115,7 +115,7 @@ public class TimeTrial : Gamemode
                 _timeStarted.Stop();
                 _countdownLight.SetVisibility(false);
                 //TODO remove newly created cancelation token
-                await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Black,new CancellationToken());
+                await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Black,cancellationToken);
                 _gameState = GameState.Ending;
                 break;
             case GameState.Ending:

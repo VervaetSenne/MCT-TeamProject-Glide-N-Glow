@@ -25,7 +25,7 @@ public class GhostRace : Gamemode<GhostRaceSetting>
         _distanceCm = appsettings.Strips.Sum(strip => strip.Length + strip.DistanceFromLast);
     }
 
-    public override void Initialize()
+    public override void Initialize(CancellationToken cancellationToken)
     {
         RenderObjects.Add(_countdownLight);
         RenderObjects.Add(_ghostLight);
@@ -40,7 +40,7 @@ public class GhostRace : Gamemode<GhostRaceSetting>
         LightButtonHandler.SetAllRgb(Color.Black, new CancellationToken()).Wait();
     }
 
-    public override async Task UpdateAsync(TimeSpan timeSpan)
+    public override async Task UpdateAsync(TimeSpan timeSpan, CancellationToken cancellationToken)
     {
         _timeElapsed += timeSpan.TotalSeconds();
         switch (_gameState)
@@ -48,55 +48,55 @@ public class GhostRace : Gamemode<GhostRaceSetting>
             case GameState.WaitingForStart:
                 break;
             case GameState.Countdown:
-                await UpdateCountdown();
+                await UpdateCountdown(cancellationToken);
                 break;
             case GameState.Running:
-                await UpdateRunning(timeSpan);
+                await UpdateRunning(timeSpan, cancellationToken);
                 break;
             case GameState.Ending:
-                await UpdateEnding();
+                await UpdateEnding(cancellationToken);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
 
-    private async Task UpdateCountdown()
+    private async Task UpdateCountdown(CancellationToken cancellationToken)
     {
         var cdLightOn = _timeElapsed % 1 > -0.5;
         _countdownLight.SetVisibility(cdLightOn);
         if (_timeElapsed > 0)
         {
-            await SwitchGameState(GameState.Running);
+            await SwitchGameState(GameState.Running, cancellationToken);
         }
     }
 
-    private async Task UpdateRunning(TimeSpan timeSpan)
+    private async Task UpdateRunning(TimeSpan timeSpan, CancellationToken cancellationToken)
     {
         //calculate the distance to move
         var distanceToMove = _distancePerSecond * timeSpan.TotalSeconds();
         _ghostLight.Move(distanceToMove);
         if (_timeElapsed > Settings.TimeLimit)
         {
-            await SwitchGameState(GameState.Ending);
+            await SwitchGameState(GameState.Ending, cancellationToken);
         }
     }
 
-    private async Task SwitchGameState(GameState newState)
+    private async Task SwitchGameState(GameState newState, CancellationToken cancellationToken)
     {
         switch (newState)
         {
             case GameState.WaitingForStart:
                 _ghostLight.SetVisibility(false);
                 _countdownLight.SetVisibility(false);
-                await LightButtonHandler.SetAllRgb(Color.White, new CancellationToken());
+                await LightButtonHandler.SetAllRgb(Color.White, cancellationToken);
                 _timeElapsed = 0;
                 break;
             case GameState.Countdown:
                 _timeElapsed = -3;
                 _ghostLight.SetVisibility(true);
                 _countdownLight.SetVisibility(false);
-                await LightButtonHandler.SetAllRgb(Color.Black, new CancellationToken());
+                await LightButtonHandler.SetAllRgb(Color.Black, cancellationToken);
                 var startDistance = AppSettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
                 _ghostLight.SetStart(startDistance);
                 _ghostLight.SetEnd(startDistance + _distancePerSecond * 0.3f);
@@ -122,20 +122,20 @@ public class GhostRace : Gamemode<GhostRaceSetting>
         _gameState = newState;
     }
     
-    private async Task UpdateEnding()
+    private async Task UpdateEnding(CancellationToken cancellationToken)
     {
         if (_timeElapsed > 0)
         {
-            await SwitchGameState(GameState.WaitingForStart);
+            await SwitchGameState(GameState.WaitingForStart, cancellationToken);
         }
     }
 
-    public override async Task ButtonPressed(int id)
+    public override async Task ButtonPressed(int id, CancellationToken cancellationToken)
     {
         if (_gameState != GameState.WaitingForStart) return;
         
         _startedButtonId = id;
-        await SwitchGameState(GameState.Countdown);
+        await SwitchGameState(GameState.Countdown, cancellationToken);
         
         
     }

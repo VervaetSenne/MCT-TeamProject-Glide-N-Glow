@@ -28,7 +28,7 @@ public class Engine : IHostedService
         while (await periodicTimer.WaitForNextTickAsync(cancellationToken))
         {
             await gamemodeHandler.TryInitializeAsync(cancellationToken);
-            await gamemodeHandler.UpdateAsync(deltaTime);
+            await gamemodeHandler.UpdateAsync(deltaTime, cancellationToken);
             await gamemodeHandler.RenderAsync(cancellationToken);
         }
     }

@@ -84,17 +84,17 @@ public class GamemodeHandler
         if (cancellationToken.IsCancellationRequested)
             return;
         
-        _currentGamemode!.Gamemode.Initialize();
+        _currentGamemode!.Gamemode.Initialize(cancellationToken);
         await _lightButtonHandler.AddSubscriptions(cancellationToken);
-        _lightButtonHandler.AddButtonPressedEvent(Input);
+        _lightButtonHandler.AddButtonPressedEvent(i => Input(i, cancellationToken));
     }
     
-    public async Task UpdateAsync(TimeSpan timeSpan)
+    public async Task UpdateAsync(TimeSpan timeSpan, CancellationToken cancellationToken)
     {
         if (_currentGamemode is null)
             return;
         
-        await _currentGamemode.Gamemode.UpdateAsync(timeSpan);
+        await _currentGamemode.Gamemode.UpdateAsync(timeSpan, cancellationToken);
     }
     
     public async Task RenderAsync(CancellationToken cancellationToken)
@@ -128,8 +128,8 @@ public class GamemodeHandler
         _currentGamemode = null;
     }
     
-    public async Task Input(int id)
+    public async Task Input(int id, CancellationToken cancellationToken)
     {
-        if (_currentGamemode is not null) await _currentGamemode.Gamemode.ButtonPressed(id);
+        if (_currentGamemode is not null) await _currentGamemode.Gamemode.ButtonPressed(id, cancellationToken);
     }
 }

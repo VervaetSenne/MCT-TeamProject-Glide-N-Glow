@@ -10,7 +10,7 @@ namespace GlideNGlow.Gamemodes.Modes;
 
 public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
 {
-    private readonly Dictionary<int, Color> _playerColors = new();
+    private readonly Dictionary<int, Color> _playerColors;
     private readonly Dictionary<int,float> _buttonIds = new();
     private int _playerAmount;
     private TimeSpan _timeElapsed;
@@ -26,18 +26,21 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     public ChaoticCollect(LightButtonHandler lightButtonHandler, AppSettings appSettings, string settingsJson) : base(lightButtonHandler, appSettings, settingsJson)
     {
         //0 being nothing
-        _playerColors.Add(0,Color.Black);
-        _playerColors.Add(1,Color.Red);
-        _playerColors.Add(2,Color.Blue);
-        _playerColors.Add(3,Color.Green);
-        _playerColors.Add(4,Color.Purple);
-        _playerColors.Add(5, Color.Yellow);
-        _playerColors.Add(6, Color.Cyan);
-        _playerColors.Add(7, Color.Orange);
-        _playerColors.Add(8, Color.Pink);
+        _playerColors = new()
+        {
+            { 0, Color.Black },
+            { 1, Color.Red },
+            { 2, Color.Blue },
+            { 3, Color.Green },
+            { 4, Color.Purple },
+            { 5, Color.Yellow },
+            { 6, Color.Cyan },
+            { 7, Color.Orange },
+            { 8, Color.Pink }
+        };
     }
 
-    public override void Initialize()
+    public override void Initialize(CancellationToken cancellationToken)
     {
         foreach (var lightButtonsValue in LightButtonHandler.LightButtons.Values)
         {
@@ -55,7 +58,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
 
         if (_buttonIds.Count < 2)
         {
-            ChangeStateAsync(GameState.Error).Wait();
+            ChangeStateAsync(GameState.Error, cancellationToken).GetAwaiter().GetResult();
             return;
         }
 
@@ -68,14 +71,14 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
         {
             _scores.Add(0);
         }
-        ChangeStateAsync(GameState.WaitingForStart).Wait();
+        ChangeStateAsync(GameState.WaitingForStart, cancellationToken).GetAwaiter().GetResult();
     }
 
     public override void Stop()
     {
     }
 
-    public override async Task UpdateAsync(TimeSpan timeSpan)
+    public override async Task UpdateAsync(TimeSpan timeSpan, CancellationToken cancellationToken)
     {
         _timeElapsed += timeSpan;
         switch (_gameState)
@@ -83,10 +86,10 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
             case GameState.WaitingForStart:
                 break;
             case GameState.Countdown:
-                await UpdateCountdown();
+                await UpdateCountdown(cancellationToken);
                 break;
             case GameState.Running:
-                await UpdateRunning();
+                await UpdateRunning(cancellationToken);
                 break;
             case GameState.Ending:
                 break;
@@ -98,7 +101,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     }
 
     
-    private async Task UpdateCountdown()
+    private async Task UpdateCountdown(CancellationToken cancellationToken)
     {
         switch (_countdownStep)
         {
@@ -127,20 +130,20 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
         
         if (_timeElapsed.TotalSeconds >= 0)
         {
-            await ChangeStateAsync(GameState.Running);
+            await ChangeStateAsync(GameState.Running, cancellationToken);
         }
         
     }
 
-    private async Task UpdateRunning()
+    private async Task UpdateRunning(CancellationToken cancellationToken)
     {
         if(_timeElapsed.TotalSeconds >= Settings.TimeLimit)
         {
-            await ChangeStateAsync(GameState.Ending);
+            await ChangeStateAsync(GameState.Ending, cancellationToken);
         }
     }
 
-    private async Task ChangeStateAsync(GameState newState)
+    private async Task ChangeStateAsync(GameState newState, CancellationToken cancellationToken)
     {
         if (_buttonIds.Count < 2)
         {
@@ -160,7 +163,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
                 //await LightButtonHandler.SetAllRgb(Color.White, new CancellationToken());
                 break;
             case GameState.Running:
-                await RunningStart();
+                await RunningStart(cancellationToken);
                 break;
             case GameState.Ending:
                 break;
@@ -173,19 +176,19 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
         _gameState = newState;
     }
 
-    private async Task RunningStart()
+    private async Task RunningStart(CancellationToken cancellationToken)
     {
         //for each player, set an element in _buttonAssignements (that is 0) to its color
         
         for (var i = 1; i <= _playerAmount; i++)
         {
-            await AssignColorToEmpty(i);
+            await AssignColorToEmpty(i, cancellationToken);
         }
         //find the _buttonAssignments which is set to -1 and change that to 0
         _buttonAssignments[_buttonAssignments.FindIndex(x => x == -1)] = 0;
     }
 
-    private async Task AssignColorToEmpty(int playerId)
+    private async Task AssignColorToEmpty(int playerId, CancellationToken cancellationToken)
     {
         //get a random button id
         var randomButtonId = _random.Next(1, _buttonIds.Count);
@@ -198,12 +201,12 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
         //assign the button to the player
         _buttonAssignments[randomButtonId] = playerId;
         //set the button to the player's color
-        await SetColor(randomButtonId, _playerColors[playerId], new CancellationToken());
+        await SetColor(randomButtonId, _playerColors[playerId], cancellationToken);
     }
     
-    private async Task RemoveAssignment(int buttonId)
+    private async Task RemoveAssignment(int buttonId, CancellationToken cancellationToken)
     {
-        await SetColor(buttonId, Color.Black, new CancellationToken());
+        await SetColor(buttonId, Color.Black, cancellationToken);
         //set the button assignment to 0
         _buttonAssignments[buttonId] = 0;
     }
@@ -224,7 +227,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     }
     
 
-    private async Task ButtonPressedRun(int id)
+    private async Task ButtonPressedRun(int id, CancellationToken cancellationToken)
     {
         //if the button is assigned to a player
         if (_buttonAssignments[id] < 1) return; //return if the button is not assigned to a player
@@ -233,31 +236,29 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
         var playerId = _buttonAssignments[id];
         
         //remove the assignment
-        await AssignColorToEmpty(playerId);
+        await AssignColorToEmpty(playerId, cancellationToken);
             
         //assign a new button to the player
-        await RemoveAssignment(id);
+        await RemoveAssignment(id, cancellationToken);
 
         //add a point to the player
         _scores[playerId-1]++;
         
     }
 
-    public override async Task ButtonPressed(int id)
+    public override async Task ButtonPressed(int id, CancellationToken cancellationToken)
     {
         if (GameState.WaitingForStart == _gameState)
         {
-            await ChangeStateAsync(GameState.Countdown);
+            await ChangeStateAsync(GameState.Countdown, cancellationToken);
             _buttonAssignments[id] = -1;
             return;
         }
         
         if(GameState.Running == _gameState)
         {
-            await ButtonPressedRun(id);
+            await ButtonPressedRun(id, cancellationToken);
         }
-        
-        
         
     }
 }

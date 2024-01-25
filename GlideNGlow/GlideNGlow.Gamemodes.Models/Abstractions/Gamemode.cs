@@ -12,6 +12,7 @@ public abstract class Gamemode : IGamemode
     protected readonly LightButtonHandler LightButtonHandler;
     protected readonly AppSettings AppSettings;
     protected bool ForceRenderUpdate = true;
+    private IGamemode _gamemodeImplementation;
 
     protected Gamemode(LightButtonHandler lightButtonHandler, AppSettings appSettings)
     {
@@ -19,18 +20,18 @@ public abstract class Gamemode : IGamemode
         AppSettings = appSettings;
     }
 
-    public abstract void Initialize();
+    public abstract void Initialize(CancellationToken cancellationToken);
 
     public abstract void Stop();
 
-    public abstract Task UpdateAsync(TimeSpan timeSpan);
+    public abstract Task UpdateAsync(TimeSpan timeSpan, CancellationToken cancellationToken);
 
     public virtual List<RenderObject> GetRenderObjects()
     {
         return RenderObjects.ToList();
     }
 
-    public abstract Task ButtonPressed(int id);
+    public abstract Task ButtonPressed(int id, CancellationToken cancellationToken);
 
     public bool ShouldForceRender()
     {
