@@ -133,7 +133,6 @@ main {
   background-color: hsla(0, 0%, 0%, 0.7);
   border-radius: 0px 0px 10px 10px;
   z-index: 1;
-  display: none;
 }
 
 .hidey-text{
@@ -473,6 +472,7 @@ main {
 .gamemode-setting-content-hidden {
   display: none;
 }
+
 #startButtonTime {
   margin-left: 10rem;
   margin-top: 1rem;

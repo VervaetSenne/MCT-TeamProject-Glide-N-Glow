@@ -56,12 +56,93 @@ function checkLogout() {
     console.log('logout');
   });
 }
+function handleAdminSettings() {
+  var startStopButton = document.getElementById('settings-startstop-button');
+  var calibrateButton = document.getElementById('settings-callibrate-button');
+  var calibrateDiv = document.querySelectorAll('.hidey');
+  var stateStartStop = 0;
+  var stateCalibrate = 0;
+
+  startStopButton.addEventListener('click', function () {
+    console.log('startstop');
+    stateStartStop++;
+    //Stop games
+    if (stateStartStop == 1) {
+      startStopButton.style.backgroundColor = 'green';
+      startStopButton.innerHTML = 'Turn lights on';
+      fetch(`${fetchdom}/gamemode/stop/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ stop: true }),
+      })
+        .then((result) => {
+          // Handle the API response if needed
+          console.log('API Response - START STOP GAMEMODE:', result);
+        })
+        .catch((error) => {
+          // Handle errors
+          console.error(
+            'Error sending data to API - START STOP GAMEMODE:',
+            error
+          );
+        });
+    }
+    //start again
+    if (stateStartStop == 2) {
+      startStopButton.style.backgroundColor = '#9b2d2d';
+      startStopButton.innerHTML = 'Turn lights off';
+      fetch(`${fetchdom}/gamemode/stop/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ stop: false }),
+      })
+        .then((result) => {
+          // Handle the API response if needed
+          console.log('API Response - START STOP GAMEMODE:', result);
+        })
+        .catch((error) => {
+          // Handle errors
+          console.error(
+            'Error sending data to API - START STOP GAMEMODE:',
+            error
+          );
+        });
+      stateStartStop = 0;
+    }
+  });
+  calibrateButton.addEventListener('click', function () {
+    console.log('callibrate');
+    stateCalibrate++;
+    if (stateCalibrate == 1) {
+      calibrateDiv.forEach((div) => {
+        div.classList.add('gamemode-setting-content-hidden');
+      });
+      calibrateButton.innerHTML = 'Stop callibrate';
+      startStopButton.style.opacity = '0.5';
+      startStopButton.disabled = true;
+    }
+    if (stateCalibrate == 2) {
+      calibrateDiv.forEach((div) => {
+        div.classList.remove('gamemode-setting-content-hidden');
+      });
+      calibrateButton.innerHTML = 'Callibrate';
+      startStopButton.style.opacity = '1';
+      startStopButton.disabled = false;
+      stateCalibrate = 0;
+    }
+  });
+}
 function handleGamemodes() {
   /*
     GAMEMODES GET ALL GAMEMODES
   */
   console.log('gamemodes function');
-  fetch(`${fetchdom}/gamemode/settings`)
+  console.log(window.location.hostname);
+  fetch(`${fetchdom}/gamemode/admin-settings`)
     .then((response) => {
       if (!response.ok) {
         throw new Error(
@@ -377,7 +458,6 @@ function deleteButton(button) {
   const confirmDelete = confirm('Are you sure you want to delete this button?');
 
   if (confirmDelete) {
-    // Assuming you have an API endpoint for deleting a button
     const apiUrl = `${fetchdom}/button/${buttonId}`;
 
     // Make a DELETE request to the API endpoint
@@ -482,11 +562,11 @@ function handleLightstrips() {
                     <th id="lightstrip-action">Actions</th>
                   </tr>
       `;
-
+      var count = 0;
       for (const strip of lightstrips.lightstrips) {
         console.log(strip);
         html += `
-         <tr data-lightstrip-id="${strip.distance}">
+         <tr data-lightstrip-id="${strip.id}">
                     <td id="lightstrip-distance-data">${strip.distance}</td>
                     <td id="lightstrip-length-data">${strip.length}</td>
                     <td id="lightstrip-pixels-data">${strip.pixels}</td>
@@ -533,9 +613,10 @@ function handleLightstrips() {
                       </button>
                     </td>
                   </tr>`;
+        count++;
       }
 
-      html += `<tr>
+      html += `<tr class="add-lightstrip-button">
                     <td></td>
                     <td>
                       <svg
@@ -589,12 +670,16 @@ function editLightstripData(button) {
   // Get the lightstrip ID from the data attribute
   const lightstripId = tableRow.dataset.lightstripId;
 
+  // Object to store changes
+  const changes = {};
+
   // Edit distance
   editLightstripField(
     tableRow,
     '#lightstrip-distance-data',
     lightstripId,
-    'distance'
+    'distance',
+    changes
   );
 
   // Edit length
@@ -602,7 +687,8 @@ function editLightstripData(button) {
     tableRow,
     '#lightstrip-length-data',
     lightstripId,
-    'length'
+    'length',
+    changes
   );
 
   // Edit pixels
@@ -610,10 +696,23 @@ function editLightstripData(button) {
     tableRow,
     '#lightstrip-pixels-data',
     lightstripId,
-    'pixels'
+    'pixels',
+    changes
   );
+
+  // Make a single API request with all changes
+  if (Object.keys(changes).length > 0) {
+    updateLightstripDataOnAPI(lightstripId, changes);
+  }
 }
-function editLightstripField(tableRow, fieldSelector, lightstripId, field) {
+
+function editLightstripField(
+  tableRow,
+  fieldSelector,
+  lightstripId,
+  field,
+  changes
+) {
   // Get the field data <td> element and its current value
   const fieldTd = tableRow.querySelector(fieldSelector);
   const currentFieldValue = fieldTd.textContent;
@@ -622,8 +721,10 @@ function editLightstripField(tableRow, fieldSelector, lightstripId, field) {
   if (fieldTd.classList.contains('edit-mode')) {
     // Save the updated field value from the input
     const newFieldValue = fieldTd.querySelector('input').value;
-    // Send to API
-    updateLightstripDataOnAPI(lightstripId, { [field]: newFieldValue });
+
+    // Store the change in the 'changes' object
+    changes[field] = newFieldValue;
+
     // Update the field data and exit edit mode
     fieldTd.textContent = newFieldValue;
     fieldTd.classList.remove('edit-mode');
@@ -633,24 +734,26 @@ function editLightstripField(tableRow, fieldSelector, lightstripId, field) {
     fieldTd.classList.add('edit-mode');
   }
 }
-function updateLightstripDataOnAPI(lightstripId, newLightstripData) {
-  const apiUrl = `${fetchdom}/lightstrip/${lightstripId}`;
 
+function updateLightstripDataOnAPI(lightstripId, changes) {
+  const apiUrl = `${fetchdom}/lightstrip/${lightstripId}`;
   // Make a PUT request to the API endpoint with the new lightstrip data
+  console.log(changes);
   fetch(apiUrl, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      body: JSON.stringify(newLightstripData),
     },
+    body: JSON.stringify(changes),
   })
     .then((data) => {
-      console.log('Distance updated successfully:', data);
+      console.log('Lightstrip data updated successfully:', data);
     })
     .catch((error) => {
-      console.error('Error updating distance:', error);
+      console.error('Error updating lightstrip data:', error);
     });
 }
+
 function deleteLightstrip(button) {
   // Get the parent <tr> element
   const tableRow = button.closest('tr');
@@ -664,7 +767,6 @@ function deleteLightstrip(button) {
   );
 
   if (confirmDelete) {
-    // Assuming you have an API endpoint for deleting a lightstrip
     const apiUrl = `${fetchdom}/lightstrip/${lightstripId}`;
 
     // Make a DELETE request to the API endpoint
@@ -698,4 +800,5 @@ document.addEventListener('DOMContentLoaded', (event) => {
   handleGamemodes();
   handleButtons();
   handleLightstrips();
+  handleAdminSettings();
 });

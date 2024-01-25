@@ -1,5 +1,5 @@
 using GlideNGlow.Common.Models.Settings;
-using GlideNGlow.Common.Models;;
+using GlideNGlow.Common.Models;
 using GlideNGlow.Core.Data;
 using GlideNGlow.Core.Models;
 using GlideNGlow.Core.Models.Enums;
@@ -41,8 +41,8 @@ builder.Services.AddCors(options =>
                 }
                 .SelectMany(s => new []
                 {
-                   $"https://{s}" ,
-                   $"http://{s}"
+                    $"https://{s}" ,
+                    $"http://{s}"
                 })
                 .ToArray())
             .AllowAnyHeader()
@@ -69,7 +69,7 @@ if (app.Environment.IsDevelopment())
         {
             new Game
             {
-                Id = default,
+                Id = Guid.Parse("a6613b43-c4b1-47da-8ba8-6987b1c8341a"),
                 Name = "Ghost Race",
                 Description = "Face your record head on in a 1 on 1 race!",
                 Image = Array.Empty<byte>(),
@@ -87,7 +87,7 @@ if (app.Environment.IsDevelopment())
             },
             new Game
             {
-                Id = default,
+                Id = Guid.Parse("11299b8c-e859-4eb2-a3ef-7f88685824a3"),
                 Name = "Collect",
                 Description = "Collect buttons faster than anyone else!",
                 Image = Array.Empty<byte>(),
@@ -96,9 +96,9 @@ if (app.Environment.IsDevelopment())
                 {
                     new()
                     {
+                        DisplayName = "",
                         Type = nameof(Single),
-                        Name = "Time",
-                        Required = true
+                        Name = "Time"
                     }
                 }),
                 ScoreImportance = ScoreImportance.Lowest
@@ -114,9 +114,9 @@ if (app.Environment.IsDevelopment())
                 {
                     new()
                     {
+                        DisplayName = "",
                         Type = nameof(Single),
-                        Name = "Time",
-                        Required = true
+                        Name = "Time"
                     }
                 }),
                 ScoreImportance = ScoreImportance.Lowest
@@ -128,22 +128,30 @@ if (app.Environment.IsDevelopment())
             new Entry
             {
                 Name = "Warre",
-                Score = "8282"
+                Score = "8282",
+                GameId = Guid.Parse("a6613b43-c4b1-47da-8ba8-6987b1c8341a"),
+                DateTime = default
             },
             new Entry
             {
                 Name = "Remco",
-                Score = "5044"
+                Score = "5044",
+                GameId = Guid.Parse("a6613b43-c4b1-47da-8ba8-6987b1c8341a"),
+                DateTime = default
             },
             new Entry
             {
                 Name = "Masimo",
-                Score = "5425"
+                Score = "5425",
+                GameId = Guid.Parse("a6613b43-c4b1-47da-8ba8-6987b1c8341a"),
+                DateTime = default
             },
             new Entry
             {
                 Name = "Senne",
-                Score = "8755"
+                Score = "8755",
+                GameId = Guid.Parse("11299b8c-e859-4eb2-a3ef-7f88685824a3"),
+                DateTime = default
             },
         });
         await dbContext.SaveChangesAsync();
@@ -201,11 +209,11 @@ if (app.Environment.IsDevelopment())
 #endif
 }
 
+app.UseCors();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
-app.UseCors();
 
 app.MapControllers();
 app.MapHubs();
