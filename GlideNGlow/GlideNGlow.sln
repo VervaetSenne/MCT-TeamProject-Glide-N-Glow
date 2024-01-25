@@ -52,6 +52,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Socket", "GlideN
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Gamemodes.Data", "GlideNGlow.Gamemodes.Data\GlideNGlow.Gamemodes.Data.csproj", "{F88B605A-C1D5-434D-A5F7-DE9934B2EFE9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlideNGlow.Common.Options.Extensions", "GlideNGlow.Common.Options.Extensions\GlideNGlow.Common.Options.Extensions.csproj", "{5EAACB26-22DF-4D05-80D5-72954C853033}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -134,6 +136,10 @@ Global
 		{F88B605A-C1D5-434D-A5F7-DE9934B2EFE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F88B605A-C1D5-434D-A5F7-DE9934B2EFE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F88B605A-C1D5-434D-A5F7-DE9934B2EFE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EAACB26-22DF-4D05-80D5-72954C853033}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EAACB26-22DF-4D05-80D5-72954C853033}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EAACB26-22DF-4D05-80D5-72954C853033}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EAACB26-22DF-4D05-80D5-72954C853033}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FDF095C4-3122-4415-AA6E-4677A3A03666} = {6DC75EFE-4C31-48A5-AB13-CBD1025BE029}
@@ -155,5 +161,6 @@ Global
 		{F3D7BF2B-7759-48A3-9A23-EB5F36A098B4} = {6DC75EFE-4C31-48A5-AB13-CBD1025BE029}
 		{ACD56752-C23E-4792-8A5A-3A280EE62931} = {3AEDC067-90EA-4A0D-A12A-B71782BCD4C0}
 		{F88B605A-C1D5-434D-A5F7-DE9934B2EFE9} = {01CAECD2-DB58-41C3-A20E-9BD84CF9D995}
+		{5EAACB26-22DF-4D05-80D5-72954C853033} = {2B1D85BA-8E7A-4B83-9774-232D092B7363}
 	EndGlobalSection
 EndGlobal
