@@ -128,7 +128,7 @@ function handleGamemodes() {
 
       /*
       SETT GAMEMODE AVAILABLE CHECKBOX
-    */
+      */
 
       // Add event listener to all checkboxes with the class "set-available-checkbox"
       const setAvailableCheckboxes = document.querySelectorAll(
@@ -222,7 +222,7 @@ function handleGamemodes() {
       });
       /*
     FORCE GAMEMODE
-  */
+    */
 
       // Add event listener to all force buttons
       const forceButtons = document.querySelectorAll(
@@ -273,7 +273,7 @@ function handleGamemodes() {
 }
 function handleButtons() {
   /*
-    BUTTONS -  GET ALL BUTTONS
+    GET ALL BUTTONS
   */
   fetch(`${fetchdom}/button`)
     .then((response) => {
@@ -318,7 +318,7 @@ function handleButtons() {
                     </td>
                     <td id="distance-data">${button.distance}</td>
                     <td>
-                      <button class="table-button" onclick="editDistance(this)">
+                      <button class="table-button" onclick="editButtonDistance(this)">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -393,7 +393,7 @@ function deleteButton(button) {
       });
   }
 }
-function editDistance(button) {
+function editButtonDistance(button) {
   //CHANGE SVG
 
   // Get the SVG element inside the clicked button
@@ -439,7 +439,6 @@ function editDistance(button) {
   }
 }
 function updateDistanceOnAPI(buttonId, newDistance) {
-  // Assuming you have an API endpoint for updating the distance
   const apiUrl = `${fetchdom}/button/${buttonId}?distance=${newDistance}`;
 
   // Make a PUT request to the API endpoint with the new distance data
@@ -487,12 +486,12 @@ function handleLightstrips() {
       for (const strip of lightstrips.lightstrips) {
         console.log(strip);
         html += `
-         <tr>
+         <tr data-lightstrip-id="${strip.distance}">
                     <td id="lightstrip-distance-data">${strip.distance}</td>
                     <td id="lightstrip-length-data">${strip.length}</td>
                     <td id="lightstrip-pixels-data">${strip.pixels}</td>
                     <td>
-                      <button class="table-button">
+                      <button class="table-button" onclick="editLightstripData(this)">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -503,7 +502,8 @@ function handleLightstrips() {
                           stroke-width="2"
                           stroke-linecap="round"
                           stroke-linejoin="round"
-                          class="lucide lucide-pencil"
+                          class="lucide lucide-pencil editLightstripDataSVG"
+                          data-state="state1"
                         >
                           <path
                             d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
@@ -511,7 +511,7 @@ function handleLightstrips() {
                           <path d="m15 5 4 4" />
                         </svg>
                       </button>
-                      <button class="table-button">
+                      <button class="table-button" onclick="deleteLightstrip(this)">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -535,9 +535,150 @@ function handleLightstrips() {
                   </tr>`;
       }
 
-      html += '</table>';
+      html += `<tr>
+                    <td></td>
+                    <td>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="34"
+                        height="34"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-plus-circle ledstrip-add-icon"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M8 12h8" />
+                        <path d="M12 8v8" />
+                      </svg>
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr></table>`;
       lightstripsTable.innerHTML = html;
     });
+}
+function editLightstripData(button) {
+  console.log('editLightstripData');
+  //CHANGE SVG
+
+  // Get the SVG element inside the clicked button
+  const svgElement = button.querySelector('.editLightstripDataSVG');
+
+  // Check the current state based on the SVG content or class
+  const currentState = svgElement.getAttribute('data-state');
+
+  // Toggle between two states
+  if (currentState === 'state1') {
+    // Change to state 2 - EDIT MODE SVG
+    svgElement.setAttribute('data-state', 'state2');
+    svgElement.innerHTML = '<path d="M20 6 9 17l-5-5"/>'; // Change SVG path data for state 2
+  } else {
+    // Change to state 1 - ORIGINAL SVG
+    svgElement.setAttribute('data-state', 'state1');
+    svgElement.innerHTML =
+      '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>'; // Change SVG path data for state 1
+  }
+
+  // Get the parent <tr> element
+  const tableRow = button.closest('tr');
+
+  // Get the lightstrip ID from the data attribute
+  const lightstripId = tableRow.dataset.lightstripId;
+
+  // Edit distance
+  editLightstripField(
+    tableRow,
+    '#lightstrip-distance-data',
+    lightstripId,
+    'distance'
+  );
+
+  // Edit length
+  editLightstripField(
+    tableRow,
+    '#lightstrip-length-data',
+    lightstripId,
+    'length'
+  );
+
+  // Edit pixels
+  editLightstripField(
+    tableRow,
+    '#lightstrip-pixels-data',
+    lightstripId,
+    'pixels'
+  );
+}
+function editLightstripField(tableRow, fieldSelector, lightstripId, field) {
+  // Get the field data <td> element and its current value
+  const fieldTd = tableRow.querySelector(fieldSelector);
+  const currentFieldValue = fieldTd.textContent;
+
+  // Check if the field data is already in edit mode
+  if (fieldTd.classList.contains('edit-mode')) {
+    // Save the updated field value from the input
+    const newFieldValue = fieldTd.querySelector('input').value;
+    // Send to API
+    updateLightstripDataOnAPI(lightstripId, { [field]: newFieldValue });
+    // Update the field data and exit edit mode
+    fieldTd.textContent = newFieldValue;
+    fieldTd.classList.remove('edit-mode');
+  } else {
+    // Enter edit mode by replacing the field data with an input field
+    fieldTd.innerHTML = `<input type="text" style="width:25px" value="${currentFieldValue}" />`;
+    fieldTd.classList.add('edit-mode');
+  }
+}
+function updateLightstripDataOnAPI(lightstripId, newLightstripData) {
+  const apiUrl = `${fetchdom}/lightstrip/${lightstripId}`;
+
+  // Make a PUT request to the API endpoint with the new lightstrip data
+  fetch(apiUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      body: JSON.stringify(newLightstripData),
+    },
+  })
+    .then((data) => {
+      console.log('Distance updated successfully:', data);
+    })
+    .catch((error) => {
+      console.error('Error updating distance:', error);
+    });
+}
+function deleteLightstrip(button) {
+  // Get the parent <tr> element
+  const tableRow = button.closest('tr');
+
+  // Get the lightstrip ID from the data attribute
+  const lightstripId = tableRow.dataset.lightstripId;
+
+  // Confirm deletion with the user
+  const confirmDelete = confirm(
+    'Are you sure you want to delete this lightstrip?'
+  );
+
+  if (confirmDelete) {
+    // Assuming you have an API endpoint for deleting a lightstrip
+    const apiUrl = `${fetchdom}/lightstrip/${lightstripId}`;
+
+    // Make a DELETE request to the API endpoint
+    fetch(apiUrl, {
+      method: 'DELETE',
+    })
+      .then((data) => {
+        console.log('Lightstrip deleted successfully:', data);
+        tableRow.remove();
+      })
+      .catch((error) => {
+        console.error('Error deleting lightstrip:', error);
+      });
+  }
 }
 function toggleDropdown() {
   var dropdown = document.getElementById('customDropdown');
