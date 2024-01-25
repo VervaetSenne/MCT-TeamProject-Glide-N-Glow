@@ -1,12 +1,12 @@
-﻿using GlideNGlow.Socket.Hubs;
-using GlideNGlow.Socket.Wrappers.Abstractions;
-using GlideNGlow.Socket.Wrappers.Constants;
+﻿using GlideNGlow.Socket.Abstractions;
+using GlideNGlow.Socket.Constants;
+using GlideNGlow.Socket.Hubs;
 using Microsoft.AspNetCore.SignalR;
 
-namespace GlideNGlow.Socket.Wrappers;
+namespace GlideNGlow.Socket;
 
 public class SocketWrapper : ISocketWrapper
-{ 
+{
     private readonly IHubContext<ConnectionHub> _connectionHubContext;
     private readonly IHubContext<GameHub> _gamHubContext;
 
@@ -19,5 +19,10 @@ public class SocketWrapper : ISocketWrapper
     public async Task PublishUpdateGamemode(Guid? gameId)
     {
         await _connectionHubContext.Clients.All.SendAsync(Events.CurrentGameUpdated, gameId);
+    }
+
+    public async Task PublishUpdateScore(int playerIndex, string score)
+    {
+        await _gamHubContext.Clients.All.SendAsync(Events.ScoreUpdated, playerIndex, score);
     }
 }
