@@ -2,6 +2,9 @@
 using GlideNGlow.Common.Models;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Core.Dto;
+using GlideNGlow.Core.Dto.Abstractions;
+using GlideNGlow.Core.Dto.Requests;
+using GlideNGlow.Core.Dto.Results;
 using GlideNGlow.Services.Abstractions;
 using Microsoft.Extensions.Options.Implementations;
 
@@ -101,10 +104,10 @@ public class SettingsService : ISettingsService
         });
     }
 
-    private List<LightstripDto> GetLightstrips()
+    private List<LightstripResultDto> GetLightstrips()
     {
         return AppSettings.Strips
-            .Select(l => new LightstripDto
+            .Select(l => new LightstripResultDto
             {
                 Id = l.Id,
                 Distance = l.DistanceFromLast,
@@ -126,7 +129,7 @@ public class SettingsService : ISettingsService
         };
     }
 
-    public LightstripDto AddLightStrip(bool samePiece, bool onePiece)
+    public LightstripResultDto AddLightStrip(bool samePiece, bool onePiece)
     {
         var lightstrips = GetLightstrips();
         var largestId = lightstrips.MaxBy(l => l.Id)!.Id + 1;
@@ -157,7 +160,7 @@ public class SettingsService : ISettingsService
             s.Strips.Add(lightstrip);
         });
         
-        return new LightstripDto
+        return new LightstripResultDto
         {
             Id = lightstrip.Id,
             Distance = lightstrip.DistanceFromLast,
@@ -173,7 +176,7 @@ public class SettingsService : ISettingsService
         return isRemoved;
     }
 
-    public bool UpdateLightStrip(int lightId, LightstripDto lightstrip)
+    public bool UpdateLightStrip(int lightId, LightstripRequestsDto lightstrip)
     {
         var isUpdated = true;
         _appSettings.Update(s =>

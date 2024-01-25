@@ -1,4 +1,6 @@
 ﻿using GlideNGlow.Core.Dto;
+using GlideNGlow.Core.Dto.Abstractions;
+using GlideNGlow.Core.Dto.Requests;
 using GlideNGlow.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,7 +30,7 @@ public class LightstripController : Controller
     }
 
     [HttpPut("{lightId:int}")]
-    public IActionResult UpdateLightStrip([FromRoute] int lightId, [FromBody] LightstripDto updatedLightstrip)
+    public IActionResult UpdateLightStrip([FromRoute] int lightId, [FromBody] LightstripRequestsDto updatedLightstrip)
     {
         if (_settingsService.UpdateLightStrip(lightId, updatedLightstrip))
             return Ok();
