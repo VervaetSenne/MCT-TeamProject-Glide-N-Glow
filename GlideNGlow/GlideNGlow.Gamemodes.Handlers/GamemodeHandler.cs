@@ -12,17 +12,17 @@ public class GamemodeHandler
 {
     private readonly IGameService _gameService;
     private readonly LightRenderer _lightRenderer;
-    private readonly EspHandler _espHandler;
+    private readonly LightButtonHandler _lightButtonHandler;
     
     private TaskCompletionSource _completionSource;
     private GamemodeData? _currentGamemode;
 
     public GamemodeHandler(IOptionsMonitor<AppSettings> appSettings,
-        IGameService gameService, LightRenderer lightRenderer, EspHandler espHandler)
+        IGameService gameService, LightRenderer lightRenderer, LightButtonHandler lightButtonHandler)
     {
         _gameService = gameService;
         _lightRenderer = lightRenderer;
-        _espHandler = espHandler;
+        _lightButtonHandler = lightButtonHandler;
         _completionSource = new TaskCompletionSource();
         
         appSettings.OnChange(AppSettingsChanged);
@@ -48,17 +48,17 @@ public class GamemodeHandler
         IGamemode gamemode;
         if (gameType.BaseType?.IsGenericType ?? false) // gamemode requires settings
         {
-            var constructorInfo = gameType.GetConstructor(new[] { typeof(EspHandler), typeof(AppSettings), typeof(string) });
+            var constructorInfo = gameType.GetConstructor(new[] { typeof(LightButtonHandler), typeof(AppSettings), typeof(string) });
             if (constructorInfo is null) throw new Exception("Every gamemode requires this constructor!");
             
-            gamemode = (IGamemode)constructorInfo.Invoke(new object?[] {_espHandler, appSettings, appSettings.CurrentSettings});
+            gamemode = (IGamemode)constructorInfo.Invoke(new object?[] {_lightButtonHandler, appSettings, appSettings.CurrentSettings});
         }
         else
         {
-            var constructorInfo = gameType.GetConstructor(new[] { typeof(EspHandler), typeof(AppSettings) });
+            var constructorInfo = gameType.GetConstructor(new[] { typeof(LightButtonHandler), typeof(AppSettings) });
             if (constructorInfo is null) throw new Exception("Every gamemode requires this constructor!");
             
-            gamemode = (IGamemode)constructorInfo.Invoke(new object?[] {_espHandler, appSettings});
+            gamemode = (IGamemode)constructorInfo.Invoke(new object?[] {_lightButtonHandler, appSettings});
         }
 
         _currentGamemode = new GamemodeData
@@ -85,8 +85,8 @@ public class GamemodeHandler
             return;
         
         _currentGamemode!.Gamemode.Initialize();
-        await _espHandler.AddSubscriptions(cancellationToken);
-        _espHandler.AddButtonPressedEvent(Input);
+        await _lightButtonHandler.AddSubscriptions(cancellationToken);
+        _lightButtonHandler.AddButtonPressedEvent(Input);
     }
     
     public async Task UpdateAsync(TimeSpan timeSpan)
@@ -124,7 +124,7 @@ public class GamemodeHandler
             return;
         
         _currentGamemode.Gamemode.Stop();
-        await _espHandler.RemoveSubscriptions(cancellationToken);
+        await _lightButtonHandler.RemoveSubscriptions(cancellationToken);
         _currentGamemode = null;
     }
     
