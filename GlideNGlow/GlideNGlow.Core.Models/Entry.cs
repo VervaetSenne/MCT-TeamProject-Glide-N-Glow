@@ -1,6 +1,4 @@
-﻿using GlideNGlow.Core.Models.Enums;
-
-namespace GlideNGlow.Core.Models;
+﻿namespace GlideNGlow.Core.Models;
 
 public class Entry
 {

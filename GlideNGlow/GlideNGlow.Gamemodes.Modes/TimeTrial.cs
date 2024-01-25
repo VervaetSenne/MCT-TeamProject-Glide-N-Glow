@@ -38,15 +38,14 @@ public class TimeTrial : Gamemode
     {
         switch (_gameState)
         {
-            case GameState.WaitingForStart:
-                break;
             case GameState.Countdown:
                 await UpdateCountdownAsync(timeSpan);
                 break;
+            case GameState.WaitingForStart:
             case GameState.Running:
-                break;
             case GameState.Ending:
                 break;
+            case GameState.Error:
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -62,34 +61,28 @@ public class TimeTrial : Gamemode
             _countdownStep = 1;
             _countdownLight.SetColor(Color.Red);
             await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Red,new CancellationToken());
-            return;
         }
-        if (_timeElapsed < -_countdownTime/3)
+        else if (_timeElapsed < -_countdownTime/3)
         {
             if (_countdownStep == 2) return;
             _countdownTime = 2;
             _countdownLight.SetColor(Color.Orange);
             await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Orange,new CancellationToken());
-            return;
         }
-        if (_timeElapsed < 0)
+        else if (_timeElapsed < 0)
         {
             if (_countdownStep == 3) return;
             _countdownStep= 3;
             _countdownLight.SetColor(Color.Yellow);
             await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Yellow,new CancellationToken());
-            return;
         }
-        
-        
-        if (_timeElapsed >= 0)
+        else if (_timeElapsed >= 0)
         {
             _countdownStep = 4;
             _countdownLight.SetColor(Color.Green);
             await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Green,new CancellationToken());
             _gameState = GameState.Running;
             _timeStarted.Start();
-            return;
         }
     }
 
