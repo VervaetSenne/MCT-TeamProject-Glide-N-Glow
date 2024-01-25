@@ -52,7 +52,7 @@ public class EntryService : IEntryService
             .OrderBy(e => e, new EntryComparer())
             .Select((e, i) => new EntryDto
             {
-                Rank = i,
+                Rank = i + 1,
                 Username = e.Name,
                 Score = e.Score
             })
