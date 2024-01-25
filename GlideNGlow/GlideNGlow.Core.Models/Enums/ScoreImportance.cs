@@ -3,5 +3,6 @@
 public enum ScoreImportance
 {
     Lowest,
-    Highest
+    Highest,
+    None
 }
