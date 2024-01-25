@@ -78,9 +78,9 @@ if (app.Environment.IsDevelopment())
                 {
                     new()
                     {
-                        Type = nameof(Single),
+                        DisplayName = "",
                         Name = "Time",
-                        Required = true
+                        Type = nameof(Single),
                     }
                 }),
                 ScoreImportance = ScoreImportance.Lowest

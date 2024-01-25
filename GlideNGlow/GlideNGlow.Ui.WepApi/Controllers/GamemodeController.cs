@@ -91,6 +91,12 @@ public class GamemodeController : Controller
         return Ok(await _gameService.FindByIdAsync(currentId));
     }
 
+    [HttpPost("stop")]
+    public Task<IActionResult> StopGamemodeAsync()
+    {
+        return SetCurrentGamemodeAsync(null);
+    }
+
     [HttpPost("current/{gameId}")]
     public async Task<IActionResult> SetCurrentGamemodeAsync([FromRoute] Guid? gameId)
     {
