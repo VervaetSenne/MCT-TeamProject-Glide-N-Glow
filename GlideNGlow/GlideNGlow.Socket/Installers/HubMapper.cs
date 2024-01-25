@@ -4,12 +4,10 @@ namespace GlideNGlow.Socket.Installers;
 
 public static class HubMapper
 {
-    public static IApplicationBuilder MapHubs(this IApplicationBuilder app)
+    public static IEndpointRouteBuilder MapHubs(this IEndpointRouteBuilder builder)
     {
-        return app.UseEndpoints(builder =>
-        {
-            builder.MapHub<ConnectionHub>("/connection-hub");
-            builder.MapHub<GameHub>("/game-hub");
-        });
+        builder.MapHub<ConnectionHub>("/connection-hub");
+        builder.MapHub<GameHub>("/game-hub");
+        return builder;
     }
 }
