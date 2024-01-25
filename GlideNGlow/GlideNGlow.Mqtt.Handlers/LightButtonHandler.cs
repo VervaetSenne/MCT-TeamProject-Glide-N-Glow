@@ -1,6 +1,7 @@
 using System.Drawing;
 using GlideNGlow.Common.Models;
 using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Common.Options.Extensions;
 using GlideNGlow.Mqtt.Topics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options.Implementations;
@@ -12,8 +13,11 @@ public class LightButtonHandler
     private readonly MqttHandler _mqttHandler;
     private readonly ILogger _logger;
     private readonly IWritableOptions<AppSettings> _appSettings;
-    public readonly Dictionary<string,LightButtons> LightButtons = new();
+
+    private AppSettings AppSettings => _appSettings.GetCurrentValue();
     
+    public readonly Dictionary<string,LightButtons> LightButtons = new();
+
     public event Func<int, Task>? ButtonPressedEvent;
 
     public LightButtonHandler(ILogger<LightButtonHandler> logger, IWritableOptions<AppSettings> appSettings, MqttHandler mqttHandler)
@@ -173,12 +177,12 @@ public class LightButtonHandler
     
     public async Task SetRgb(int buttonId, int r, int g, int b, CancellationToken cancellationToken)
     {
-        await SetRgb(_appSettings.CurrentValue.Buttons[buttonId].MacAddress, r, g, b, cancellationToken);
+        await SetRgb(AppSettings.Buttons[buttonId].MacAddress, r, g, b, cancellationToken);
     }
     
     public async Task SetRgb(int buttonId, Color color, CancellationToken cancellationToken)
     {
-        await SetRgb(_appSettings.CurrentValue.Buttons[buttonId].MacAddress, color.R, color.G, color.B, cancellationToken);
+        await SetRgb(AppSettings.Buttons[buttonId].MacAddress, color.R, color.G, color.B, cancellationToken);
     }
     
     public async Task SetAllRgb(int r, int g, int b, CancellationToken cancellationToken)

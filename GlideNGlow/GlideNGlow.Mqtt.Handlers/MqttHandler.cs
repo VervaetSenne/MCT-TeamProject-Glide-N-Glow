@@ -1,5 +1,6 @@
 using System.Text;
 using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Common.Options.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MQTTnet;
@@ -14,6 +15,8 @@ public class MqttHandler
     private readonly IMqttClient _mqttClient;
     private readonly SemaphoreSlim _semaphore = new(1);
 
+    private AppSettings AppSettings => _appSettings.GetCurrentValue();
+
     public MqttHandler(IOptionsMonitor<AppSettings> appSettings, IMqttClient mqttClient, ILogger<MqttHandler> logger)
     {
         _appSettings = appSettings;
@@ -27,7 +30,7 @@ public class MqttHandler
         
         if (!_mqttClient.IsConnected)
         {
-            var brokerAddress = _appSettings.CurrentValue.Ip;
+            var brokerAddress = AppSettings.Ip;
             var mqttClientOptions = new MqttClientOptionsBuilder()
                 .WithTcpServer(brokerAddress)
                 .Build();
