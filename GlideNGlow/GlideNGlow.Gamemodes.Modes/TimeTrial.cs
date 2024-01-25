@@ -6,6 +6,7 @@ using GlideNGlow.Gamemodes.Models.Abstractions;
 using GlideNGlow.Gamemodes.Modes.Enums;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Models;
+using GlideNGlow.Socket.Abstractions;
 
 namespace GlideNGlow.Gamemodes.Modes;
 
@@ -19,7 +20,7 @@ public class TimeTrial : Gamemode
     private float _countdownTime = 3;
     private int _countdownStep = 0;
     
-    public TimeTrial(LightButtonHandler lightButtonHandler, AppSettings appSettings) : base(lightButtonHandler, appSettings)
+    public TimeTrial(LightButtonHandler lightButtonHandler, AppSettings appSettings, ISocketWrapper socketWrapper) : base(lightButtonHandler, appSettings, socketWrapper)
     {
     }
 

@@ -1,6 +1,7 @@
 ﻿using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Models.Abstractions;
+using GlideNGlow.Socket.Abstractions;
 using Newtonsoft.Json;
 
 namespace GlideNGlow.Gamemodes.Models.Abstractions;
@@ -14,12 +15,12 @@ public abstract class Gamemode : IGamemode
     protected bool ForceRenderUpdate = true;
     private IGamemode _gamemodeImplementation;
 
-    protected Gamemode(LightButtonHandler lightButtonHandler, AppSettings appSettings)
+    protected Gamemode(LightButtonHandler lightButtonHandler, AppSettings appSettings, ISocketWrapper socketWrapper)
     {
         LightButtonHandler = lightButtonHandler;
         AppSettings = appSettings;
     }
-
+    
     public abstract void Initialize(CancellationToken cancellationToken);
 
     public abstract void Stop();
@@ -49,7 +50,7 @@ public abstract class Gamemode<TSettings> : Gamemode
 {
     protected TSettings Settings;
 
-    protected Gamemode(LightButtonHandler lightButtonHandler, AppSettings appSettings, string settingsJson) : base(lightButtonHandler, appSettings)
+    protected Gamemode(LightButtonHandler lightButtonHandler, AppSettings appSettings, string settingsJson, ISocketWrapper socketWrapper ) : base(lightButtonHandler, appSettings,socketWrapper)
     {
         Settings = JsonConvert.DeserializeObject<TSettings>(settingsJson)
                    ?? throw new ArgumentNullException(nameof(settingsJson), "Settings given to gamemode do not conform to model!");

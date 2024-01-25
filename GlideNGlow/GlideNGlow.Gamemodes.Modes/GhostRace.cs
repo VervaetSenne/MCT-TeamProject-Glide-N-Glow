@@ -6,6 +6,7 @@ using GlideNGlow.Gamemodes.Modes.Enums;
 using GlideNGlow.Gamemodes.Modes.Settings;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Models;
+using GlideNGlow.Socket.Abstractions;
 
 namespace GlideNGlow.Gamemodes.Modes;
 
@@ -20,7 +21,7 @@ public class GhostRace : Gamemode<GhostRaceSetting>
     private int _startedButtonId;
     private float _timeElapsed;
     
-    public GhostRace(LightButtonHandler lightButtonHandler, AppSettings appsettings, string settingsJson) : base(lightButtonHandler, appsettings, settingsJson)
+    public GhostRace(LightButtonHandler lightButtonHandler, AppSettings appsettings, string settingsJson,  ISocketWrapper socketWrapper) : base(lightButtonHandler, appsettings, settingsJson, socketWrapper)
     {
         _distanceCm = appsettings.Strips.Sum(strip => strip.Length + strip.DistanceFromLast);
     }

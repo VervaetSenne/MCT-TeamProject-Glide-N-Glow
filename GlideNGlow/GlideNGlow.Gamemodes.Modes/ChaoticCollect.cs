@@ -5,6 +5,7 @@ using GlideNGlow.Gamemodes.Modes.Enums;
 using GlideNGlow.Gamemodes.Modes.Settings;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Models;
+using GlideNGlow.Socket.Abstractions;
 
 namespace GlideNGlow.Gamemodes.Modes;
 
@@ -23,7 +24,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     private float _buttonWidth = 25f;
     private int _countdownStep;
     
-    public ChaoticCollect(LightButtonHandler lightButtonHandler, AppSettings appSettings, string settingsJson) : base(lightButtonHandler, appSettings, settingsJson)
+    public ChaoticCollect(LightButtonHandler lightButtonHandler, AppSettings appSettings, string settingsJson,  ISocketWrapper socketWrapper) : base(lightButtonHandler, appSettings, settingsJson, socketWrapper)
     {
         //0 being nothing
         _playerColors = new()
