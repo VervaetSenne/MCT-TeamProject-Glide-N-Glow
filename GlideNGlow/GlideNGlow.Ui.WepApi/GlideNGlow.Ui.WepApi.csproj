@@ -8,7 +8,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.15"/>
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="7.0.15" />
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.11" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
     </ItemGroup>
@@ -16,8 +15,7 @@
     <ItemGroup>
       <ProjectReference Include="..\GlideNGlow.Gamemodes.Handlers\GlideNGlow.Gamemodes.Handlers.csproj" />
       <ProjectReference Include="..\GlideNGlow.Services\GlideNGlow.Services.csproj" />
-      <ProjectReference Include="..\GlideNGlow.Socket.Hubs\GlideNGlow.Socket.Hubs.csproj" />
-      <ProjectReference Include="..\GlideNGlow.Socket.Wrappers\GlideNGlow.Socket.Wrappers.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Socket\GlideNGlow.Socket.csproj" />
     </ItemGroup>
 
 </Project>

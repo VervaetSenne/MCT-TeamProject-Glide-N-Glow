@@ -2,7 +2,7 @@
 using GlideNGlow.Core.Models.Extensions;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Services.Abstractions;
-using GlideNGlow.Socket.Wrappers.Abstractions;
+using GlideNGlow.Socket.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GlideNGlow.Ui.WepApi.Controllers;

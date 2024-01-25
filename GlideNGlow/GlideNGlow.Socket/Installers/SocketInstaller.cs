@@ -1,7 +1,6 @@
-﻿using GlideNGlow.Socket.Wrappers.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
+﻿using GlideNGlow.Socket.Abstractions;
 
-namespace GlideNGlow.Socket.Wrappers.Installers;
+namespace GlideNGlow.Socket.Installers;
 
 public static class SocketInstaller
 {
