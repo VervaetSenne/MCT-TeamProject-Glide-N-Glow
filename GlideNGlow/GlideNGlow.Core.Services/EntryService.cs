@@ -3,7 +3,9 @@ using GlideNGlow.Core.Dto;
 using GlideNGlow.Core.Models;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Core.Services.Enums;
+using GlideNGlow.Core.Services.Generic;
 using Microsoft.EntityFrameworkCore;
+using MoreAsyncLINQ;
 
 namespace GlideNGlow.Core.Services;
 
@@ -32,32 +34,52 @@ public class EntryService : IEntryService
         };
     }
 
-    public async Task<IEnumerable<EntryDto>> FindFromGameAsync(string? mode, TimeFrame timeFrame, bool unique,
+    public async Task<IEnumerable<EntryDto>> FindFromGameAsync(Guid mode, TimeFrame timeFrame, bool unique,
         string username)
     {
-        mode ??= (await _dbContext.Games.FirstAsync()).Name;
-
-        var entries = (await _dbContext.Entries
-                .Where(e => string.Equals(e.Game.Name.Trim(), mode.Trim(), StringComparison.InvariantCultureIgnoreCase))
-                .ToListAsync())
-            .Select((e, i) => (Rank: i + 1, Entry: e))
-            .AsEnumerable();
+        var entries = _dbContext.Entries
+            .Where(e => e.GameId == mode)
+            .Include(e => e.Game)
+            .AsAsyncEnumerable();
 
         if (unique)
-            entries = entries.DistinctBy(e => e.Entry.Name);
-
-        if (!string.IsNullOrWhiteSpace(username))
-            entries = entries.Where(e => e.Entry.Name.ToLower().Contains(username.Trim()));
+            entries = entries.DistinctBy(e => e.Name);
 
         if (timeFrame != TimeFrame.All)
-            entries = entries.Where(tuple => IsWithinTimeFrame(tuple.Entry, timeFrame));
+            entries = entries.Where(tuple => IsWithinTimeFrame(tuple, timeFrame));
 
-        return entries
-            .Select(e => new EntryDto
+        return await entries
+            .OrderBy(e => e, new EntryComparer())
+            .Select((e, i) => new EntryDto
             {
-                Rank = e.Rank,
-                Username = e.Entry.Name,
-                Score = e.Entry.Score
-            }).ToList();
+                Rank = i,
+                Username = e.Name,
+                Score = e.Score
+            })
+            .Where(e => e.Username.ToLower().Contains(username.Trim()))
+            .ToListAsync();
+    }
+
+    public async IAsyncEnumerable<Entry> GetBestScores(IList<Guid> availableGamemodes)
+    {
+        if (availableGamemodes.Count == 0)
+            yield break;
+
+        var entries = _dbContext.Entries
+            .Where(e => availableGamemodes.Any(id => e.Id == id))
+            .Include(e => e.Game)
+            .GroupBy(e => e.GameId)
+            .AsAsyncEnumerable();
+
+        await foreach (var group in entries)
+        {
+            yield return group.Max(new EntryComparer()) ?? new Entry
+            {
+                GameId = group.Key,
+                DateTime = DateTime.MinValue,
+                Name = string.Empty,
+                Score = "----"
+            };
+        }
     }
 }

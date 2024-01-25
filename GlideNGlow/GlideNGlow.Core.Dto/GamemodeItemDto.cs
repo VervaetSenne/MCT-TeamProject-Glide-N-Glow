@@ -7,5 +7,6 @@ public class GamemodeItemDto
     public required Guid Id { get; set; }
     public required string Name { get; set; }
     public required string Description { get; set; }
-    public required string Settings { get; set; }
+    public required string Settings { get; set; } = string.Empty;
+    public string BestScore { get; set; } = "----";
 }

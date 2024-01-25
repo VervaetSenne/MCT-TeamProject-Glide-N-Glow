@@ -73,6 +73,11 @@ public class SettingsService : ISettingsService
         _appSettings.Update(s => s.CurrentGamemode = gameId);
     }
 
+    public Guid? GetCurrentGamemode()
+    {
+        return AppSettings.CurrentGamemode;
+    }
+
     public IEnumerable<ButtonDto> GetButtons()
     {
         return AppSettings.Buttons
@@ -124,10 +129,11 @@ public class SettingsService : ISettingsService
     public LightstripDto AddLightStrip(bool samePiece, bool onePiece)
     {
         var lightstrips = GetLightstrips();
+        var largestId = lightstrips.MaxBy(l => l.Id)!.Id + 1;
         var lightstrip = new LightstripData
         {
             Id = lightstrips.Count > 1
-                ? Enumerable.Range(0, lightstrips.MaxBy(l => l.Id)!.Id + 1).Except(lightstrips.Select(l => l.Id)).First()
+                ? Enumerable.Range(0, largestId + 1).Except(lightstrips.Select(l => l.Id)).First()
                 : 0
         };
 
@@ -182,7 +188,7 @@ public class SettingsService : ISettingsService
             var index = s.Strips.IndexOf(strip);
             s.Strips[index] = new LightstripData
             {
-                Id = lightstrip.Id,
+                Id = lightId,
                 DistanceFromLast = lightstrip.Distance,
                 Length = lightstrip.Length,
                 Leds = lightstrip.Pixels
