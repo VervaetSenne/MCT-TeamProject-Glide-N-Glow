@@ -9,13 +9,13 @@ public abstract class Gamemode : IGamemode
 {
     protected readonly List<RenderObject> RenderObjects = new();
     
-    protected readonly EspHandler EspHandler;
+    protected readonly LightButtonHandler LightButtonHandler;
     protected readonly AppSettings AppSettings;
     protected bool ForceRenderUpdate = true;
 
-    protected Gamemode(EspHandler espHandler, AppSettings appSettings)
+    protected Gamemode(LightButtonHandler lightButtonHandler, AppSettings appSettings)
     {
-        EspHandler = espHandler;
+        LightButtonHandler = lightButtonHandler;
         AppSettings = appSettings;
     }
 
@@ -48,7 +48,7 @@ public abstract class Gamemode<TSettings> : Gamemode
 {
     protected TSettings Settings;
 
-    protected Gamemode(EspHandler espHandler, AppSettings appSettings, string settingsJson) : base(espHandler, appSettings)
+    protected Gamemode(LightButtonHandler lightButtonHandler, AppSettings appSettings, string settingsJson) : base(lightButtonHandler, appSettings)
     {
         Settings = JsonConvert.DeserializeObject<TSettings>(settingsJson)
                    ?? throw new ArgumentNullException(nameof(settingsJson), "Settings given to gamemode do not conform to model!");

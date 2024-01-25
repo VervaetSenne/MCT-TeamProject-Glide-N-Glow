@@ -18,7 +18,7 @@ public static class EngineInstaller
         return services
             .ConfigureWritable<AppSettings>(config, nameof(AppSettings))
             .AddScoped<MqttHandler>()
-            .AddScoped<EspHandler>()
+            .AddScoped<LightButtonHandler>()
             .AddScoped<LightRenderer>(isp => LightRenderer.Create(isp.GetRequiredService<ILogger<LightRenderer>>(),
             isp.GetRequiredService<IOptionsMonitor<AppSettings>>(), isp.GetRequiredService<MqttHandler>()))
             .AddScoped<IMqttClient>(_ => new MqttFactory().CreateMqttClient())

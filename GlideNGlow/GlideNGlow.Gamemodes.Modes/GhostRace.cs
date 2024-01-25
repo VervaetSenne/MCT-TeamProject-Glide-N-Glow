@@ -20,7 +20,7 @@ public class GhostRace : Gamemode<GhostRaceSetting>
     private int _startedButtonId;
     private float _timeElapsed;
     
-    public GhostRace(EspHandler espHandler, AppSettings appsettings, string settingsJson) : base(espHandler, appsettings, settingsJson)
+    public GhostRace(LightButtonHandler lightButtonHandler, AppSettings appsettings, string settingsJson) : base(lightButtonHandler, appsettings, settingsJson)
     {
         _distanceCm = appsettings.Strips.Sum(strip => strip.Length + strip.DistanceFromLast);
     }
