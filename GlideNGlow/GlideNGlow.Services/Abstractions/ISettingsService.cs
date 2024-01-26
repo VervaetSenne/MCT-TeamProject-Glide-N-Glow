@@ -13,7 +13,7 @@ public interface ISettingsService
     void UpdateForceGamemode(Guid? gameId);
     
     Guid? GetCurrentGamemode();
-    void UpdateCurrentGamemode(Guid? gameId);
+    void UpdateCurrentGamemode(Guid? gameId, Dictionary<string, object>? settings);
     
     IEnumerable<ButtonDto> GetButtons();
     void UpdateButton(string buttonId, float? distance);

@@ -7,6 +7,7 @@ using GlideNGlow.Core.Dto.Requests;
 using GlideNGlow.Core.Dto.Results;
 using GlideNGlow.Services.Abstractions;
 using Microsoft.Extensions.Options.Implementations;
+using Newtonsoft.Json;
 
 namespace GlideNGlow.Services;
 
@@ -71,9 +72,15 @@ public class SettingsService : ISettingsService
         });
     }
 
-    public void UpdateCurrentGamemode(Guid? gameId)
+    public void UpdateCurrentGamemode(Guid? gameId, Dictionary<string, object>? settings)
     {
-        _appSettings.Update(s => s.CurrentGamemode = gameId);
+        _appSettings.Update(s =>
+        {
+            s.CurrentGamemode = gameId;
+            s.CurrentSettings = s.CurrentGamemode is null
+                ? string.Empty
+                : JsonConvert.SerializeObject(settings);
+        });
     }
 
     public Guid? GetCurrentGamemode()
