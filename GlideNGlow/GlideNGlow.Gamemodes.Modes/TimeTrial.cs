@@ -118,8 +118,8 @@ public class TimeTrial : Gamemode
         
                 _countdownStep = 0;
                 var startDistance = AppSettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
-                _countdownLight.SetStart(startDistance -2);
-                _countdownLight.SetEnd(startDistance +2);
+                _countdownLight.SetStart(startDistance -5);
+                _countdownLight.SetEnd(startDistance +5);
                 break;
             case GameState.Countdown:
                 break;
