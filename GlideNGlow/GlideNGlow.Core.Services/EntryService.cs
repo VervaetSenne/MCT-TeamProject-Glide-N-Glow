@@ -68,10 +68,10 @@ public class EntryService : IEntryService
         var entries = await _dbContext.Entries
             .Where(e => availableGamemodes.Any(id => e.Id == id))
             .Include(e => e.Game)
-            .GroupBy(e => e.GameId)
             .ToListAsync();
 
         return entries
+            .GroupBy(e => e.GameId)
             .Select(g => g.Max(new EntryComparer()) ?? new Entry
             {
                 GameId = g.Key,
