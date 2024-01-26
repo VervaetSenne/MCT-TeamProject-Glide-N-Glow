@@ -66,7 +66,7 @@ public class EntryService : IEntryService
             return Enumerable.Empty<Entry>();
 
         var entries = await _dbContext.Entries
-            .Where(e => availableGamemodes.Any(id => e.Id == id))
+            .Where(e => availableGamemodes.Any(id => e.GameId == id))
             .Include(e => e.Game)
             .ToListAsync();
 
