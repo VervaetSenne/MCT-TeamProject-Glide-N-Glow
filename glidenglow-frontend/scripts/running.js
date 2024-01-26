@@ -16,6 +16,23 @@ function getParameters() {
 }
 
 function goBack() {
+  fetch(`${fetchdom}/gamemode/stop`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((result) => {
+      // Handle the API response if needed
+      console.log('API Response - send gamemode settings:', result);
+    })
+    .catch((error) => {
+      // Handle errors
+      console.error(
+        'Error sending data to API - send gamemode settings:',
+        error
+      );
+    });
   window.location.href = 'index.html';
 }
 
