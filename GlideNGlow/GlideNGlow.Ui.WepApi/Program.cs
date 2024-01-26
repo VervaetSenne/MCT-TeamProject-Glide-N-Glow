@@ -1,4 +1,5 @@
 using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Common.Options.Extensions;
 using GlideNGlow.Core.Services.Installers;
 using GlideNGlow.Gamemodes.Data.Extensions;
 using GlideNGlow.Gamemodes.Handlers.Installers;
@@ -6,6 +7,8 @@ using GlideNGlow.Services.Installers;
 using GlideNGlow.Socket.Installers;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Environment.InitializeAppSettings();
 
 // Add services to the container.
 
