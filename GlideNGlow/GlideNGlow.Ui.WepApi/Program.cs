@@ -37,7 +37,7 @@ builder.Services.AddCors(options =>
                 }
                 .SelectMany(s => new []
                 {
-                   $"https://{s}" ,
+                   $"https://{s}",
                    $"http://{s}"
                 })
                 .ToArray())

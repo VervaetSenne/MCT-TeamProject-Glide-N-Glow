@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link type="text/css" rel="stylesheet" href="css/index.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
+      rel="stylesheet"
+    />
+    <script src="scripts/gamemodeSettings.js"></script>
+    <link rel="shortcut icon" href="favicon.svg" type="image/x-icon" />
+    <title>Gamemode settings</title>
+  </head>
+
+  <body>
+    <!-- Danger button to go back to index.html -->
+    <div class="quit-button-container">
+      <button id="quit-button" onclick="goBack()">Quit</button>
+    </div>
+    <div class="gamemode-settings-header">
+      <h1 class="js-gamemode-setting-header">{Mode} settings</h1>
+      <p class="gamemode-setting-discription">
+        Fill in the settings before starting the game
+      </p>
+      <svg
+        id="Layer_1"
+        data-name="Layer 1"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20.04 22"
+        class="gamemode-setting-icon"
+      >
+        <defs>
+          <style>
+            .cls-1 {
+              stroke: #6d97c4;
+            }
+
+            .cls-1,
+            .cls-2 {
+              fill: none;
+              stroke-linecap: round;
+              stroke-linejoin: round;
+              stroke-width: 2px;
+            }
+
+            .cls-2 {
+              stroke: #000;
+            }
+          </style>
+        </defs>
+        <path
+          class="cls-2"
+          d="M10.24,1h-.44c-1.1,0-2,.9-2,2v.18c0,.71-.38,1.37-1,1.73l-.43.25c-.62.36-1.38.36-2,0l-.15-.08c-.96-.55-2.18-.22-2.73.73l-.22.38c-.55.96-.22,2.18.73,2.73l.15.1c.62.36,1,1.01,1,1.72v.51c0,.72-.38,1.38-1,1.74l-.15.09c-.95.55-1.28,1.77-.73,2.73l.22.38c.55.95,1.77,1.28,2.73.73l.15-.08c.62-.36,1.38-.36,2,0l.43.25c.62.36,1,1.02,1,1.73v.18c0,1.1.9,2,2,2h.44c1.1,0,2-.9,2-2v-.18c0-.71.38-1.37,1-1.73l.43-.25c.62-.36,1.38-.36,2,0l.15.08c.96.55,2.18.22,2.73-.73l.22-.39c.55-.96.22-2.18-.73-2.73l-.15-.08c-.62-.36-1-1.02-1-1.74v-.5c0-.72.38-1.38,1-1.74l.15-.09c.95-.55,1.28-1.77.73-2.73l-.22-.38c-.55-.95-1.77-1.28-2.73-.73l-.15.08c-.62.36-1.38.36-2,0l-.43-.25c-.62-.36-1-1.02-1-1.73v-.18c0-1.1-.9-2-2-2Z"
+        />
+        <circle class="cls-1" cx="10.02" cy="11" r="3" />
+      </svg>
+    </div>
+    <!-- Icon to show hardware status -->
+    <div class="gamemode-hardware-status">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#000000"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-activity"
+      >
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+      </svg>
+    </div>
+    <!-- Gamemode settings-->
+    <div class="gamemode-settings-card-container">
+      <!-- Gamemode settings card amount of players -->
+      <div
+        class="gamemode-settings-card js-player-amount gamemode-setting-content-hidden"
+      >
+        <p>Fill in the amount of players</p>
+
+        <input
+          type="number"
+          id="playerInputAmount"
+          class="playerInput"
+          placeholder="Enter number of players"
+          min="0"
+        />
+
+        <button class="startButton" onclick="startGame()">Start</button>
+      </div>
+      <!-- Gamemode settings card set time -->
+      <div class="gamemode-settings-card js-set-time">
+        <p class="gamemode-setting-text">Set time</p>
+        <input
+          type="number"
+          id="playerInputTimeMinutes"
+          class="playerInput"
+          placeholder="Minutes"
+          min="0"
+        /><span>:</span
+        ><input
+          type="number"
+          id="playerInputTimeSeconds"
+          class="playerInput"
+          placeholder="Seconds"
+          min="0"
+        />
+        <button class="startButton" onclick="startGame()">Start</button>
+      </div>
+      <!-- Gamemode settings card no setting-->
+      <div
+        class="gamemode-settings-card js-no-setting gamemode-setting-content-hidden"
+      >
+        <button class="startButton" onclick="startGame()">Start</button>
+      </div>
+    </div>
+  </body>
+</html>
