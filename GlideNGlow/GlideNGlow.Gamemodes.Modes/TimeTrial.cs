@@ -16,9 +16,9 @@ public class TimeTrial : Gamemode
     private int _startedButtonId =-1;
     private GameState _gameState;
     private readonly MeasurementLineRenderObject _countdownLight = new(0, 1, Color.Red);
-    private float _timeElapsed = 0;
+    private float _timeElapsed;
     private float _countdownTime = 3;
-    private int _countdownStep = 0;
+    private int _countdownStep;
     
     public TimeTrial(LightButtonHandler lightButtonHandler, AppSettings appSettings, ISocketWrapper socketWrapper) : base(lightButtonHandler, appSettings, socketWrapper)
     {
@@ -90,7 +90,6 @@ public class TimeTrial : Gamemode
             await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Green,new CancellationToken());
             _gameState = GameState.Running;
             _timeStarted.Start();
-            return;
         }
     }
 

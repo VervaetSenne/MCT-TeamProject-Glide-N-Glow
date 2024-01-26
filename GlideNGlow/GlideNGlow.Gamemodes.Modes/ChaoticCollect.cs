@@ -155,7 +155,12 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
         switch(newState)
         {
             case GameState.WaitingForStart:
-                _scores.ForEach(x => x = 0);
+                //loop over _scores
+                for (var i = 0; i < _scores.Count; i++)
+                {
+                    //publish the score to the server
+                    _scores[i] = 0;
+                }
                 await LightButtonHandler.SetAllRgb(Color.White, default);
                 SetAllColor(Color.White, new CancellationToken()).Wait();
                 break;
@@ -181,16 +186,20 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
 
     private async Task SubmitScores()
     {
+        List<String> scores = new();
         //for each score
         for (var i = 0; i < _scores.Count; i++)
         {
             //calcualte score per minute
-            var score =(_scores[i] / _timeElapsed.TotalMinutes);
+            var score = (_scores[i] / _timeElapsed.TotalMinutes);
             //round to 2 decimals
             score = Math.Round(score, 2);
-            //send the score to the server
-            await SocketWrapper.PublishUpdateScore(i, score.ToString(CultureInfo.InvariantCulture));
+            //add to the list
+            scores.Add(score.ToString(CultureInfo.InvariantCulture));
         }
+
+        //send the score to the server
+            await SocketWrapper.PublishNewScores(scores);
     }
 
     private async Task RunningStart(CancellationToken cancellationToken)

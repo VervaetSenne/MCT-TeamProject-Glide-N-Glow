@@ -14,7 +14,8 @@ public abstract class Gamemode : IGamemode
     protected readonly AppSettings AppSettings;
     protected readonly ISocketWrapper SocketWrapper;
     protected bool ForceRenderUpdate = true;
-    private IGamemode _gamemodeImplementation;
+    
+    //private IGamemode _gamemodeImplementation;
 
     protected Gamemode(LightButtonHandler lightButtonHandler, AppSettings appSettings, ISocketWrapper socketWrapper)
     {
