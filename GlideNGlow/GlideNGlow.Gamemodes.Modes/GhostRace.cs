@@ -6,6 +6,7 @@ using GlideNGlow.Gamemodes.Modes.Enums;
 using GlideNGlow.Gamemodes.Modes.Settings;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Models;
+using GlideNGlow.Socket.Abstractions;
 
 namespace GlideNGlow.Gamemodes.Modes;
 
@@ -20,22 +21,27 @@ public class GhostRace : Gamemode<GhostRaceSetting>
     private int _startedButtonId;
     private float _timeElapsed;
     
-    public GhostRace(EspHandler espHandler, AppSettings appsettings, string settingsJson) : base(espHandler, appsettings, settingsJson)
+    public GhostRace(LightButtonHandler lightButtonHandler, AppSettings appsettings, string settingsJson,  ISocketWrapper socketWrapper) : base(lightButtonHandler, appsettings, settingsJson, socketWrapper)
     {
         _distanceCm = appsettings.Strips.Sum(strip => strip.Length + strip.DistanceFromLast);
     }
 
-    public override void Initialize()
+    public override void Initialize(CancellationToken cancellationToken)
     {
+        RenderObjects.Add(_countdownLight);
+        RenderObjects.Add(_ghostLight);
+        _ghostLight.SetVisibility(false);
+        _countdownLight.SetVisibility(false);
         _distancePerSecond = _distanceCm / Settings.TimeLimit;
         _gameState = GameState.WaitingForStart;
     }
 
     public override void Stop()
     {
+        LightButtonHandler.SetAllRgb(Color.Black, new CancellationToken()).Wait();
     }
 
-    public override Task UpdateAsync(TimeSpan timeSpan)
+    public override async Task UpdateAsync(TimeSpan timeSpan, CancellationToken cancellationToken)
     {
         _timeElapsed += timeSpan.TotalSeconds();
         switch (_gameState)
@@ -43,58 +49,95 @@ public class GhostRace : Gamemode<GhostRaceSetting>
             case GameState.WaitingForStart:
                 break;
             case GameState.Countdown:
-                UpdateCountdown(timeSpan);
+                await UpdateCountdown(cancellationToken);
                 break;
             case GameState.Running:
-                UpdateRunning(timeSpan);
+                await UpdateRunning(timeSpan, cancellationToken);
+                break;
+            case GameState.Ending:
+                await UpdateEnding(cancellationToken);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        return Task.CompletedTask;
     }
 
-    public void UpdateCountdown(TimeSpan timeSpan)
+    private async Task UpdateCountdown(CancellationToken cancellationToken)
     {
         var cdLightOn = _timeElapsed % 1 > -0.5;
-        _countdownLight.SetColor(cdLightOn ? Color.White : Color.Black);
+        _countdownLight.SetVisibility(cdLightOn);
         if (_timeElapsed > 0)
         {
-            RenderObjects.Remove(_countdownLight);
-            _gameState = GameState.Running;
-            _timeElapsed = 0;
+            await SwitchGameState(GameState.Running, cancellationToken);
         }
     }
-    
-    public void UpdateRunning(TimeSpan timeSpan)
+
+    private async Task UpdateRunning(TimeSpan timeSpan, CancellationToken cancellationToken)
     {
         //calculate the distance to move
         var distanceToMove = _distancePerSecond * timeSpan.TotalSeconds();
         _ghostLight.Move(distanceToMove);
         if (_timeElapsed > Settings.TimeLimit)
         {
-            RenderObjects.Remove(_ghostLight);
-            _gameState = GameState.WaitingForStart;
-            _timeElapsed = 0;
-            ForceRenderUpdate = true;
+            await SwitchGameState(GameState.Ending, cancellationToken);
         }
     }
 
-    public override Task ButtonPressed(int id)
+    private async Task SwitchGameState(GameState newState, CancellationToken cancellationToken)
     {
-        if (_gameState != GameState.WaitingForStart) return Task.CompletedTask;
+        switch (newState)
+        {
+            case GameState.WaitingForStart:
+                _ghostLight.SetVisibility(false);
+                _countdownLight.SetVisibility(false);
+                await LightButtonHandler.SetAllRgb(Color.White, cancellationToken);
+                _timeElapsed = 0;
+                break;
+            case GameState.Countdown:
+                _timeElapsed = -3;
+                _ghostLight.SetVisibility(true);
+                _countdownLight.SetVisibility(false);
+                await LightButtonHandler.SetAllRgb(Color.Black, cancellationToken);
+                var startDistance = AppSettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
+                _ghostLight.SetStart(startDistance);
+                _ghostLight.SetEnd(startDistance + _distancePerSecond * 0.3f);
+            
+                _countdownLight.SetStart(startDistance - _distancePerSecond);
+                _countdownLight.SetEnd(startDistance + _distancePerSecond);
+                break;
+            case GameState.Running:
+                _ghostLight.SetVisibility(true);
+                _countdownLight.SetVisibility(false);
+                _gameState = GameState.Running;
+                _timeElapsed = 0;
+                break;
+            case GameState.Ending:
+                _ghostLight.SetVisibility(true);
+                _countdownLight.SetVisibility(true);
+                _timeElapsed = -3;
+                ForceRenderUpdate = true;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
+        }
+        _gameState = newState;
+    }
+    
+    private async Task UpdateEnding(CancellationToken cancellationToken)
+    {
+        if (_timeElapsed > 0)
+        {
+            await SwitchGameState(GameState.WaitingForStart, cancellationToken);
+        }
+    }
+
+    public override async Task ButtonPressed(int id, CancellationToken cancellationToken)
+    {
+        if (_gameState != GameState.WaitingForStart) return;
         
-        _timeElapsed = -3;
         _startedButtonId = id;
-            
-        RenderObjects.Add(_countdownLight);
-            
-        var startDistance = AppSettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
-        _ghostLight.SetStart(startDistance);
-        _ghostLight.SetEnd((float)(startDistance + 0.2));
-        RenderObjects.Add(_ghostLight);
-            
-        _gameState = GameState.Countdown;
-        return Task.CompletedTask;
+        await SwitchGameState(GameState.Countdown, cancellationToken);
+        
+        
     }
 }

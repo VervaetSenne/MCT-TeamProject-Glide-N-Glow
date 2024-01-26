@@ -1,21 +1,26 @@
+using System.Drawing;
 using GlideNGlow.Common.Models;
 using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Common.Options.Extensions;
 using GlideNGlow.Mqtt.Topics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options.Implementations;
 
 namespace GlideNGlow.Mqqt.Handlers;
 
-public class EspHandler
+public class LightButtonHandler
 {
     private readonly MqttHandler _mqttHandler;
     private readonly ILogger _logger;
     private readonly IWritableOptions<AppSettings> _appSettings;
-    private readonly Dictionary<string,LightButtons> _lightButtons = new();
+
+    private AppSettings AppSettings => _appSettings.GetCurrentValue();
     
+    public readonly Dictionary<string,LightButtons> LightButtons = new();
+
     public event Func<int, Task>? ButtonPressedEvent;
 
-    public EspHandler(ILogger<EspHandler> logger, IWritableOptions<AppSettings> appSettings, MqttHandler mqttHandler)
+    public LightButtonHandler(ILogger<LightButtonHandler> logger, IWritableOptions<AppSettings> appSettings, MqttHandler mqttHandler)
     {
         _mqttHandler = mqttHandler;
         _logger = logger;
@@ -60,9 +65,9 @@ public class EspHandler
             throw new NullReferenceException("Button is null after connect!");
         
         //now we are sure there is one, so we can add it to _lightButtons
-        if (!_lightButtons.ContainsKey(macAddress))
+        if (!LightButtons.ContainsKey(macAddress))
         {
-            _lightButtons.Add(button.MacAddress, new LightButtons(button, _logger)
+            LightButtons.Add(button.MacAddress, new LightButtons(button, _logger)
             {
                 MacAddress = macAddress
             });
@@ -74,7 +79,7 @@ public class EspHandler
     private void OnSignin(string topic, string message)
     {
         var macAddress = topic.Split('/')[1];
-        if (_lightButtons.ContainsKey(macAddress))
+        if (LightButtons.ContainsKey(macAddress))
         {
             _logger.LogInformation($"Esp {macAddress} signed in: {message}");
         }
@@ -91,7 +96,7 @@ public class EspHandler
     {
         var macAddress = topic.Split('/')[1];
         _logger.LogInformation($"Esp {macAddress} acknowledged: {message}");
-        _lightButtons[macAddress].Responded = true;
+        LightButtons[macAddress].Responded = true;
 
         HandleFileData(macAddress);
         ReorderButtonIds();
@@ -101,13 +106,13 @@ public class EspHandler
     {
         var macAddress = topic.Split('/')[1];
         _logger.LogInformation("Esp {macAddress} button pressed: {message}", macAddress, message);
-        if (_lightButtons.TryGetValue(macAddress, out var button))
+        if (LightButtons.TryGetValue(macAddress, out var button))
             button.Pressed();
         else
             _logger.LogCritical("Button pressed but not registered uwu!"); // TODO this should notifiy clients
         
         if (ButtonPressedEvent is not null)
-            await ButtonPressedEvent.Invoke(_lightButtons[macAddress].ButtonNumber ?? -1);
+            await ButtonPressedEvent.Invoke(LightButtons[macAddress].ButtonNumber ?? -1);
     }
 
 #endregion
@@ -120,7 +125,7 @@ public class EspHandler
     //function where you can register an action to get called whenever any button gets pressed, it'll also recieve the id of the button that got pressed
     public void AddPressedEvent(Action<int> callback)
     {
-        foreach (var lightButton in _lightButtons)
+        foreach (var lightButton in LightButtons)
         {
             lightButton.Value.AddPressedEvent(callback);
         }
@@ -129,7 +134,7 @@ public class EspHandler
     //function where we go over each button and remove all callbacks
     public void RemovePressedEvent(Action<int> callback)
     {
-        foreach (var lightButton in _lightButtons)
+        foreach (var lightButton in LightButtons)
         {
             lightButton.Value.RemoveAllPressedEvents();
         }
@@ -140,12 +145,12 @@ public class EspHandler
     {
         var id = 0;
         //give each button an id based on their buttonLocation value, the lower their value the lower their id
-        var keys = _lightButtons.Keys.ToList();
+        var keys = LightButtons.Keys.ToList();
         _appSettings.Update(s =>
         {
-            foreach (var key in keys.OrderBy(x => _lightButtons[x].DistanceFromStart))
+            foreach (var key in keys.OrderBy(x => LightButtons[x].DistanceFromStart))
             {
-                _lightButtons[key].ButtonNumber = id;
+                LightButtons[key].ButtonNumber = id;
                 s.Buttons.Find(x => x.MacAddress == key)!.ButtonNumber = id;
                 id++;
             }
@@ -154,7 +159,7 @@ public class EspHandler
 
     public async Task TestConnection(CancellationToken cancellationToken)
     {
-        foreach (var esp in _lightButtons)
+        foreach (var esp in LightButtons)
         {
             await _mqttHandler.SendMessage($"esp32/{esp.Key}/test", "test connection", cancellationToken);
         }
@@ -164,4 +169,36 @@ public class EspHandler
     {
         await _mqttHandler.SendMessage($"esp32/{macAddress}/ledcircle", string.Format(TopicEndpoints.TopicRgb, r, g, b), cancellationToken);
     }
+    
+    public async Task SetRgb(string macAddress, Color color, CancellationToken cancellationToken)
+    {
+        await SetRgb(macAddress, color.R, color.G, color.B, cancellationToken);
+    }
+    
+    public async Task SetRgb(int buttonId, int r, int g, int b, CancellationToken cancellationToken)
+    {
+        await SetRgb(AppSettings.Buttons[buttonId].MacAddress, r, g, b, cancellationToken);
+    }
+    
+    public async Task SetRgb(int buttonId, Color color, CancellationToken cancellationToken)
+    {
+        await SetRgb(AppSettings.Buttons[buttonId].MacAddress, color.R, color.G, color.B, cancellationToken);
+    }
+    
+    public async Task SetAllRgb(int r, int g, int b, CancellationToken cancellationToken)
+    {
+        foreach (var esp in LightButtons)
+        {
+            await SetRgb(esp.Key, r, g, b, cancellationToken);
+        }
+    }
+    
+    public async Task SetAllRgb(Color color, CancellationToken cancellationToken)
+    {
+        foreach (var esp in LightButtons)
+        {
+            await SetRgb(esp.Key, color.R, color.G, color.B, cancellationToken);
+        }
+    }
+    
 }

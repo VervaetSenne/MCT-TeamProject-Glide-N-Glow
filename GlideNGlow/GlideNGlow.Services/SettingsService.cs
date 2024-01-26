@@ -1,8 +1,8 @@
 ﻿using GlideNGlow.Common.Extensions;
 using GlideNGlow.Common.Models;
 using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Common.Options.Extensions;
 using GlideNGlow.Core.Dto;
-using GlideNGlow.Core.Dto.Abstractions;
 using GlideNGlow.Core.Dto.Requests;
 using GlideNGlow.Core.Dto.Results;
 using GlideNGlow.Services.Abstractions;
@@ -14,7 +14,7 @@ public class SettingsService : ISettingsService
 {
     private readonly IWritableOptions<AppSettings> _appSettings;
 
-    private AppSettings AppSettings => _appSettings.CurrentValue;
+    private AppSettings AppSettings => _appSettings.GetCurrentValue();
 
     public SettingsService(IWritableOptions<AppSettings> appSettings)
     {

@@ -1,6 +1,7 @@
 ﻿using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Models.Abstractions;
+using GlideNGlow.Socket.Abstractions;
 using Newtonsoft.Json;
 
 namespace GlideNGlow.Gamemodes.Models.Abstractions;
@@ -9,28 +10,29 @@ public abstract class Gamemode : IGamemode
 {
     protected readonly List<RenderObject> RenderObjects = new();
     
-    protected readonly EspHandler EspHandler;
+    protected readonly LightButtonHandler LightButtonHandler;
     protected readonly AppSettings AppSettings;
     protected bool ForceRenderUpdate = true;
+    private IGamemode _gamemodeImplementation;
 
-    protected Gamemode(EspHandler espHandler, AppSettings appSettings)
+    protected Gamemode(LightButtonHandler lightButtonHandler, AppSettings appSettings, ISocketWrapper socketWrapper)
     {
-        EspHandler = espHandler;
+        LightButtonHandler = lightButtonHandler;
         AppSettings = appSettings;
     }
-
-    public abstract void Initialize();
+    
+    public abstract void Initialize(CancellationToken cancellationToken);
 
     public abstract void Stop();
 
-    public abstract Task UpdateAsync(TimeSpan timeSpan);
+    public abstract Task UpdateAsync(TimeSpan timeSpan, CancellationToken cancellationToken);
 
     public virtual List<RenderObject> GetRenderObjects()
     {
         return RenderObjects.ToList();
     }
 
-    public abstract Task ButtonPressed(int id);
+    public abstract Task ButtonPressed(int id, CancellationToken cancellationToken);
 
     public bool ShouldForceRender()
     {
@@ -48,7 +50,7 @@ public abstract class Gamemode<TSettings> : Gamemode
 {
     protected TSettings Settings;
 
-    protected Gamemode(EspHandler espHandler, AppSettings appSettings, string settingsJson) : base(espHandler, appSettings)
+    protected Gamemode(LightButtonHandler lightButtonHandler, AppSettings appSettings, string settingsJson, ISocketWrapper socketWrapper ) : base(lightButtonHandler, appSettings,socketWrapper)
     {
         Settings = JsonConvert.DeserializeObject<TSettings>(settingsJson)
                    ?? throw new ArgumentNullException(nameof(settingsJson), "Settings given to gamemode do not conform to model!");

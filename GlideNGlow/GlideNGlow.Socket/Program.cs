@@ -4,6 +4,6 @@ internal class Program
 {
     internal static void Main()
     {
-        return;
+        throw new Exception("This project should not be run!");
     }
 }

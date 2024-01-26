@@ -4,10 +4,10 @@ namespace GlideNGlow.Gamemodes.Models.Abstractions;
 
 public interface IGamemode
 {
-    void Initialize();
+    void Initialize(CancellationToken cancellationToken);
 
     void Stop();
-    Task UpdateAsync(TimeSpan timeSpan);
+    Task UpdateAsync(TimeSpan timeSpan, CancellationToken cancellationToken);
     List<RenderObject> GetRenderObjects();
 
     /// <summary>
@@ -15,5 +15,5 @@ public interface IGamemode
     /// </summary>
     bool ShouldForceRender();
 
-    Task ButtonPressed(int id);
+    Task ButtonPressed(int id, CancellationToken cancellationToken);
 }

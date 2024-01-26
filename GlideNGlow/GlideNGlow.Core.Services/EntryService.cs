@@ -52,7 +52,7 @@ public class EntryService : IEntryService
             .OrderBy(e => e, new EntryComparer())
             .Select((e, i) => new EntryDto
             {
-                Rank = i,
+                Rank = i + 1,
                 Username = e.Name,
                 Score = e.Score
             })
@@ -60,26 +60,24 @@ public class EntryService : IEntryService
             .ToListAsync();
     }
 
-    public async IAsyncEnumerable<Entry> GetBestScores(IList<Guid> availableGamemodes)
+    public async Task<IEnumerable<Entry>> GetBestScoresAsync(IList<Guid> availableGamemodes)
     {
         if (availableGamemodes.Count == 0)
-            yield break;
+            return Enumerable.Empty<Entry>();
 
-        var entries = _dbContext.Entries
+        var entries = await _dbContext.Entries
             .Where(e => availableGamemodes.Any(id => e.Id == id))
             .Include(e => e.Game)
             .GroupBy(e => e.GameId)
-            .AsAsyncEnumerable();
+            .ToListAsync();
 
-        await foreach (var group in entries)
-        {
-            yield return group.Max(new EntryComparer()) ?? new Entry
+        return entries
+            .Select(g => g.Max(new EntryComparer()) ?? new Entry
             {
-                GameId = group.Key,
+                GameId = g.Key,
                 DateTime = DateTime.MinValue,
                 Name = string.Empty,
                 Score = "----"
-            };
-        }
+            });
     }
 }
