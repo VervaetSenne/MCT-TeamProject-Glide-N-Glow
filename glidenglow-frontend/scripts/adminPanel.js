@@ -399,7 +399,7 @@ function handleButtons() {
                         width="24"
                         height="24"
                         viewBox="0 0 24 24"
-                        fill="none"
+                        fill=#${button.id}
                         stroke="currentColor"
                         stroke-width="2"
                         stroke-linecap="round"
@@ -417,7 +417,7 @@ function handleButtons() {
                           width="24"
                           height="24"
                           viewBox="0 0 24 24"
-                          fill="none"
+                          fill=""
                           stroke="currentColor"
                           stroke-width="2"
                           stroke-linecap="round"
