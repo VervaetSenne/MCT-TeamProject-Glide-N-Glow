@@ -4,10 +4,7 @@ var leaderbordTableContainer;
 var fetchdom = 'http://localhost:5165';
 
 function handleDropdown() {
-  /*
-    Get all gamemodes
-  */
-  fetch(`${fetchdom}/gamemode/available`)
+  fetch(`${fetchdom}/leaderboard/gamemodes`)
     .then((response) => {
       if (!response.ok) {
         throw new Error(
@@ -17,9 +14,6 @@ function handleDropdown() {
       return response.json();
     })
     .then((gamemodes) => {
-      console.log(gamemodes);
-      //fill the dropdown with gamemodes
-
       // Assuming your dropdown is a select element with class 'custom-select'
       var selectDropdown = document.querySelector('.custom-select select');
 
@@ -44,6 +38,12 @@ function handleDropdown() {
 
       // Now, initialize the custom-select elements only once
       initializeCustomSelect();
+
+      // Get the ID of the first gamemode
+      var firstGamemodeId = gamemodes.length > 0 ? gamemodes[0].id : '';
+
+      // Call fillLeaderbordOnChange with the ID of the first gamemode
+      fillLeaderbordOnChange(firstGamemodeId);
     });
 }
 
