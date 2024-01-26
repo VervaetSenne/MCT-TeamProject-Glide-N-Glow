@@ -5,9 +5,8 @@ namespace GlideNGlow.Common.Options.Extensions;
 
 public static class OptionsExtensions
 {
-    public static AppSettings GetCurrentValue(this IOptionsMonitor<AppSettings> options)
+    public static AppSettings GetCurrentValue(this AppSettings settings)
     {
-        var settings = options.CurrentValue;
         settings.Buttons = settings.Buttons
             .DistinctBy(data => data.MacAddress)
             .ToList();
@@ -18,5 +17,10 @@ public static class OptionsExtensions
             .Distinct()
             .ToList();
         return settings;
+    }
+    
+    public static AppSettings GetCurrentValue(this IOptionsMonitor<AppSettings> options)
+    {
+        return options.CurrentValue.GetCurrentValue();
     }
 }

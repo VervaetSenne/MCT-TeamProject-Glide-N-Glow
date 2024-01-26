@@ -1,4 +1,5 @@
 using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Common.Options.Extensions;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Gamemodes.Models;
 using GlideNGlow.Gamemodes.Models.Abstractions;
@@ -33,6 +34,7 @@ public class GamemodeHandler
 
     private void AppSettingsChanged(AppSettings appSettings)
     {
+        appSettings = appSettings.GetCurrentValue();
         if (_currentGamemode is not null && _currentGamemode.Game.Id == appSettings.CurrentGamemode ||
             _currentGamemode is null && appSettings.CurrentGamemode is null)
             return;
