@@ -69,7 +69,7 @@ public static class SeedExtensions
                 Description = "Click the start button and record your fastest time.",
                 Image = Array.Empty<byte>(),
                 AssemblyName = typeof(TimeTrial).AssemblyQualifiedName ?? throw new Exception(),
-                Settings = "{}",
+                Settings = "[]",
                 ScoreImportance = ScoreImportance.Lowest
             }
         };
@@ -89,29 +89,29 @@ public static class SeedExtensions
                 new Entry
                 {
                     Name = "Warre",
-                    Score = "8282",
-                    GameId = ids[0],
+                    Score = "3288.18",
+                    GameId = ids[1],
                     DateTime = default
                 },
                 new Entry
                 {
                     Name = "Remco",
-                    Score = "5044",
-                    GameId = ids[0],
+                    Score = "3827.18",
+                    GameId = ids[1],
                     DateTime = default
                 },
                 new Entry
                 {
                     Name = "Masimo",
-                    Score = "5425",
-                    GameId = ids[0],
+                    Score = "3838.13",
+                    GameId = ids[1],
                     DateTime = default
                 },
                 new Entry
                 {
                     Name = "Senne",
-                    Score = "8755",
-                    GameId = ids[1],
+                    Score = TimeSpan.FromMinutes(2.10328).ToString("g"),
+                    GameId = ids[2],
                     DateTime = default
                 },
             });
@@ -125,7 +125,7 @@ public static class SeedExtensions
                     {
                         Id = 0,
                         Leds = 100,
-                        Length = 3,
+                        Length = 300,
                         DistanceFromLast = 0
                     }
                 };
@@ -135,19 +135,19 @@ public static class SeedExtensions
                     {
                         ButtonNumber = 0,
                         MacAddress = "6F:C0:00:FF:00:13",
-                        DistanceFromStart = 10
+                        DistanceFromStart = 33
                     },
                     new()
                     {
                         ButtonNumber = 1,
                         MacAddress = "5B:D9:F9:89:6B:60",
-                        DistanceFromStart = 20
+                        DistanceFromStart = 66
                     },
                     new()
                     {
                         ButtonNumber = 2,
                         MacAddress = "86:6A:50:B5:8E:F6",
-                        DistanceFromStart = 30
+                        DistanceFromStart = 99
                     },
                 };
             });
