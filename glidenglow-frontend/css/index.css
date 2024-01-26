@@ -24,6 +24,11 @@ body {
   overflow-x: hidden;
 }
 
+html {
+  touch-action:none;
+}
+
+
 body::-webkit-scrollbar {
   width: 0.25rem;
 }

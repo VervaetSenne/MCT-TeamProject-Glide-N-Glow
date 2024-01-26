@@ -1,4 +1,5 @@
 ﻿using GlideNGlow.Socket.Abstractions;
+using GlideNGlow.Socket.Data;
 
 namespace GlideNGlow.Socket.Installers;
 
@@ -9,6 +10,7 @@ public static class SocketInstaller
         services
             .AddSignalR();
         return services
-            .AddScoped<ISocketWrapper, SocketWrapper>();
+            .AddScoped<ISocketWrapper, SocketWrapper>()
+            .AddSingleton<ScoreHandler>();
     }
 }
