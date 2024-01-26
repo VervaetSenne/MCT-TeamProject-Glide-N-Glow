@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Globalization;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Gamemodes.Models.Abstractions;
 using GlideNGlow.Gamemodes.Modes.Enums;
@@ -24,7 +25,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     private float _buttonWidth = 25f;
     private int _countdownStep;
     
-    public ChaoticCollect(LightButtonHandler lightButtonHandler, AppSettings appSettings, string settingsJson,  ISocketWrapper socketWrapper) : base(lightButtonHandler, appSettings, settingsJson, socketWrapper)
+    public ChaoticCollect(LightButtonHandler lightButtonHandler, AppSettings appSettings,  ISocketWrapper socketWrapper, string settingsJson) : base(lightButtonHandler, appSettings, socketWrapper, settingsJson)
     {
         //0 being nothing
         _playerColors = new()
@@ -154,7 +155,12 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
         switch(newState)
         {
             case GameState.WaitingForStart:
-                _scores.ForEach(x => x = 0);
+                //loop over _scores
+                for (var i = 0; i < _scores.Count; i++)
+                {
+                    //publish the score to the server
+                    _scores[i] = 0;
+                }
                 await LightButtonHandler.SetAllRgb(Color.White, default);
                 SetAllColor(Color.White, new CancellationToken()).Wait();
                 break;
@@ -167,6 +173,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
                 await RunningStart(cancellationToken);
                 break;
             case GameState.Ending:
+                await SubmitScores();
                 break;
             case GameState.Error:
                 await LightButtonHandler.SetAllRgb(Color.Orange, default);
@@ -175,6 +182,24 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
         }
         _gameState = newState;
+    }
+
+    private async Task SubmitScores()
+    {
+        List<String> scores = new();
+        //for each score
+        for (var i = 0; i < _scores.Count; i++)
+        {
+            //calcualte score per minute
+            var score = (_scores[i] / _timeElapsed.TotalMinutes);
+            //round to 2 decimals
+            score = Math.Round(score, 2);
+            //add to the list
+            scores.Add(score.ToString(CultureInfo.InvariantCulture));
+        }
+
+        //send the score to the server
+            await SocketWrapper.PublishNewScores(scores);
     }
 
     private async Task RunningStart(CancellationToken cancellationToken)
@@ -244,7 +269,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
 
         //add a point to the player
         _scores[playerId-1]++;
-        
+        await SocketWrapper.PublishUpdateScore(playerId-1, _scores[playerId-1].ToString());
     }
 
     public override async Task ButtonPressed(int id, CancellationToken cancellationToken)
