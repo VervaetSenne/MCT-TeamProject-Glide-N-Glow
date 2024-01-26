@@ -25,9 +25,15 @@ public static class AppSettingsInitializer
             throw new Exception("Please fill in 'ip' and 'connectionstring' in the appsettings.json file!");
         }
 
-        var settings = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(filePath))?.Value<AppSettings>(nameof(AppSettings)) ?? throw new Exception();
+        var jObject = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(filePath));
+        var settings = jObject?.TryGetValue(nameof(AppSettings), out var section) ?? throw new ArgumentNullException(nameof(jObject)) ?
+            JsonConvert.DeserializeObject<AppSettings>(section.ToString()) :
+            new AppSettings();
+
         settings.CurrentSettings = "";
         settings.CurrentGamemode = null;
-        File.WriteAllText(filePath, JsonConvert.SerializeObject(settings));
+
+        jObject[nameof(AppSettings)] = JObject.Parse(JsonConvert.SerializeObject(settings));
+        File.WriteAllText(filePath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
     }
 }
