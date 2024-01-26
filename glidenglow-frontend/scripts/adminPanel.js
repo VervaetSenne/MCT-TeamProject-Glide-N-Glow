@@ -58,6 +58,7 @@ function checkLogout() {
     // Set AdminLoggedIn to false and hide the admin navigation item
     localStorage.setItem('AdminLoggedIn', false);
     navItemAdmin.style.display = 'none';
+    checkAdmin();
     console.log('logout');
   });
 }
