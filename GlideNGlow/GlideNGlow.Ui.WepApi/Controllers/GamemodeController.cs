@@ -101,7 +101,7 @@ public class GamemodeController : Controller
     [HttpPost("current/{gameId}")]
     public async Task<IActionResult> SetCurrentGamemodeAsync([FromRoute] Guid? gameId, [FromBody] JsonElement? settings)
     {
-        if (!_settingsService.GetAllowSwitching() && _settingsService.GetCurrentGamemode().HasValue)
+        if (!_settingsService.GetAllowSwitching())
             return NoContent();
         
         _settingsService.UpdateCurrentGamemode(gameId, settings);
