@@ -1,4 +1,5 @@
-﻿using GlideNGlow.Common.Extensions;
+﻿using System.Text.Json;
+using GlideNGlow.Common.Extensions;
 using GlideNGlow.Common.Models;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Common.Options.Extensions;
@@ -72,14 +73,14 @@ public class SettingsService : ISettingsService
         });
     }
 
-    public void UpdateCurrentGamemode(Guid? gameId, Dictionary<string, object>? settings)
+    public void UpdateCurrentGamemode(Guid? gameId, JsonElement? settings)
     {
         _appSettings.Update(s =>
         {
             s.CurrentGamemode = gameId;
-            s.CurrentSettings = s.CurrentGamemode is null
+            s.CurrentSettings = s.CurrentGamemode is null || settings is null
                 ? string.Empty
-                : JsonConvert.SerializeObject(settings);
+                : settings.Value.ToString();
         });
     }
 
