@@ -21,7 +21,7 @@ public class GhostRace : Gamemode<GhostRaceSetting>
     private int _startedButtonId;
     private float _timeElapsed;
     
-    public GhostRace(LightButtonHandler lightButtonHandler, AppSettings appsettings, string settingsJson,  ISocketWrapper socketWrapper) : base(lightButtonHandler, appsettings, settingsJson, socketWrapper)
+    public GhostRace(LightButtonHandler lightButtonHandler, AppSettings appsettings, ISocketWrapper socketWrapper, string settingsJson) : base(lightButtonHandler, appsettings, socketWrapper, settingsJson)
     {
         _distanceCm = appsettings.Strips.Sum(strip => strip.Length + strip.DistanceFromLast);
     }

@@ -42,9 +42,19 @@ function handleSettingsContent(gameId) {
       let settingCardContainer = document.querySelector(
         '.gamemode-settings-card-container'
       );
-      const timeInput = `<input
+
+      let html = `<div class="gamemode-settings-card`;
+      if (settings.length == 0) {
+        // no setting
+        html += `js-no-setting">`;
+      } else {
+        html += `">`;
+        for (const setting of settings) {
+          if (setting.type == 0) {
+            //time;
+            html += `<input
               type="number"
-              id="playerInputTimeMinutes"
+              id="input_${setting.name}_minutes"
               class="playerInput"
               placeholder="Minutes"
               min="0"
@@ -52,40 +62,27 @@ function handleSettingsContent(gameId) {
             /><span>:</span
             ><input
               type="number"
-              id="playerInputTimeSeconds"
+              id="input_${setting.name}_seconds"
               class="playerInput"
               placeholder="Seconds"
               min="0"
               max="60"
-            />`;
-      const amountInput = `<input
-              type="number"
-              id="playerInputAmount"
-              class="playerInput"
-              placeholder="Enter number of players"
-              min="0"
-            />`;
-      let html = '';
-      if (settings.length == 0) {
-        // no setting
-        html += `<div class="gamemode-settings-card js-no-setting">
-        <button class="startButton" onclick="startGame()">Start</button>
-      </div>`;
-      } else {
-        for (const setting of settings) {
-          if (setting.type == 0) {
-            //time;
-            html += `${timeInput}<br>`;
-            typeSetting = 1;
+            /><br>`;
           }
           if (setting.type == 1) {
             //amount
-            html += `${amountInput}<br>`;
-            typeSetting = 2;
+            html += `<input
+              type="number"
+              id="input_${setting.name}"
+              class="playerInput"
+              placeholder="Enter number of players"
+              min="0"
+            /><br>`;
           }
         }
       }
       html += `<button class="startButton" onclick="startGame()">Start</button>`;
+      html += `</div>`;
       settingCardContainer.innerHTML = html;
     });
 }
@@ -112,27 +109,24 @@ function goBack() {
 function startGame() {
   let body = {};
   // Get the parameter from the input field
-  var amountOfPlayers = document.getElementById('playerInputAmount').value;
-  var inputTimeMinutes = document.getElementById(
-    'playerInputTimeMinutes'
-  ).value;
-  var inputTimeSeconds = document.getElementById(
-    'playerInputTimeSeconds'
-  ).value;
   if (currentSettings.length == 0) {
     body = null;
   }
   for (const setting of currentSettings) {
     if (setting.type == 0) {
       // time
-      body[setting.name] = `${inputTimeMinutes}:${inputTimeSeconds}`;
+      body[setting.name] = `${
+        document.getElementById(`input_${setting.name}_minutes`).value
+      }:
+      ${document.getElementById(`input_${setting.name}_seconds`).value}`;
     }
     if (setting.type == 1) {
       // amount players
-      body[setting.name] = amountOfPlayers;
+      body[setting.name] = document.getElementById(
+        `input_${setting.name}`
+      ).value;
     }
   }
-  debugger;
   sendSettingToAPi(body);
 
   // Redirect to the new page with the parameter

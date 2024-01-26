@@ -54,14 +54,14 @@ public class GamemodeHandler
             var constructorInfo = gameType.GetConstructor(new[] { typeof(LightButtonHandler), typeof(AppSettings), typeof(ISocketWrapper), typeof(string) });
             if (constructorInfo is null) throw new Exception("Every gamemode requires this constructor!");
             
-            gamemode = (IGamemode)constructorInfo.Invoke(new object?[] {_lightButtonHandler, appSettings, appSettings.CurrentSettings});
+            gamemode = (IGamemode)constructorInfo.Invoke(new object?[] {_lightButtonHandler, appSettings, _socketWrapper, appSettings.CurrentSettings});
         }
         else
         {
             var constructorInfo = gameType.GetConstructor(new[] { typeof(LightButtonHandler), typeof(AppSettings), typeof(ISocketWrapper) });
             if (constructorInfo is null) throw new Exception("Every gamemode requires this constructor!");
             
-            gamemode = (IGamemode)constructorInfo.Invoke(new object?[] {_lightButtonHandler, appSettings});
+            gamemode = (IGamemode)constructorInfo.Invoke(new object?[] {_lightButtonHandler, appSettings, _socketWrapper});
         }
 
         _currentGamemode = new GamemodeData
