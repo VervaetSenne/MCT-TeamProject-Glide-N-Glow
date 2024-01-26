@@ -70,7 +70,7 @@ public class TimeTrial : Gamemode
             if (_countdownStep == 2) return;
             _countdownTime = 2;
             _countdownLight.SetColor(Color.Orange);
-            await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Orange,new CancellationToken());
+            await LightButtonHandler.SetRgb(_startedButtonId, Color.Orange,new CancellationToken());
             return;
         }
         if (_timeElapsed < 0)
@@ -78,7 +78,7 @@ public class TimeTrial : Gamemode
             if (_countdownStep == 3) return;
             _countdownStep= 3;
             _countdownLight.SetColor(Color.Yellow);
-            await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Yellow,new CancellationToken());
+            await LightButtonHandler.SetRgb(_startedButtonId, Color.Yellow,new CancellationToken());
             return;
         }
         
@@ -87,7 +87,8 @@ public class TimeTrial : Gamemode
         {
             _countdownStep = 4;
             _countdownLight.SetColor(Color.Green);
-            await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Green,new CancellationToken());
+            await LightButtonHandler.SetRgb(_startedButtonId, Color.Green,new CancellationToken());
+            
             _gameState = GameState.Running;
             _timeStarted.Start();
         }
@@ -102,7 +103,9 @@ public class TimeTrial : Gamemode
                 _gameState = GameState.Countdown;
                 _countdownLight.SetVisibility(true);
                 _timeElapsed = -_countdownTime;
+                await LightButtonHandler.SetRgb(_startedButtonId, Color.Red,cancellationToken);
                 
+        
                 _countdownStep = 0;
                 var startDistance = AppSettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
                 _countdownLight.SetStart(startDistance -2);
@@ -118,7 +121,8 @@ public class TimeTrial : Gamemode
                 List<String> scores = new();
                 scores.Add(_timeStarted.ElapsedMilliseconds.ToString());
                 await SocketWrapper.PublishNewScores(scores);
-                await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Black,cancellationToken);
+                await LightButtonHandler.SetRgb(_startedButtonId,Color.Black,cancellationToken);
+                //await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Black,cancellationToken);
                 _gameState = GameState.Ending;
                 break;
             case GameState.Ending:
