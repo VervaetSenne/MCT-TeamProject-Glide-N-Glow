@@ -39,7 +39,7 @@ public class AvailableGameService : IAvailableGameService
         var availableGamemodes = _settingsService.GetAvailableGamemodes().ToList();
         var forcedGamemode = _settingsService.GetForcedGamemode();
         var gamemodes = await _gameService.FindByIdAsync(availableGamemodes);
-        var bestScores = await _entryService.GetBestScores(availableGamemodes).ToListAsync();
+        var bestScores = await _entryService.GetBestScoresAsync(availableGamemodes);
         
         return gamemodes.Select(g => new GamemodeItemDto
         {

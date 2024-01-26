@@ -74,7 +74,7 @@ public class GamemodeController : Controller
         return Ok(await _availableGameService.GetGamemodesAsync());
     }
 
-    [HttpGet("settings")]
+    [HttpGet("settings/{gameId:guid}")]
     public async Task<IActionResult> GetGamemodeSettings([FromRoute] Guid gameId)
     {
         var game = await _gameService.FindByIdAsync(gameId);
@@ -94,16 +94,16 @@ public class GamemodeController : Controller
     [HttpPost("stop")]
     public Task<IActionResult> StopGamemodeAsync()
     {
-        return SetCurrentGamemodeAsync(null);
+        return SetCurrentGamemodeAsync(null, null);
     }
 
     [HttpPost("current/{gameId}")]
-    public async Task<IActionResult> SetCurrentGamemodeAsync([FromRoute] Guid? gameId)
+    public async Task<IActionResult> SetCurrentGamemodeAsync([FromRoute] Guid? gameId, [FromBody] Dictionary<string, object>? settings)
     {
         if (!_settingsService.GetAllowSwitching() && _settingsService.GetCurrentGamemode().HasValue)
             return NoContent();
         
-        _settingsService.UpdateCurrentGamemode(gameId);
+        _settingsService.UpdateCurrentGamemode(gameId, settings);
         if (gameId.HasValue)
         {
             var game = await _gameService.FindByIdAsync(gameId);

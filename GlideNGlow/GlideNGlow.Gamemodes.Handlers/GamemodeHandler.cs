@@ -4,6 +4,7 @@ using GlideNGlow.Gamemodes.Models;
 using GlideNGlow.Gamemodes.Models.Abstractions;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Handlers;
+using GlideNGlow.Socket.Abstractions;
 using Microsoft.Extensions.Options;
 
 namespace GlideNGlow.Gamemodes.Handlers;
@@ -13,16 +14,18 @@ public class GamemodeHandler
     private readonly IGameService _gameService;
     private readonly LightRenderer _lightRenderer;
     private readonly LightButtonHandler _lightButtonHandler;
-    
+    private readonly ISocketWrapper _socketWrapper;
+
     private TaskCompletionSource _completionSource;
     private GamemodeData? _currentGamemode;
 
-    public GamemodeHandler(IOptionsMonitor<AppSettings> appSettings,
-        IGameService gameService, LightRenderer lightRenderer, LightButtonHandler lightButtonHandler)
+    public GamemodeHandler(IOptionsMonitor<AppSettings> appSettings, IGameService gameService,
+        LightRenderer lightRenderer, LightButtonHandler lightButtonHandler, ISocketWrapper socketWrapper)
     {
         _gameService = gameService;
         _lightRenderer = lightRenderer;
         _lightButtonHandler = lightButtonHandler;
+        _socketWrapper = socketWrapper;
         _completionSource = new TaskCompletionSource();
         
         appSettings.OnChange(AppSettingsChanged);
@@ -48,14 +51,14 @@ public class GamemodeHandler
         IGamemode gamemode;
         if (gameType.BaseType?.IsGenericType ?? false) // gamemode requires settings
         {
-            var constructorInfo = gameType.GetConstructor(new[] { typeof(LightButtonHandler), typeof(AppSettings), typeof(string) });
+            var constructorInfo = gameType.GetConstructor(new[] { typeof(LightButtonHandler), typeof(AppSettings), typeof(ISocketWrapper), typeof(string) });
             if (constructorInfo is null) throw new Exception("Every gamemode requires this constructor!");
             
             gamemode = (IGamemode)constructorInfo.Invoke(new object?[] {_lightButtonHandler, appSettings, appSettings.CurrentSettings});
         }
         else
         {
-            var constructorInfo = gameType.GetConstructor(new[] { typeof(LightButtonHandler), typeof(AppSettings) });
+            var constructorInfo = gameType.GetConstructor(new[] { typeof(LightButtonHandler), typeof(AppSettings), typeof(ISocketWrapper) });
             if (constructorInfo is null) throw new Exception("Every gamemode requires this constructor!");
             
             gamemode = (IGamemode)constructorInfo.Invoke(new object?[] {_lightButtonHandler, appSettings});
