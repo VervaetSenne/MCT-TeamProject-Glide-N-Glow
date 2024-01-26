@@ -12,6 +12,7 @@ public abstract class Gamemode : IGamemode
     
     protected readonly LightButtonHandler LightButtonHandler;
     protected readonly AppSettings AppSettings;
+    protected readonly ISocketWrapper SocketWrapper;
     protected bool ForceRenderUpdate = true;
     private IGamemode _gamemodeImplementation;
 
@@ -19,6 +20,7 @@ public abstract class Gamemode : IGamemode
     {
         LightButtonHandler = lightButtonHandler;
         AppSettings = appSettings;
+        SocketWrapper = socketWrapper;
     }
     
     public abstract void Initialize(CancellationToken cancellationToken);
@@ -50,7 +52,7 @@ public abstract class Gamemode<TSettings> : Gamemode
 {
     protected TSettings Settings;
 
-    protected Gamemode(LightButtonHandler lightButtonHandler, AppSettings appSettings, string settingsJson, ISocketWrapper socketWrapper ) : base(lightButtonHandler, appSettings,socketWrapper)
+    protected Gamemode(LightButtonHandler lightButtonHandler, AppSettings appSettings,  ISocketWrapper socketWrapper, string settingsJson) : base(lightButtonHandler, appSettings,socketWrapper)
     {
         Settings = JsonConvert.DeserializeObject<TSettings>(settingsJson)
                    ?? throw new ArgumentNullException(nameof(settingsJson), "Settings given to gamemode do not conform to model!");
