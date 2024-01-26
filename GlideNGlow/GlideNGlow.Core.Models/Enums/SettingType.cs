@@ -2,6 +2,6 @@
 
 public enum SettingType
 {
-    Time,
-    Amount
+    Time = 1,
+    Amount = 2
 }
