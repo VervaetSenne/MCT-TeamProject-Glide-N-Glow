@@ -74,7 +74,7 @@ public class GamemodeController : Controller
         return Ok(await _availableGameService.GetGamemodesAsync());
     }
 
-    [HttpGet("settings")]
+    [HttpGet("settings/{gameId:guid}")]
     public async Task<IActionResult> GetGamemodeSettings([FromRoute] Guid gameId)
     {
         var game = await _gameService.FindByIdAsync(gameId);
