@@ -16,9 +16,9 @@ public class TimeTrial : Gamemode
     private int _startedButtonId =-1;
     private GameState _gameState;
     private readonly MeasurementLineRenderObject _countdownLight = new(0, 1, Color.Red);
-    private float _timeElapsed = 0;
+    private float _timeElapsed;
     private float _countdownTime = 3;
-    private int _countdownStep = 0;
+    private int _countdownStep;
     
     public TimeTrial(LightButtonHandler lightButtonHandler, AppSettings appSettings, ISocketWrapper socketWrapper) : base(lightButtonHandler, appSettings, socketWrapper)
     {
@@ -39,14 +39,15 @@ public class TimeTrial : Gamemode
     {
         switch (_gameState)
         {
+            case GameState.WaitingForStart:
+                break;
             case GameState.Countdown:
                 await UpdateCountdownAsync(timeSpan);
                 break;
-            case GameState.WaitingForStart:
             case GameState.Running:
+                break;
             case GameState.Ending:
                 break;
-            case GameState.Error:
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -62,22 +63,27 @@ public class TimeTrial : Gamemode
             _countdownStep = 1;
             _countdownLight.SetColor(Color.Red);
             await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Red,new CancellationToken());
+            return;
         }
-        else if (_timeElapsed < -_countdownTime/3)
+        if (_timeElapsed < -_countdownTime/3)
         {
             if (_countdownStep == 2) return;
             _countdownTime = 2;
             _countdownLight.SetColor(Color.Orange);
             await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Orange,new CancellationToken());
+            return;
         }
-        else if (_timeElapsed < 0)
+        if (_timeElapsed < 0)
         {
             if (_countdownStep == 3) return;
             _countdownStep= 3;
             _countdownLight.SetColor(Color.Yellow);
             await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Yellow,new CancellationToken());
+            return;
         }
-        else if (_timeElapsed >= 0)
+        
+        
+        if (_timeElapsed >= 0)
         {
             _countdownStep = 4;
             _countdownLight.SetColor(Color.Green);
@@ -108,7 +114,10 @@ public class TimeTrial : Gamemode
                 if(_startedButtonId != id) return;
                 _timeStarted.Stop();
                 _countdownLight.SetVisibility(false);
-                //TODO remove newly created cancelation token
+                //await SocketWrapper.PublishUpdateScore(0, _timeStarted.ElapsedMilliseconds.ToString());
+                List<String> scores = new();
+                scores.Add(_timeStarted.ElapsedMilliseconds.ToString());
+                await SocketWrapper.PublishNewScores(scores);
                 await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Black,cancellationToken);
                 _gameState = GameState.Ending;
                 break;

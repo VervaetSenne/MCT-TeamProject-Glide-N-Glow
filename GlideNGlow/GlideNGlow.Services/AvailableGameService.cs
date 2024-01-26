@@ -1,4 +1,5 @@
 ﻿using GlideNGlow.Core.Dto;
+using GlideNGlow.Core.Models.Enums;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Services.Abstractions;
 
@@ -17,7 +18,7 @@ public class AvailableGameService : IAvailableGameService
         _entryService = entryService;
     }
 
-    public async Task<IEnumerable<GamemodeItemDto>> GetGamemodesAsync()
+    public async Task<IEnumerable<GamemodeItemDto>> GetAsync()
     {
         var availableGamemodes = _settingsService.GetAvailableGamemodes();
         var forcedGamemode = _settingsService.GetForcedGamemode();
@@ -34,12 +35,31 @@ public class AvailableGameService : IAvailableGameService
         });
     }
 
-    public async Task<IEnumerable<GamemodeItemDto>> GetAvailableGamemodesAsync()
+    public async Task<IEnumerable<GamemodeItemDto>> GetAvailableAsync()
     {
         var availableGamemodes = _settingsService.GetAvailableGamemodes().ToList();
         var forcedGamemode = _settingsService.GetForcedGamemode();
         var gamemodes = await _gameService.FindByIdAsync(availableGamemodes);
         var bestScores = await _entryService.GetBestScoresAsync(availableGamemodes);
+        
+        return gamemodes.Select(g => new GamemodeItemDto
+        {
+            Force = forcedGamemode is not null && forcedGamemode == g.Id,
+            Available = true,
+            Id = g.Id,
+            Name = g.Name,
+            Description = g.Description,
+            Settings = g.Settings,
+            BestScore = bestScores.FirstOrDefault(e => e.GameId == g.Id)?.Score ?? "----"
+        });
+    }
+
+    public async Task<IEnumerable<GamemodeItemDto>> GetLeaderboardAsync()
+    {
+        var availableGamemodes = _settingsService.GetAvailableGamemodes().ToList();
+        var forcedGamemode = _settingsService.GetForcedGamemode();
+        var gamemodes = (await _gameService.FindByIdAsync(availableGamemodes)).Where(g => g.ScoreImportance != ScoreImportance.None).ToList();
+        var bestScores = await _entryService.GetBestScoresAsync(gamemodes.Select(g => g.Id).ToList());
         
         return gamemodes.Select(g => new GamemodeItemDto
         {

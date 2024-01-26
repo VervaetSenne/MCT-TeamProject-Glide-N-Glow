@@ -2,7 +2,7 @@
 
 public class AppSettings
 {
-    public string Ip { get; set; }
+    public string Ip { get; set; } = string.Empty;
     public Guid? CurrentGamemode { get; set; }
     public List<Guid> AvailableGamemodes { get; set; } = new();
     public Guid? ForceGamemode { get; set; }

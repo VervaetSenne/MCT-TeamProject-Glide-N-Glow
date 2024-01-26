@@ -1,4 +1,5 @@
 ﻿using GlideNGlow.Core.Services.Abstractions;
+using GlideNGlow.Services.Abstractions;
 using GlideNGlow.Ui.WepApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +10,19 @@ namespace GlideNGlow.Ui.WepApi.Controllers;
 public class LeaderboardController : Controller
 {
     private readonly IEntryService _entryService;
+    private readonly IAvailableGameService _availableGameService;
 
-    public LeaderboardController(IEntryService entryService)
+    public LeaderboardController(IEntryService entryService, IAvailableGameService availableGameService)
     {
         _entryService = entryService;
+        _availableGameService = availableGameService;
+    }
+
+    [HttpGet("gamemodes")]
+    public async Task<IActionResult> GetGamemodesAsync()
+    {
+        var gamemodes = await _availableGameService.GetLeaderboardAsync();
+        return Ok(gamemodes);
     }
 
     [HttpGet("{mode}")]

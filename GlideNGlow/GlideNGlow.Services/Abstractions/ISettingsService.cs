@@ -1,4 +1,5 @@
-﻿using GlideNGlow.Core.Dto;
+﻿using System.Text.Json;
+using GlideNGlow.Core.Dto;
 using GlideNGlow.Core.Dto.Requests;
 using GlideNGlow.Core.Dto.Results;
 
@@ -13,7 +14,7 @@ public interface ISettingsService
     void UpdateForceGamemode(Guid? gameId);
     
     Guid? GetCurrentGamemode();
-    void UpdateCurrentGamemode(Guid? gameId, Dictionary<string, object>? settings);
+    void UpdateCurrentGamemode(Guid? gameId, JsonElement? settings);
     
     IEnumerable<ButtonDto> GetButtons();
     void UpdateButton(string buttonId, float? distance);
