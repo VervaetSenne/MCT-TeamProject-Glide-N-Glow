@@ -47,9 +47,19 @@ public class TimeTrial : Gamemode
             case GameState.Running:
                 break;
             case GameState.Ending:
+                await UpdateEndingAsync(timeSpan);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
+        }
+    }
+    
+    private async Task UpdateEndingAsync(TimeSpan timeSpan)
+    {
+        _timeElapsed += timeSpan.TotalSeconds();
+        if (_timeElapsed >= 0)
+        {
+            _gameState = GameState.WaitingForStart;
         }
     }
     
@@ -62,7 +72,7 @@ public class TimeTrial : Gamemode
             if (_countdownStep == 1) return;
             _countdownStep = 1;
             _countdownLight.SetColor(Color.Red);
-            await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Red,new CancellationToken());
+            await LightButtonHandler.SetRgb(_startedButtonId, Color.Red,new CancellationToken());
             return;
         }
         if (_timeElapsed < -_countdownTime/3)
@@ -124,6 +134,7 @@ public class TimeTrial : Gamemode
                 await LightButtonHandler.SetRgb(_startedButtonId,Color.Black,cancellationToken);
                 //await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Black,cancellationToken);
                 _gameState = GameState.Ending;
+                _timeElapsed = -_countdownTime;
                 break;
             case GameState.Ending:
                 break;
