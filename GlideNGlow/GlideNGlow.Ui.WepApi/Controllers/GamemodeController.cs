@@ -39,14 +39,14 @@ public class GamemodeController : Controller
         return Ok(new GamemodeSettingsDto
         {
             AllowUserSwitching = _settingsService.GetAllowSwitching(),
-            Gamemodes = await _availableGameService.GetGamemodesAsync()
+            Gamemodes = await _availableGameService.GetAsync()
         });
     }
 
     [HttpGet("available")]
     public async Task<IActionResult> GetAvailableAsync()
     {
-        var gamemodes = await _availableGameService.GetAvailableGamemodesAsync();
+        var gamemodes = await _availableGameService.GetAvailableAsync();
         return Ok(gamemodes);
     }
 
@@ -72,7 +72,7 @@ public class GamemodeController : Controller
     public async Task<IActionResult> SetForceGamemodeAsync([FromRoute] Guid? gameId)
     {
         _settingsService.UpdateForceGamemode(gameId);
-        return Ok(await _availableGameService.GetGamemodesAsync());
+        return Ok(await _availableGameService.GetAsync());
     }
 
     [HttpGet("settings/{gameId:guid}")]
