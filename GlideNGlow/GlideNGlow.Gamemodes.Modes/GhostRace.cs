@@ -33,7 +33,8 @@ public class GhostRace : Gamemode<GhostRaceSetting>
         _ghostLight.SetVisibility(false);
         _countdownLight.SetVisibility(false);
         _distancePerSecond = _distanceCm / Settings.TimeLimit;
-        _gameState = GameState.WaitingForStart;
+        // _gameState = GameState.WaitingForStart;
+        SwitchGameState(GameState.WaitingForStart, cancellationToken).Wait();
     }
 
     public override void Stop()
