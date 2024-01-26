@@ -1,3 +1,5 @@
+var fetchdom = 'http://localhost:5165';
+
 var gameMode;
 var gamemodeSettingHeader;
 
