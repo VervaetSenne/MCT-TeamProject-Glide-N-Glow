@@ -114,10 +114,4 @@ public class GamemodeController : Controller
         await _socketWrapper.PublishUpdateGamemode(gameId);
         return Ok();
     }
-
-    /*[HttpGet("recent")]
-    public IActionResult GetRecentGames()
-    {
-        
-    }*/
 }

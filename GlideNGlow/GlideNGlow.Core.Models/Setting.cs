@@ -1,4 +1,4 @@
-﻿using GlideNGlow.Core.Models.Enums;
+﻿using GlideNGlow.Common.Enums;
 
 namespace GlideNGlow.Core.Models;
 

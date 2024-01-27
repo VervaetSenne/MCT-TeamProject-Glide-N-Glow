@@ -4,6 +4,7 @@ using GlideNGlow.Gamemodes.Models;
 using GlideNGlow.Gamemodes.Models.Abstractions;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Handlers;
+using GlideNGlow.Socket;
 using GlideNGlow.Socket.Abstractions;
 using Microsoft.Extensions.Options;
 
@@ -15,17 +16,20 @@ public class GamemodeHandler
     private readonly LightRenderer _lightRenderer;
     private readonly LightButtonHandler _lightButtonHandler;
     private readonly ISocketWrapper _socketWrapper;
+    private readonly ScoreHandler _scoreHandler;
 
     private TaskCompletionSource _completionSource;
     private GamemodeData? _currentGamemode;
 
     public GamemodeHandler(IOptionsMonitor<AppSettings> appSettings, IGameService gameService,
-        LightRenderer lightRenderer, LightButtonHandler lightButtonHandler, ISocketWrapper socketWrapper)
+        LightRenderer lightRenderer, LightButtonHandler lightButtonHandler, ISocketWrapper socketWrapper,
+        ScoreHandler scoreHandler)
     {
         _gameService = gameService;
         _lightRenderer = lightRenderer;
         _lightButtonHandler = lightButtonHandler;
         _socketWrapper = socketWrapper;
+        _scoreHandler = scoreHandler;
         _completionSource = new TaskCompletionSource();
         
         appSettings.OnChange(AppSettingsChanged);
@@ -69,6 +73,8 @@ public class GamemodeHandler
             Game = game,
             Gamemode = gamemode
         };
+        _scoreHandler.RemoveScores(game.Id);
+        
         _completionSource.SetResult();
         _completionSource = new TaskCompletionSource();
     }

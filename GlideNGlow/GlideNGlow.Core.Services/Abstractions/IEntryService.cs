@@ -8,4 +8,5 @@ public interface IEntryService
 {
     Task<IEnumerable<EntryDto>> FindFromGameAsync(Guid mode, TimeFrame timeFrame, bool unique, string username);
     Task<IEnumerable<Entry>> GetBestScoresAsync(IList<Guid> availableGamemodes);
+    Task<Entry> AddEntryAsync(Guid gameId, string playerName, string score);
 }

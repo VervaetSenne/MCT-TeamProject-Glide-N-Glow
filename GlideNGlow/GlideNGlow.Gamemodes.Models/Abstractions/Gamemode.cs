@@ -51,7 +51,7 @@ public abstract class Gamemode : IGamemode
 
 public abstract class Gamemode<TSettings> : Gamemode
 {
-    protected TSettings Settings;
+    protected readonly TSettings Settings;
 
     protected Gamemode(LightButtonHandler lightButtonHandler, AppSettings appSettings,  ISocketWrapper socketWrapper, string settingsJson) : base(lightButtonHandler, appSettings,socketWrapper)
     {

@@ -1,5 +1,5 @@
-﻿using GlideNGlow.Core.Models;
-using GlideNGlow.Core.Models.Enums;
+﻿using GlideNGlow.Common.Enums;
+using GlideNGlow.Core.Models;
 
 namespace GlideNGlow.Core.Services.Generic;
 

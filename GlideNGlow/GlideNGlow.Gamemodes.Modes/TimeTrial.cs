@@ -12,7 +12,7 @@ namespace GlideNGlow.Gamemodes.Modes;
 
 public class TimeTrial : Gamemode
 {
-    private Stopwatch _timeStarted = new();
+    private readonly Stopwatch _timeStarted = new();
     private int _startedButtonId =-1;
     private GameState _gameState;
     private readonly MeasurementLineRenderObject _countdownLight = new(0, 1, Color.Red);
@@ -39,17 +39,15 @@ public class TimeTrial : Gamemode
     {
         switch (_gameState)
         {
-            case GameState.WaitingForStart:
-                break;
             case GameState.Countdown:
                 await UpdateCountdownAsync(timeSpan);
                 break;
+            case GameState.WaitingForStart:
             case GameState.Running:
-                break;
             case GameState.Ending:
-                break;
+            case GameState.Error:
             default:
-                throw new ArgumentOutOfRangeException();
+                break;
         }
     }
     
@@ -115,13 +113,14 @@ public class TimeTrial : Gamemode
                 _timeStarted.Stop();
                 _countdownLight.SetVisibility(false);
                 //await SocketWrapper.PublishUpdateScore(0, _timeStarted.ElapsedMilliseconds.ToString());
-                List<String> scores = new();
+                List<string> scores = new();
                 scores.Add(_timeStarted.ElapsedMilliseconds.ToString());
                 await SocketWrapper.PublishNewScores(scores);
                 await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Black,cancellationToken);
                 _gameState = GameState.Ending;
                 break;
             case GameState.Ending:
+            case GameState.Error:
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

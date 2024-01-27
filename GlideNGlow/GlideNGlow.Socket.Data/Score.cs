@@ -11,5 +11,4 @@ public class Score
         PlayerIndex = playerIndex;
         Value = value;
     }
-    
 }

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using GlideNGlow.Common.Enums;
 using GlideNGlow.Common.Extensions;
 using GlideNGlow.Common.Models;
 using GlideNGlow.Common.Models.Settings;
@@ -6,6 +7,7 @@ using GlideNGlow.Common.Options.Extensions;
 using GlideNGlow.Core.Dto;
 using GlideNGlow.Core.Dto.Requests;
 using GlideNGlow.Core.Dto.Results;
+using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Services.Abstractions;
 using Microsoft.Extensions.Options.Implementations;
 using Newtonsoft.Json;
@@ -15,12 +17,14 @@ namespace GlideNGlow.Services;
 public class SettingsService : ISettingsService
 {
     private readonly IWritableOptions<AppSettings> _appSettings;
+    private readonly IGameService _gameService;
 
     private AppSettings AppSettings => _appSettings.GetCurrentValue();
 
-    public SettingsService(IWritableOptions<AppSettings> appSettings)
+    public SettingsService(IWritableOptions<AppSettings> appSettings, IGameService gameService)
     {
         _appSettings = appSettings;
+        _gameService = gameService;
     }
 
     public bool UpdateAllowSwitching(bool value)
@@ -206,5 +210,31 @@ public class SettingsService : ISettingsService
             };
         });
         return isUpdated;
+    }
+
+    public async Task<ContentDto?> GetContentAsync(Guid gameId)
+    {
+        var game = await _gameService.FindByIdAsync(gameId);
+        
+        if (game is null) return null;
+
+        if (game.ContentType is ContentType.None)
+        {
+            return new ContentDto
+            {
+                Type = game.ContentType,
+            };
+        }
+        
+        var settings = string.Empty;
+        _appSettings.Update(s => settings = s.CurrentSettings);
+
+        var players = JsonConvert.DeserializeObject<IHasPlayers>(settings);
+
+        return new ContentDto
+        {
+            Type = game.ContentType,
+            Value = players?.PlayerAmount
+        };
     }
 }
