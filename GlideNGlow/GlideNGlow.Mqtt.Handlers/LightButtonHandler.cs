@@ -177,12 +177,13 @@ public class LightButtonHandler
     
     public async Task SetRgb(int buttonId, int r, int g, int b, CancellationToken cancellationToken)
     {
-        await SetRgb(AppSettings.Buttons[buttonId].MacAddress, r, g, b, cancellationToken);
+        string macAddress = GetMacAddress(buttonId, cancellationToken).Result;
+        await SetRgb(macAddress, r, g, b, cancellationToken);
     }
     
     public async Task SetRgb(int buttonId, Color color, CancellationToken cancellationToken)
     {
-        await SetRgb(AppSettings.Buttons[buttonId].MacAddress, color.R, color.G, color.B, cancellationToken);
+        await SetRgb(buttonId, color.R, color.G, color.B, cancellationToken);
     }
     
     public async Task SetAllRgb(int r, int g, int b, CancellationToken cancellationToken)
@@ -199,6 +200,20 @@ public class LightButtonHandler
         {
             await SetRgb(esp.Key, color.R, color.G, color.B, cancellationToken);
         }
+    }
+    
+    public async Task<string> GetMacAddress(int buttonId, CancellationToken cancellationToken)
+    {
+        //check all in LightButtons to see if any match the buttonId
+        foreach (var lightButton in LightButtons)
+        {
+            if (lightButton.Value.ButtonNumber == buttonId)
+            {
+                return lightButton.Key;
+            }
+        }
+
+        return "";
     }
     
 }

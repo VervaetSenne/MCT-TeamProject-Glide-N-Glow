@@ -59,6 +59,7 @@ function handleSettingsContent(gameId) {
               placeholder="Minutes"
               min="0"
               max="10"
+              value ="0"
             /><span>:</span
             ><input
               type="number"
@@ -67,6 +68,7 @@ function handleSettingsContent(gameId) {
               placeholder="Seconds"
               min="0"
               max="60"
+              value="0"
             /><br>`;
           }
           if (setting.type == 1) {
@@ -77,6 +79,8 @@ function handleSettingsContent(gameId) {
               class="playerInput"
               placeholder="Enter number of players"
               min="0"
+              max="5"
+              value="0"
             /><br>`;
           }
         }
@@ -88,23 +92,6 @@ function handleSettingsContent(gameId) {
 }
 function goBack() {
   window.location.href = 'index.html';
-  fetch(`${fetchdom}/gamemode/stop`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((result) => {
-      // Handle the API response if needed
-      console.log('API Response - send gamemode settings:', result);
-    })
-    .catch((error) => {
-      // Handle errors
-      console.error(
-        'Error sending data to API - send gamemode settings:',
-        error
-      );
-    });
 }
 function startGame() {
   let body = {};
@@ -117,8 +104,7 @@ function startGame() {
       // time
       body[setting.name] = `${
         document.getElementById(`input_${setting.name}_minutes`).value
-      }:
-      ${document.getElementById(`input_${setting.name}_seconds`).value}`;
+      }:${document.getElementById(`input_${setting.name}_seconds`).value}`;
     }
     if (setting.type == 1) {
       // amount players

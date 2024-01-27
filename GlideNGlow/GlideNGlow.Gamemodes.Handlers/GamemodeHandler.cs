@@ -1,4 +1,5 @@
 using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Common.Options.Extensions;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Gamemodes.Models;
 using GlideNGlow.Gamemodes.Models.Abstractions;
@@ -37,6 +38,7 @@ public class GamemodeHandler
 
     private void AppSettingsChanged(AppSettings appSettings)
     {
+        appSettings = appSettings.GetCurrentValue();
         if (_currentGamemode is not null && _currentGamemode.Game.Id == appSettings.CurrentGamemode ||
             _currentGamemode is null && appSettings.CurrentGamemode is null)
             return;
@@ -108,20 +110,20 @@ public class GamemodeHandler
     
     public async Task RenderAsync(CancellationToken cancellationToken)
     {
-        if (_currentGamemode is null)
-            return;
-
-        if (_lightRenderer.PixelAmount <= 0)
-            return;
-
-        if (_currentGamemode.Gamemode.ShouldForceRender())
+        if (!(_currentGamemode is null))
         {
-            _lightRenderer.MakeDirty();
-        }
-        _lightRenderer.Clear();
-        foreach (var renderObject in _currentGamemode.Gamemode.GetRenderObjects())
-        {
-            renderObject.Render(_lightRenderer);
+            if (_lightRenderer.PixelAmount <= 0)
+                return;
+
+            if (_currentGamemode.Gamemode.ShouldForceRender())
+            {
+                _lightRenderer.MakeDirty();
+            }
+            _lightRenderer.Clear();
+            foreach (var renderObject in _currentGamemode.Gamemode.GetRenderObjects())
+            {
+                renderObject.Render(_lightRenderer);
+            }
         }
 
         await _lightRenderer.ShowAsync(cancellationToken);
@@ -133,6 +135,9 @@ public class GamemodeHandler
             return;
         
         _currentGamemode.Gamemode.Stop();
+        _lightRenderer.Clear();
+        _lightRenderer.MakeDirty();
+        await _lightRenderer.ShowAsync(cancellationToken);
         await _lightButtonHandler.RemoveSubscriptions(cancellationToken);
         _currentGamemode = null;
     }

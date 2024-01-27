@@ -8,7 +8,7 @@ public class GhostRaceSetting
     [JsonConstructor]
     public GhostRaceSetting(string timeLimit)
     {
-        TimeLimit = TimeSpan.Parse(timeLimit).TotalSeconds();
+        TimeLimit = TimeSpan.ParseExact(timeLimit, @"%m\:%s", null).TotalSeconds();
     }
     public float TimeLimit { get; set; }
 }
