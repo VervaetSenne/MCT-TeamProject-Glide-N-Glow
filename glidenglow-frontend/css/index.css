@@ -157,10 +157,12 @@ main {
   grid-template-rows: 1fr;
   grid-template-columns: 1fr 1fr 1fr;
   /* place-items: top; */
-  gap: 2rem;
+  gap: 1rem;
   max-width: 1300px;
   width: 100%;
   max-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 .grid-item {
@@ -200,9 +202,10 @@ main {
 .grid-flex {
   display: flex;
   justify-content: center;
+  height: fit-content;
   /* align-items: top; */
-  min-height: 95vh;
-  max-width: fit-content;
+  /* min-height: 100%; */
+  /* max-width: fit-content; */
 }
 
 .grid-header {
@@ -351,14 +354,12 @@ main {
 }
 .small-gamepad-icon {
   width: 64px;
-  height: 64px;
-  margin-right: 1rem;
 }
 .big-gamepad-icon {
   width: 154px;
-  height: 154px;
-  margin-right: 1rem;
+  margin: 1rem;
 }
+
 .gamemodes-header-text {
   text-align: center;
 }
@@ -587,6 +588,7 @@ main {
 .recent-scores-claim-text {
   text-align: center;
 }
+
 .recent-scores-container {
   width: 80%;
   margin-left: auto;
@@ -938,6 +940,7 @@ input:checked + .slider:before {
 @media only screen and (max-width: 600px) {
   .navbar {
     bottom: calc(100vh - 100dvh);
+    bottom: 0;
     width: 100vw;
     height: 5rem;
     z-index: 1000;
@@ -973,6 +976,7 @@ input:checked + .slider:before {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
     max-width: 400px;
+    gap: 0;
   }
 
   .nav-item:last-child {
@@ -984,11 +988,22 @@ input:checked + .slider:before {
 
   .recent-scores-container {
     width: 100%;
+    margin-bottom: 6rem;
   }
 
   /* Leaderbord page */
+
+  .leaderbord-podium {
+    display: flex;
+    justify-content: center;
+  }
+
+  .leaderbord-podium svg {
+    height: 150px;
+  }
+  
   .leaderbord-podium div h1{
-    font-size: 2rem;
+    font-size: 1.2rem;
     font-weight: bold;
     color: var(--text-dark);
     margin: 0;
@@ -1006,7 +1021,7 @@ input:checked + .slider:before {
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 14rem;
+    top: 6rem;
     align-items: center;
   }
 
@@ -1014,21 +1029,76 @@ input:checked + .slider:before {
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 14.5rem;
+    top: 6.5rem;
     align-items: center;
-    margin-right: 20rem;
+    margin-right: 60%;
   }
 
   .third-place{
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 15rem;
+    top: 7rem;
     align-items: center;
-    margin-left: 20rem;
+    margin-left: 60%;
   }
 
+  .leaderbord-podium .third-place h1{
+    font-size: 1rem;
+  }
 
+  .leaderbord-podium .third-place p{
+    font-size: 0.8rem;
+  }
+
+  .grid-item{
+    margin: 0;
+    padding: 0;
+
+  }
+
+  .grid-item:not(:first-child) {
+    width: 100%;
+    height: 30rem;
+  }
+
+  .grid-item:last-child {
+    margin-bottom: 50rem;
+  }
+
+  .hidey {
+    width: inherit;
+    height: inherit;
+  }
+
+  .grid-container {
+    margin-top: 0;
+    margin-bottom: 10rem;
+  }
+
+  .rounded-table{
+    height: auto;
+  }
+
+  .rounded-table th{
+    padding: 5px;
+    font-size: 0.9rem;
+  }
+
+  .rounded-table td{
+    padding: 5px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  #lightstrip-action{
+    padding: 0;
+    padding-left: 1rem;
+  }
+
+  .gamemodes-header-icons {
+    margin-top: 1rem;
+  }
 }
 
 /* Large screens */
@@ -1084,22 +1154,21 @@ input:checked + .slider:before {
 
   .grid-item {
     margin-bottom: 1rem;
-    width: 350px;
+    width: 100%;
   }
 
   .grid-item:first-child {
     grid-column: 1;
     height: 150px;
-    width: 400px;
+    width: 100%;
   }
+
   .grid-item-gamemodes{
     display: block;
     height: 20px;
     overflow-y: auto;
     height: 70dvh;
     margin-bottom: 1rem;
-    width: 350px;
-    
   }
 }
 
