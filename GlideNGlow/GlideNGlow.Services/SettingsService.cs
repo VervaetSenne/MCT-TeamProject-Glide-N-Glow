@@ -9,6 +9,7 @@ using GlideNGlow.Core.Dto.Requests;
 using GlideNGlow.Core.Dto.Results;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Services.Abstractions;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Options.Implementations;
 using Newtonsoft.Json;
 
@@ -245,7 +246,13 @@ public class SettingsService : ISettingsService
         var settings = string.Empty;
         _appSettings.Update(s => settings = s.CurrentSettings);
 
-        var players = JsonConvert.DeserializeObject<IHasPlayers>(settings);
+        if (string.IsNullOrWhiteSpace(settings))
+            return new ContentDto
+            {
+                Type = game.ContentType
+            };
+
+        var players = JsonConvert.DeserializeObject<IHasPlayers<string>>(settings);
 
         return new ContentDto
         {

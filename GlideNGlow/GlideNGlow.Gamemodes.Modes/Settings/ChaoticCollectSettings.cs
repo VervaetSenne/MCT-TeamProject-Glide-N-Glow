@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace GlideNGlow.Gamemodes.Modes.Settings;
 
-public class ChaoticCollectSettings : IHasPlayers
+public class ChaoticCollectSettings : IHasPlayers<int>
 {
     [JsonConstructor]
     public ChaoticCollectSettings(string playerAmount, string timeLimit)
