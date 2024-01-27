@@ -1,5 +1,12 @@
 var fetchdom = 'http://localhost:5165';
 
+//Settigns var
+var stateCalibrate = 0;
+var stateStartStop = 0;
+var startStopButton;
+var calibrateButton;
+var calibrateDiv;
+
 //Gamemodes var
 let gamemodesTable;
 let AllowGamemodeSwitchLoadState;
@@ -12,91 +19,110 @@ let buttonTable;
 let lightstripsTable;
 
 //gamemode cards var
-
 var gameModeCardsContainer;
 
+//signalR
+var gameHubConnection;
+
 //Current gamemode vars
-
-function handleAdminSettings() {
-  var startStopButton = document.getElementById('settings-startstop-button');
-  var calibrateButton = document.getElementById('settings-callibrate-button');
-  var calibrateDiv = document.querySelectorAll('.hidey');
-  var stateStartStop = 0;
-  var stateCalibrate = 0;
-
-  startStopButton.addEventListener('click', function () {
-    console.log('startstop');
+function toggleStartStop() { 
+  console.log('startstop');
+  //Stop games
+  if (stateStartStop == 0) {
+    startStopButton.style.backgroundColor = 'green';
+    startStopButton.innerHTML = 'Turn lights on';
     stateStartStop++;
-    //Stop games
-    if (stateStartStop == 1) {
-      startStopButton.style.backgroundColor = 'green';
-      startStopButton.innerHTML = 'Turn lights on';
-      fetch(`${fetchdom}/gamemode/stop/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ stop: true }),
+  }
+  //start again
+  else if (stateStartStop) {
+    startStopButton.style.backgroundColor = '#9b2d2d';
+    startStopButton.innerHTML = 'Turn lights off';
+    fetch(`${fetchdom}/gamemode/stop/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ stop: false }),
+    })
+      .then((result) => {
+        // Handle the API response if needed
+        console.log('API Response - START STOP GAMEMODE:', result);
       })
-        .then((result) => {
-          // Handle the API response if needed
-          console.log('API Response - START STOP GAMEMODE:', result);
-        })
-        .catch((error) => {
-          // Handle errors
-          console.error(
-            'Error sending data to API - START STOP GAMEMODE:',
-            error
-          );
-        });
-    }
-    //start again
-    if (stateStartStop == 2) {
-      startStopButton.style.backgroundColor = '#9b2d2d';
-      startStopButton.innerHTML = 'Turn lights off';
-      fetch(`${fetchdom}/gamemode/stop/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ stop: false }),
-      })
-        .then((result) => {
-          // Handle the API response if needed
-          console.log('API Response - START STOP GAMEMODE:', result);
-        })
-        .catch((error) => {
-          // Handle errors
-          console.error(
-            'Error sending data to API - START STOP GAMEMODE:',
-            error
-          );
-        });
-      stateStartStop = 0;
-    }
-  });
-  calibrateButton.addEventListener('click', function () {
-    console.log('callibrate');
-    stateCalibrate++;
-    if (stateCalibrate == 1) {
+      .catch((error) => {
+        // Handle errors
+        console.error(
+          'Error sending data to API - START STOP GAMEMODE:',
+          error
+        );
+      });
+    stateStartStop = 0;
+  }
+}
+
+function toggleCallibrate() {
+  console.log('callibrate');
+    if (stateCalibrate == 0) {
       calibrateDiv.forEach((div) => {
         div.classList.add('gamemode-setting-content-hidden');
       });
-      calibrateButton.innerHTML = 'Stop callibrate';
+      calibrateButton.innerHTML = 'Stop Callibration';
       startStopButton.style.opacity = '0.5';
       startStopButton.disabled = true;
+      startStopButton.innerHTML = 'Calibrating';
+      stateCalibrate++;
     }
-    if (stateCalibrate == 2) {
+    else if (stateCalibrate) {
       calibrateDiv.forEach((div) => {
         div.classList.remove('gamemode-setting-content-hidden');
       });
-      calibrateButton.innerHTML = 'Callibrate';
+      calibrateButton.innerHTML = 'Start Callibration';
       startStopButton.style.opacity = '1';
       startStopButton.disabled = false;
+      startStopButton.innerHTML = 'Turn lights off';
       stateCalibrate = 0;
+    }
+}
+
+function handleAdminSettings() {
+  startStopButton = document.getElementById('settings-startstop-button');
+  calibrateButton = document.getElementById('settings-callibrate-button');
+  calibrateDiv = document.querySelectorAll('.hidey');
+
+  startStopButton.addEventListener('click', function () {
+    toggleStartStop();
+    if (stateStartStop == 1){
+      sendStop();
+    }
+  });
+  calibrateButton.addEventListener('click', function () {
+    toggleCallibrate();
+    if (stateCalibrate == 1){
+      sendStop();
     }
   });
 }
+
+function sendStop() {
+  fetch(`${fetchdom}/gamemode/stop/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ stop: true }),
+  })
+    .then((result) => {
+      // Handle the API response if needed
+      console.log('API Response - START STOP GAMEMODE:', result);
+    })
+    .catch((error) => {
+      // Handle errors
+      console.error(
+        'Error sending data to API - START STOP GAMEMODE:',
+        error
+      );
+    });
+}
+
 function handleGamemodes() {
   /*
     GAMEMODES GET ALL GAMEMODES
@@ -319,6 +345,7 @@ function handleGamemodes() {
       });
     });
 }
+
 function handleButtons() {
   /*
     GET ALL BUTTONS
@@ -340,7 +367,7 @@ function handleButtons() {
       html += `
         <tr>
                     <th id="button-id">Id</th>
-                    <th id="button-distance">Distance(m)</th>
+                    <th id="button-distance">Distance(cm)</th>
                     <th id="button-actions">Actions</th>
                   </tr>
       `;
@@ -414,6 +441,7 @@ function handleButtons() {
       buttonTable.innerHTML = html;
     });
 }
+
 function deleteButton(button) {
   // Get the parent <tr> element
   const tableRow = button.closest('tr');
@@ -440,6 +468,7 @@ function deleteButton(button) {
       });
   }
 }
+
 function editButtonDistance(button) {
   //CHANGE SVG
 
@@ -485,6 +514,7 @@ function editButtonDistance(button) {
     distanceTd.classList.add('edit-mode');
   }
 }
+
 function updateDistanceOnAPI(buttonId, newDistance) {
   const apiUrl = `${fetchdom}/button/${buttonId}?distance=${newDistance}`;
 
@@ -523,8 +553,8 @@ function handleLightstrips() {
       // Add table headers
       html += `
         <tr>
-                    <th>Distance(m)</th>
-                    <th>Length(m)</th>
+                    <th>Distance(cm)</th>
+                    <th>Length(cm)</th>
                     <th>Pixels</th>
                     <th id="lightstrip-action">Actions</th>
                   </tr>
@@ -689,6 +719,7 @@ function handleLightstrips() {
       });
     });
 }
+
 function editLightstripData(button) {
   console.log('editLightstripData');
   //CHANGE SVG
@@ -829,6 +860,7 @@ function deleteLightstrip(button) {
       });
   }
 }
+
 function toggleDropdown() {
   var dropdown = document.getElementById('customDropdown');
   dropdown.style.display =
@@ -840,15 +872,42 @@ document.addEventListener('DOMContentLoaded', (event) => {
   gamemodesTable = document.querySelector('.js-gamemodes-table');
   buttonTable = document.querySelector('.js-buttons-table');
   lightstripsTable = document.querySelector('.js-lightstrips-table');
-  gameModeCardsContainer = document.querySelector(
-    '.js-gamemodes-card-container'
-  );
+  gameModeCardsContainer = document.querySelector('.js-gamemodes-card-container');
+
   //Functions
-  checkUrl();
-  checkAdmin();
-  checkLogout();
+  handleAdminSettings();
   handleGamemodes();
   handleButtons();
   handleLightstrips();
-  handleAdminSettings();
+
+  //Socket events
+  gameHubConnection = new signalR.HubConnectionBuilder()
+  .withUrl(fetchdom + "/game-hub")
+  .configureLogging(signalR.LogLevel.Warning)
+  .build();
+
+  gameHubConnection.on("current-game-updated", (gameid) => {
+    if (gameid){
+      stateStartStop = 0;
+      stateCalibrate = 0;
+      toggleStartStop();
+      toggleCallibrate();
+    }
+    else{
+      stateStartStop = 1;
+      stateCalibrate = 0;
+      toggleStartStop();
+      toggleCallibrate();
+    }
+  });
+
+  gameHubConnection
+    .start()
+    .then(function () {
+      console.log('SignalR connected');
+    })
+    .catch(function (err) {
+      console.error('Error connecting to SignalR:', err);
+    });
 });
+
