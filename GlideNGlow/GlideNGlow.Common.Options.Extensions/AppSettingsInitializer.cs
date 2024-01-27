@@ -30,7 +30,7 @@ public static class AppSettingsInitializer
             JsonConvert.DeserializeObject<AppSettings>(section.ToString()) :
             new AppSettings();
 
-        settings.CurrentSettings = "";
+        settings!.CurrentSettings = "";
         settings.CurrentGamemode = null;
 
         jObject[nameof(AppSettings)] = JObject.Parse(JsonConvert.SerializeObject(settings));
