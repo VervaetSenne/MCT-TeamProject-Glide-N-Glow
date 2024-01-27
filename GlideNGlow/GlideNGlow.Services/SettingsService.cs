@@ -108,6 +108,7 @@ public class SettingsService : ISettingsService
             .Select(l => new ButtonDto
             {
                 Id = l.MacAddress.MacToHex(),
+                ButtonOrder = l.ButtonNumber ?? -1,
                 Distance = l.DistanceFromStart
             });
     }
