@@ -3,6 +3,7 @@ using GlideNGlow.Common.Models;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Common.Options.Extensions;
 using GlideNGlow.Mqtt.Topics;
+using GlideNGlow.Socket.Abstractions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options.Implementations;
 
@@ -11,6 +12,7 @@ namespace GlideNGlow.Mqqt.Handlers;
 public class LightButtonHandler
 {
     private readonly MqttHandler _mqttHandler;
+    private readonly ISocketWrapper _socketWrapper;
     private readonly ILogger _logger;
     private readonly IWritableOptions<AppSettings> _appSettings;
 
@@ -20,9 +22,10 @@ public class LightButtonHandler
 
     public event Func<int, Task>? ButtonPressedEvent;
 
-    public LightButtonHandler(ILogger<LightButtonHandler> logger, IWritableOptions<AppSettings> appSettings, MqttHandler mqttHandler)
+    public LightButtonHandler(ILogger<LightButtonHandler> logger, IWritableOptions<AppSettings> appSettings, MqttHandler mqttHandler, ISocketWrapper socketWrapper)
     {
         _mqttHandler = mqttHandler;
+        _socketWrapper = socketWrapper;
         _logger = logger;
         _appSettings = appSettings;
     }
@@ -62,7 +65,7 @@ public class LightButtonHandler
         });
     }
     
-    private void SigninNewButton(string macAddress)
+    private async Task SigninNewButton(string macAddress)
     {
         //check if there is a Button in _appSettings.CurrentValue.Buttons with the same macAddress as the one we got
         LightButtonData? button = null;
@@ -77,7 +80,6 @@ public class LightButtonHandler
                 {
                     MacAddress = macAddress, ButtonNumber = -1, DistanceFromStart = 0
                 });
-                //TODO: notify the client to give it a location
                 return;
             }
             
@@ -112,7 +114,6 @@ public class LightButtonHandler
             //if buttonNumber is 0 or above, the button just reconnected, so we don't need to do anything besides notifying the client it reconnected
             if (button.ButtonNumber >= 0)
             {
-                //TODO: notify the client a button reconnected
                 return;
             }
             
@@ -125,7 +126,10 @@ public class LightButtonHandler
                 return;
             }
         });
-        
+        if (button is not null)
+        {
+            await _socketWrapper.ButtonConnected(button.MacAddress, button.DistanceFromStart ?? 0);
+        }
     }
 
     //TODO: Call this function when the file changes
@@ -187,7 +191,7 @@ public class LightButtonHandler
                 }
                 if(gotReshuffled==true)
                 {
-                    //TODO: notify the client that the button ids got changed
+                    _socketWrapper.SendButtonsUpdated().GetAwaiter().GetResult();
                 }
             }
             
@@ -197,7 +201,7 @@ public class LightButtonHandler
 
 #region Subscriptions
 
-    private void OnSignin(string topic, string message)
+    private async Task OnSignin(string topic, string message)
     {
         var macAddress = topic.Split('/')[1];
         if (LightButtons.ContainsKey(macAddress))
@@ -206,19 +210,19 @@ public class LightButtonHandler
         }
         else
         {
-            SigninNewButton(macAddress);
+            await SigninNewButton(macAddress);
             // _lightButtons.Add(macAddress, new LightButtons(macAddress, _logger, SetRgb));
             _logger.LogInformation($"Esp {macAddress} resigned in: {message}");
         }
     }
 
-    private void OnTestSubscription(string topic, string message)
+    private async Task OnTestSubscription(string topic, string message)
     {
         var macAddress = topic.Split('/')[1];
         _logger.LogInformation($"Esp {macAddress} acknowledged: {message}");
         LightButtons[macAddress].Responded = true;
 
-        SigninNewButton(macAddress);
+        await SigninNewButton(macAddress);
     }
 
     private async Task OnButtonSubscription(string topic, string message)
@@ -228,7 +232,10 @@ public class LightButtonHandler
         if (LightButtons.TryGetValue(macAddress, out var button))
             button.Pressed();
         else
-            _logger.LogCritical("Button pressed but not registered uwu!"); // TODO this should notifiy clients
+        {
+            _logger.LogCritical("Button pressed but not registered uwu!");
+            await _socketWrapper.SendWarning("Unregistered button pressed!");
+        }
         
         if (ButtonPressedEvent is not null)
             await ButtonPressedEvent.Invoke(LightButtons[macAddress].ButtonNumber ?? -1);
