@@ -64,7 +64,6 @@ public class TimeTrial : Gamemode
     
     private async Task UpdateCountdownAsync(TimeSpan timeSpan)
     {
-        //TODO: creating new cancelation tokens instead of passing them
         _timeElapsed += timeSpan.TotalSeconds();
         if (_timeElapsed < -_countdownTime/3*2)
         {
