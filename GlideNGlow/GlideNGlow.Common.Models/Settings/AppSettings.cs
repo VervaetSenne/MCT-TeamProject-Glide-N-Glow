@@ -3,9 +3,9 @@
 public class AppSettings
 {
     public string Ip { get; set; } = string.Empty;
-    public Guid? CurrentGamemode { get; set; }
+    public Guid? CurrentGamemode { get; set; } = null;
     public List<Guid> AvailableGamemodes { get; set; } = new();
-    public Guid? ForceGamemode { get; set; }
+    public Guid? ForceGamemode { get; set; } = null;
     public bool AllowUserSwitching { get; set; } = true;
     public bool LightingToggle { get; set; } = true;
     public List<LightButtonData> Buttons { get; set; } = new();

@@ -4,15 +4,15 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Extensions.Options.Implementations;
 
-public class WritableOptions<T> : IWritableOptions<T> where T : class, new()
+public class WritableOptions<TOptions> : IWritableOptions<TOptions> where TOptions : class, new()
 {
 	private readonly IHostEnvironment _environment;
-	private readonly IOptionsMonitor<T> _options;
+	private readonly IOptionsMonitor<TOptions> _options;
 	private readonly string _section;
 
 	public WritableOptions(
 		IHostEnvironment environment,
-		IOptionsMonitor<T> options,
+		IOptionsMonitor<TOptions> options,
 		string section)
 	{
 		_environment = environment;
@@ -20,14 +20,14 @@ public class WritableOptions<T> : IWritableOptions<T> where T : class, new()
 		_section = section;
 	}
 
-	public T CurrentValue => _options.CurrentValue;
-	public T Get(string? name) => _options.Get(name);
-	public IDisposable? OnChange(Action<T, string?> listener)
+	public TOptions CurrentValue => _options.CurrentValue;
+	public TOptions Get(string? name) => _options.Get(name);
+	public IDisposable? OnChange(Action<TOptions, string?> listener)
 	{
 		return _options.OnChange(listener);
 	}
 
-	public void Update(Action<T> applyChanges)
+	public void Update(Action<TOptions> applyChanges)
 	{
 #if DEBUG
 		var fileProvider = _environment.ContentRootFileProvider;
@@ -44,10 +44,10 @@ public class WritableOptions<T> : IWritableOptions<T> where T : class, new()
 
 		var jObject = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(physicalPath));
 		var sectionObject = jObject?.TryGetValue(_section, out var section) ?? throw new ArgumentNullException(nameof(jObject)) ?
-			JsonConvert.DeserializeObject<T>(section.ToString()) :
+			JsonConvert.DeserializeObject<TOptions>(section.ToString()) :
 			CurrentValue;
 
-		applyChanges(sectionObject ?? new T());
+		applyChanges(sectionObject ?? new TOptions());
 
 		jObject[_section] = JObject.Parse(JsonConvert.SerializeObject(sectionObject));
 		File.WriteAllText(physicalPath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
