@@ -216,13 +216,40 @@ public class LightButtonHandler
         }
     }
 
+    //TODO: Call this function every x seconds
+    public async Task TestConnections(CancellationToken cancellationToken)
+    {
+        foreach (var esp in LightButtons)
+        {
+            //if lightbutton didn't respond last time tell the frontend it disconnected
+            if (!esp.Value.Responded)
+            {
+                await _socketWrapper.ButtonDisconnected(esp.Key);
+                _logger.LogInformation($"Esp {esp.Key} disconnected");
+                LightButtons.Remove(esp.Key);
+            }
+            else
+            {
+                await _mqttHandler.SendMessage($"esp32/{esp.Key}/test", "test connection", cancellationToken);  
+            }
+
+        }
+    }
+
     private async Task OnTestSubscription(string topic, string message)
     {
         var macAddress = topic.Split('/')[1];
         _logger.LogInformation($"Esp {macAddress} acknowledged: {message}");
-        LightButtons[macAddress].Responded = true;
-
-        await SigninNewButton(macAddress);
+        
+        //check if LightButtons has this macAddress, if it doesn't, add it
+        if (!LightButtons.ContainsKey(macAddress))
+        {
+            await SigninNewButton(macAddress);
+        }
+        else
+        {
+            LightButtons[macAddress].Responded = true;
+        }
     }
 
     private async Task OnButtonSubscription(string topic, string message)
