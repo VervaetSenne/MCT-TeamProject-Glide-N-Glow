@@ -27,6 +27,7 @@ function goBack() {
     .then((result) => {
       // Handle the API response if needed
       console.log('API Response - send gamemode settings:', result);
+      window.location.href = 'index.html';
     })
     .catch((error) => {
       // Handle errors
@@ -35,7 +36,6 @@ function goBack() {
         error
       );
     });
-  window.location.href = 'index.html';
 }
 
 document.addEventListener('DOMContentLoaded', function () {

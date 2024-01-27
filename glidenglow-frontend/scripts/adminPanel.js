@@ -1,5 +1,3 @@
-// Check if the user is logged in as admin
-const isAdminLoggedIn = localStorage.getItem('AdminLoggedIn') === 'true';
 var fetchdom = 'http://localhost:5165';
 
 //Gamemodes var

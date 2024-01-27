@@ -52,6 +52,7 @@ function handleSettingsContent(gameId) {
         for (const setting of settings) {
           if (setting.type == 0) {
             //time;
+            html += `<p>Set time</p>`;
             html += `<input
               type="number"
               id="input_${setting.name}_minutes"
@@ -73,6 +74,7 @@ function handleSettingsContent(gameId) {
           }
           if (setting.type == 1) {
             //amount
+            html += `<p>Amount of players</p>`;
             html += `<input
               type="number"
               id="input_${setting.name}"
@@ -113,12 +115,12 @@ function startGame() {
       ).value;
     }
   }
-  sendSettingToAPi(body);
-
-  // Redirect to the new page with the parameter
-  window.location.href = `gamemodeActive.html?name=${gameMode}`;
+  sendSettingToAPi(
+    body,
+    () => (window.location.href = `gamemodeActive.html?name=${gameMode}`)
+  );
 }
-function sendSettingToAPi(body) {
+function sendSettingToAPi(body, action) {
   console.log(JSON.stringify(body));
   //Send gamemode settings when game starts
   fetch(`${fetchdom}/gamemode/current/${gameId}`, {
@@ -131,6 +133,7 @@ function sendSettingToAPi(body) {
     .then((result) => {
       // Handle the API response if needed
       console.log('API Response - send gamemode settings:', result);
+      action();
     })
     .catch((error) => {
       // Handle errors
