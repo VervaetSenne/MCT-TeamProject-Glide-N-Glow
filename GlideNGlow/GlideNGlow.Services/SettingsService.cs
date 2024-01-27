@@ -107,6 +107,7 @@ public class SettingsService : ISettingsService
     {
         return AppSettings.Buttons
             .OrderBy(l => l.ButtonNumber)
+            .Where(l => l.ButtonNumber > -3)
             .Select(l => new ButtonDto
             {
                 Id = l.MacAddress.MacToHex(),
