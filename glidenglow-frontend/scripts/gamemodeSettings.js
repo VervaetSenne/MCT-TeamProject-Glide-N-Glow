@@ -117,7 +117,8 @@ function startGame() {
   }
   sendSettingToAPi(
     body,
-    () => (window.location.href = `gamemodeActive.html?name=${gameMode}`)
+    () =>
+      (window.location.href = `gamemodeActive.html?name=${gameMode}&id=${gameId}`)
   );
 }
 function sendSettingToAPi(body, action) {
