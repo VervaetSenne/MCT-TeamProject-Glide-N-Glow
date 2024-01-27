@@ -18,6 +18,7 @@
     <ProjectReference Include="..\GlideNGlow.Common.Models\GlideNGlow.Common.Models.csproj" />
     <ProjectReference Include="..\GlideNGlow.Common.Options.Extensions\GlideNGlow.Common.Options.Extensions.csproj" />
     <ProjectReference Include="..\GlideNGlow.Mqtt.Topics\GlideNGlow.Mqtt.Topics.csproj" />
+    <ProjectReference Include="..\GlideNGlow.Socket\GlideNGlow.Socket.csproj" />
     <ProjectReference Include="..\Microsoft.Extensions.Options.Implementations\Microsoft.Extensions.Options.Implementations.csproj" />
   </ItemGroup>
 

@@ -6,8 +6,8 @@ namespace GlideNGlow.Mqqt.Handlers;
 public class LightButtons : LightButtonData
 {
     private readonly ILogger _logger;
-    
-    public bool Responded { get; set; }
+
+    public bool Responded { get; set; } = true;
     
     public event Action<int>? PressedActions;
 
