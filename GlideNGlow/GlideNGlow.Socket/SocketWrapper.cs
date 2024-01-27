@@ -36,6 +36,6 @@ public class SocketWrapper : ISocketWrapper
 
     public async Task PublishScoreClaimedAsync(int id, string playerName)
     {
-        await _gamHubContext.Clients.All.SendAsync(Events.ScoreUpdated, id, playerName);
+        await _gamHubContext.Clients.All.SendAsync(Events.ScoreClaimed, id, playerName);
     }
 }
