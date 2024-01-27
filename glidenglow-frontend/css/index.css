@@ -135,7 +135,6 @@ main {
   position: absolute;
   height: 95dvh;
   width: 29vw;
-  /* bottom: 1rem; */
   background-color: hsla(0, 0%, 0%, 0.7);
   border-radius: 10px 10px 10px 10px;
   z-index: 1;
