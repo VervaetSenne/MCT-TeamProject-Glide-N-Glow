@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using GlideNGlow.Mqqt.Handlers;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace GlideNGlow.Gamemodes.Handlers;
@@ -6,7 +7,7 @@ namespace GlideNGlow.Gamemodes.Handlers;
 public class Engine : IHostedService
 {
     private readonly IServiceScopeFactory _scopeFactory;
-    
+
     public Engine(IServiceScopeFactory scopeFactory)
     {
         _scopeFactory = scopeFactory;
@@ -18,8 +19,10 @@ public class Engine : IHostedService
         return Task.CompletedTask;
     }
 
-    public async Task StartInBackGround(CancellationToken cancellationToken)
+    private async Task StartInBackGround(CancellationToken cancellationToken)
     {
+        Initialize();
+        
         using var scope = _scopeFactory.CreateScope();
         var gamemodeHandler = scope.ServiceProvider.GetRequiredService<GamemodeHandler>();
         
@@ -31,6 +34,14 @@ public class Engine : IHostedService
             await gamemodeHandler.UpdateAsync(deltaTime, cancellationToken);
             await gamemodeHandler.RenderAsync(cancellationToken);
         }
+    }
+
+    private void Initialize()
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var lightButtonHandler = scope.ServiceProvider.GetRequiredService<LightButtonHandler>();
+        
+        lightButtonHandler.OnStartupFileChange();
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
