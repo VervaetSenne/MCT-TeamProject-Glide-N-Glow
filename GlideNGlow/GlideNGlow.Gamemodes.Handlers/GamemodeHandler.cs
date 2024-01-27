@@ -1,9 +1,11 @@
 using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Common.Options.Extensions;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Gamemodes.Models;
 using GlideNGlow.Gamemodes.Models.Abstractions;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Rendering.Handlers;
+using GlideNGlow.Socket;
 using GlideNGlow.Socket.Abstractions;
 using Microsoft.Extensions.Options;
 
@@ -15,17 +17,20 @@ public class GamemodeHandler
     private readonly LightRenderer _lightRenderer;
     private readonly LightButtonHandler _lightButtonHandler;
     private readonly ISocketWrapper _socketWrapper;
+    private readonly ScoreHandler _scoreHandler;
 
     private TaskCompletionSource _completionSource;
     private GamemodeData? _currentGamemode;
 
     public GamemodeHandler(IOptionsMonitor<AppSettings> appSettings, IGameService gameService,
-        LightRenderer lightRenderer, LightButtonHandler lightButtonHandler, ISocketWrapper socketWrapper)
+        LightRenderer lightRenderer, LightButtonHandler lightButtonHandler, ISocketWrapper socketWrapper,
+        ScoreHandler scoreHandler)
     {
         _gameService = gameService;
         _lightRenderer = lightRenderer;
         _lightButtonHandler = lightButtonHandler;
         _socketWrapper = socketWrapper;
+        _scoreHandler = scoreHandler;
         _completionSource = new TaskCompletionSource();
         
         appSettings.OnChange(AppSettingsChanged);
@@ -33,6 +38,7 @@ public class GamemodeHandler
 
     private void AppSettingsChanged(AppSettings appSettings)
     {
+        appSettings = appSettings.GetCurrentValue();
         if (_currentGamemode is not null && _currentGamemode.Game.Id == appSettings.CurrentGamemode ||
             _currentGamemode is null && appSettings.CurrentGamemode is null)
             return;
@@ -69,6 +75,8 @@ public class GamemodeHandler
             Game = game,
             Gamemode = gamemode
         };
+        _scoreHandler.RemoveScores(game.Id);
+        
         _completionSource.SetResult();
         _completionSource = new TaskCompletionSource();
     }
@@ -102,20 +110,20 @@ public class GamemodeHandler
     
     public async Task RenderAsync(CancellationToken cancellationToken)
     {
-        if (_currentGamemode is null)
-            return;
-
-        if (_lightRenderer.PixelAmount <= 0)
-            return;
-
-        if (_currentGamemode.Gamemode.ShouldForceRender())
+        if (!(_currentGamemode is null))
         {
-            _lightRenderer.MakeDirty();
-        }
-        _lightRenderer.Clear();
-        foreach (var renderObject in _currentGamemode.Gamemode.GetRenderObjects())
-        {
-            renderObject.Render(_lightRenderer);
+            if (_lightRenderer.PixelAmount <= 0)
+                return;
+
+            if (_currentGamemode.Gamemode.ShouldForceRender())
+            {
+                _lightRenderer.MakeDirty();
+            }
+            _lightRenderer.Clear();
+            foreach (var renderObject in _currentGamemode.Gamemode.GetRenderObjects())
+            {
+                renderObject.Render(_lightRenderer);
+            }
         }
 
         await _lightRenderer.ShowAsync(cancellationToken);
@@ -127,6 +135,9 @@ public class GamemodeHandler
             return;
         
         _currentGamemode.Gamemode.Stop();
+        _lightRenderer.Clear();
+        _lightRenderer.MakeDirty();
+        await _lightRenderer.ShowAsync(cancellationToken);
         await _lightButtonHandler.RemoveSubscriptions(cancellationToken);
         _currentGamemode = null;
     }

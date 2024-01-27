@@ -25,7 +25,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     private float _buttonWidth = 25f;
     private int _countdownStep;
     
-    public ChaoticCollect(LightButtonHandler lightButtonHandler, AppSettings appSettings,  ISocketWrapper socketWrapper, string settingsJson) : base(lightButtonHandler, appSettings, socketWrapper, settingsJson)
+    public ChaoticCollect(LightButtonHandler lightButtonHandler, AppSettings appSettings, ISocketWrapper socketWrapper, string settingsJson) : base(lightButtonHandler, appSettings, socketWrapper, settingsJson)
     {
         //0 being nothing
         _playerColors = new()
@@ -186,20 +186,12 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
 
     private async Task SubmitScores()
     {
-        List<String> scores = new();
-        //for each score
-        for (var i = 0; i < _scores.Count; i++)
-        {
-            //calcualte score per minute
-            var score = (_scores[i] / _timeElapsed.TotalMinutes);
-            //round to 2 decimals
-            score = Math.Round(score, 2);
-            //add to the list
-            scores.Add(score.ToString(CultureInfo.InvariantCulture));
-        }
+        var scores = _scores
+            .Select(amount => Math.Round(amount / _timeElapsed.TotalMinutes, 2).ToString(CultureInfo.InvariantCulture))
+            .ToList();
 
         //send the score to the server
-            await SocketWrapper.PublishNewScores(scores);
+        await SocketWrapper.PublishNewScores(scores);
     }
 
     private async Task RunningStart(CancellationToken cancellationToken)
@@ -274,17 +266,17 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
 
     public override async Task ButtonPressed(int id, CancellationToken cancellationToken)
     {
-        if (GameState.WaitingForStart == _gameState)
+        switch (_gameState)
         {
-            await ChangeStateAsync(GameState.Countdown, cancellationToken);
-            _buttonAssignments[id] = -1;
-            return;
+            case GameState.WaitingForStart:
+                await ChangeStateAsync(GameState.Countdown, cancellationToken);
+                _buttonAssignments[id] = -1;
+                return;
+            case GameState.Running:
+                await ButtonPressedRun(id, cancellationToken);
+                break;
+            default:
+                return;
         }
-        
-        if(GameState.Running == _gameState)
-        {
-            await ButtonPressedRun(id, cancellationToken);
-        }
-        
     }
 }

@@ -27,4 +27,6 @@ public interface ISettingsService
     LightstripResultDto AddLightStrip(bool samePiece, bool onePiece);
     bool TryRemoveLightstrip(int lightId);
     bool UpdateLightStrip(int lightId, LightstripRequestsDto lightstrip);
+    
+    Task<ContentDto?> GetContentAsync(Guid gameId);
 }

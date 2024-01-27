@@ -1,5 +1,5 @@
-﻿using GlideNGlow.Core.Dto;
-using GlideNGlow.Core.Models.Enums;
+﻿using GlideNGlow.Common.Enums;
+using GlideNGlow.Core.Dto;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Services.Abstractions;
 

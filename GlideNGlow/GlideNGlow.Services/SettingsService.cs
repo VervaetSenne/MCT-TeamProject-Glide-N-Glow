@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using GlideNGlow.Common.Enums;
 using GlideNGlow.Common.Extensions;
 using GlideNGlow.Common.Models;
 using GlideNGlow.Common.Models.Settings;
@@ -6,6 +7,7 @@ using GlideNGlow.Common.Options.Extensions;
 using GlideNGlow.Core.Dto;
 using GlideNGlow.Core.Dto.Requests;
 using GlideNGlow.Core.Dto.Results;
+using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Services.Abstractions;
 using Microsoft.Extensions.Options.Implementations;
 using Newtonsoft.Json;
@@ -15,14 +17,22 @@ namespace GlideNGlow.Services;
 public class SettingsService : ISettingsService
 {
     private readonly IWritableOptions<AppSettings> _appSettings;
+    private readonly IGameService _gameService;
 
     private AppSettings AppSettings => _appSettings.GetCurrentValue();
 
-    public SettingsService(IWritableOptions<AppSettings> appSettings)
+    public SettingsService(IWritableOptions<AppSettings> appSettings, IGameService gameService)
     {
         _appSettings = appSettings;
+        _gameService = gameService;
     }
 
+    private static int LargestConcurrent(IEnumerable<int> all)
+    {
+        all = all.ToList();
+        return Enumerable.Range(0, all.Max() + 2).Except(all).First();
+    }
+    
     public bool UpdateAllowSwitching(bool value)
     {
         _appSettings.Update(s => s.AllowUserSwitching = value);
@@ -86,7 +96,9 @@ public class SettingsService : ISettingsService
 
     public Guid? GetCurrentGamemode()
     {
-        return AppSettings.CurrentGamemode;
+        Guid? current = null;
+        _appSettings.Update(s => current = s.CurrentGamemode);
+        return current;
     }
 
     public IEnumerable<ButtonDto> GetButtons()
@@ -96,6 +108,7 @@ public class SettingsService : ISettingsService
             .Select(l => new ButtonDto
             {
                 Id = l.MacAddress.MacToHex(),
+                ButtonOrder = l.ButtonNumber ?? -1,
                 Distance = l.DistanceFromStart
             });
     }
@@ -107,7 +120,15 @@ public class SettingsService : ISettingsService
             var button = s.Buttons.FirstOrDefault(l => l.MacAddress.MacToHex() == buttonId);
             if (button is not null)
             {
-                button.DistanceFromStart = distance;
+                button.DistanceFromStart = distance ?? 0;
+                if (distance is null)
+                {
+                    button.ButtonNumber = -1;
+                }
+                else if (button.ButtonNumber == -1)
+                {
+                    button.ButtonNumber = LargestConcurrent(s.Buttons.Select(b => b.ButtonNumber).Cast<int>());
+                }
             }
         });
     }
@@ -140,11 +161,10 @@ public class SettingsService : ISettingsService
     public LightstripResultDto AddLightStrip(bool samePiece, bool onePiece)
     {
         var lightstrips = GetLightstrips();
-        var largestId = lightstrips.MaxBy(l => l.Id)!.Id + 1;
         var lightstrip = new LightstripData
         {
             Id = lightstrips.Count > 1
-                ? Enumerable.Range(0, largestId + 1).Except(lightstrips.Select(l => l.Id)).First()
+                ? LargestConcurrent(lightstrips.Select(l => l.Id))
                 : 0
         };
 
@@ -206,5 +226,31 @@ public class SettingsService : ISettingsService
             };
         });
         return isUpdated;
+    }
+
+    public async Task<ContentDto?> GetContentAsync(Guid gameId)
+    {
+        var game = await _gameService.FindByIdAsync(gameId);
+        
+        if (game is null) return null;
+
+        if (game.ContentType is ContentType.None)
+        {
+            return new ContentDto
+            {
+                Type = game.ContentType,
+            };
+        }
+        
+        var settings = string.Empty;
+        _appSettings.Update(s => settings = s.CurrentSettings);
+
+        var players = JsonConvert.DeserializeObject<IHasPlayers>(settings);
+
+        return new ContentDto
+        {
+            Type = game.ContentType,
+            Value = players?.PlayerAmount
+        };
     }
 }

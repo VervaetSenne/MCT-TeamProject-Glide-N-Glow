@@ -1,4 +1,4 @@
-﻿using GlideNGlow.Core.Models.Enums;
+﻿using GlideNGlow.Common.Enums;
 
 namespace GlideNGlow.Core.Models;
 
@@ -11,4 +11,5 @@ public class Game
     public required string AssemblyName { get; set; }
     public required string Settings { get; set; }
     public required ScoreImportance ScoreImportance { get; set; }
+    public required ContentType ContentType { get; set; }
 }

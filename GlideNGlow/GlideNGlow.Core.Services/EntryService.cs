@@ -80,4 +80,19 @@ public class EntryService : IEntryService
                 Score = "----"
             });
     }
+
+    public async Task<Entry> AddEntryAsync(Guid gameId, string playerName, string score)
+    {
+        var entry = new Entry
+        {
+            GameId = gameId,
+            DateTime = DateTime.Now,
+            Name = playerName,
+            Score = score
+        };
+        _dbContext.Entries.Add(entry);
+        await _dbContext.SaveChangesAsync();
+        
+        return entry;
+    }
 }

@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\GlideNGlow.Core.Services\GlideNGlow.Core.Services.csproj" />
+    </ItemGroup>
+
 </Project>

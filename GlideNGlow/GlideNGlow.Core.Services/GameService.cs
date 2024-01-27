@@ -1,17 +1,21 @@
-﻿using GlideNGlow.Core.Data;
+﻿using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Core.Data;
 using GlideNGlow.Core.Models;
 using GlideNGlow.Core.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace GlideNGlow.Core.Services;
 
 public class GameService : IGameService
 {
     private readonly GlideNGlowDbContext _dbContext;
+    private readonly IOptionsMonitor<AppSettings> _appSettings;
 
-    public GameService(GlideNGlowDbContext dbContext)
+    public GameService(GlideNGlowDbContext dbContext, IOptionsMonitor<AppSettings> appSettings)
     {
         _dbContext = dbContext;
+        _appSettings = appSettings;
     }
 
     public async Task<IEnumerable<Game>> FindAsync()

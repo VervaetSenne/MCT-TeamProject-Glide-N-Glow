@@ -1,8 +1,8 @@
-﻿using GlideNGlow.Common.Models;
+﻿using GlideNGlow.Common.Enums;
+using GlideNGlow.Common.Models;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Core.Data;
 using GlideNGlow.Core.Models;
-using GlideNGlow.Core.Models.Enums;
 using GlideNGlow.Gamemodes.Modes;
 using GlideNGlow.Gamemodes.Modes.Settings;
 using Microsoft.EntityFrameworkCore;
@@ -38,12 +38,14 @@ public static class SeedExtensions
                         Type = SettingType.Time
                     }
                 }),
-                ScoreImportance = ScoreImportance.None
+                ScoreImportance = ScoreImportance.None,
+                ContentType = ContentType.None
             },
             new Game
             {
                 Name = "Chaos Collect",
-                Description = "Collect as many of one colour as possible in a race against your friends! Now with pure chaos!",
+                Description =
+                    "Collect as many of one colour as possible in a race against your friends! Now with pure chaos!",
                 Image = Array.Empty<byte>(),
                 AssemblyName = typeof(ChaoticCollect).AssemblyQualifiedName ?? throw new Exception(),
                 Settings = JsonConvert.SerializeObject(new Setting[]
@@ -61,7 +63,8 @@ public static class SeedExtensions
                         Type = SettingType.Time
                     }
                 }),
-                ScoreImportance = ScoreImportance.Highest
+                ScoreImportance = ScoreImportance.Highest,
+                ContentType = ContentType.Players
             },
             new Game
             {
@@ -70,7 +73,8 @@ public static class SeedExtensions
                 Image = Array.Empty<byte>(),
                 AssemblyName = typeof(TimeTrial).AssemblyQualifiedName ?? throw new Exception(),
                 Settings = "[]",
-                ScoreImportance = ScoreImportance.Lowest
+                ScoreImportance = ScoreImportance.Lowest,
+                ContentType = ContentType.None
             }
         };
         if (dbContext.Database.IsInMemory())

@@ -1,4 +1,4 @@
-﻿namespace GlideNGlow.Core.Models.Enums;
+﻿namespace GlideNGlow.Common.Enums;
 
 public enum SettingType
 {
