@@ -12,6 +12,7 @@ using GlideNGlow.Services.Abstractions;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Options.Implementations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace GlideNGlow.Services;
 
@@ -253,12 +254,12 @@ public class SettingsService : ISettingsService
                 Type = game.ContentType
             };
 
-        var players = JsonConvert.DeserializeObject<IHasPlayers<string>>(settings);
+        var players = JsonConvert.DeserializeObject<JObject>(settings);
 
         return new ContentDto
         {
             Type = game.ContentType,
-            Value = players?.PlayerAmount
+            Value = players?[nameof(IHasPlayers<string>.PlayerAmount)]?.Value<string>()
         };
     }
 }
