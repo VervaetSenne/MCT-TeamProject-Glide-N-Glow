@@ -29,7 +29,7 @@ public class SocketWrapper : ISocketWrapper
         await _gamHubContext.Clients.All.SendAsync(Events.ScoreUpdated, id, score);
     }
 
-    public async Task PublishNewScores(List<string> scores)
+    public async Task PublishNewScores(string[] scores)
     {
         await _gamHubContext.Clients.All.SendAsync(Events.NewScores, scores);
         _scoreHandler.AddScores(scores);

@@ -125,9 +125,7 @@ public class TimeTrial : Gamemode
                 _timeStarted.Stop();
                 _countdownLight.SetVisibility(false);
                 //await SocketWrapper.PublishUpdateScore(0, _timeStarted.ElapsedMilliseconds.ToString());
-                List<string> scores = new();
-                scores.Add(_timeStarted.ElapsedMilliseconds.ToString());
-                await SocketWrapper.PublishNewScores(scores);
+                await SocketWrapper.PublishNewScores(TimeSpan.FromMilliseconds(_timeStarted.ElapsedMilliseconds).ToString(@"%m\:%s[.ff]"));
                 await LightButtonHandler.SetRgb(_startedButtonId,Color.Black,cancellationToken);
                 //await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Black,cancellationToken);
                 _gameState = GameState.Ending;

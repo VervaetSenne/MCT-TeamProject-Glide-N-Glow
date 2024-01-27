@@ -34,6 +34,13 @@ public class EntryService : IEntryService
         };
     }
 
+    private static string FormatScore(string score)
+    {
+        return score.Contains(':')
+            ? TimeSpan.ParseExact(score, @"[%h]%m\:%s[.ffffff]", null).ToString(@"%m\:%s[.ff]")
+            : float.Parse(score).ToString("F");
+    }
+
     public async Task<IEnumerable<EntryDto>> FindFromGameAsync(Guid mode, TimeFrame timeFrame, bool unique,
         string username)
     {
@@ -54,7 +61,7 @@ public class EntryService : IEntryService
             {
                 Rank = i + 1,
                 Username = e.Name,
-                Score = e.Score
+                Score = FormatScore(e.Score)
             })
             .Where(e => e.Username.ToLower().Contains(username.Trim()))
             .ToListAsync();
@@ -78,6 +85,11 @@ public class EntryService : IEntryService
                 DateTime = DateTime.MinValue,
                 Name = string.Empty,
                 Score = "----"
+            })
+            .Select(e =>
+            {
+                e.Score = FormatScore(e.Score);
+                return e;
             });
     }
 
