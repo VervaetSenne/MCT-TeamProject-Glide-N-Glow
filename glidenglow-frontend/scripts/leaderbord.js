@@ -152,8 +152,6 @@ function fillLeaderbordOnChange(gamemodeId) {
 
         document.querySelector('.third-place h1').innerText = scores[2].score;
         document.querySelector('.third-place p').innerText = scores[2].username;
-      } else {
-        console.error('Not enough scores to fill the podium.');
       }
       let html = `<table>`;
       html += `<tr>
