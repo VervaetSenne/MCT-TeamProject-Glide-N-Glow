@@ -15,14 +15,22 @@ public class Engine : IHostedService
     
     public Task StartAsync(CancellationToken cancellationToken)
     {
+        Initialize();
         _ = StartInBackGround(cancellationToken);
+        _ = StartLightButtonConnectionProberInBackground(cancellationToken);
         return Task.CompletedTask;
+    }
+
+    private void Initialize()
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var lightButtonHandler = scope.ServiceProvider.GetRequiredService<LightButtonHandler>();
+        
+        lightButtonHandler.OnStartupFileChange();
     }
 
     private async Task StartInBackGround(CancellationToken cancellationToken)
     {
-        Initialize();
-        
         using var scope = _scopeFactory.CreateScope();
         var gamemodeHandler = scope.ServiceProvider.GetRequiredService<GamemodeHandler>();
         
@@ -36,12 +44,16 @@ public class Engine : IHostedService
         }
     }
 
-    private void Initialize()
+    private async Task StartLightButtonConnectionProberInBackground(CancellationToken cancellationToken)
     {
         using var scope = _scopeFactory.CreateScope();
         var lightButtonHandler = scope.ServiceProvider.GetRequiredService<LightButtonHandler>();
-        
-        lightButtonHandler.OnStartupFileChange();
+
+        var periodicTimer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+        while (await periodicTimer.WaitForNextTickAsync(cancellationToken))
+        {
+            await lightButtonHandler.TestConnectionsAsync(cancellationToken);
+        }
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
