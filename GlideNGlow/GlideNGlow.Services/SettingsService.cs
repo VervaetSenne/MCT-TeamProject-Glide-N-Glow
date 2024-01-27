@@ -27,6 +27,12 @@ public class SettingsService : ISettingsService
         _gameService = gameService;
     }
 
+    private static int LargestConcurrent(IEnumerable<int> all)
+    {
+        all = all.ToList();
+        return Enumerable.Range(0, all.Max() + 2).Except(all).First();
+    }
+    
     public bool UpdateAllowSwitching(bool value)
     {
         _appSettings.Update(s => s.AllowUserSwitching = value);
@@ -113,7 +119,15 @@ public class SettingsService : ISettingsService
             var button = s.Buttons.FirstOrDefault(l => l.MacAddress.MacToHex() == buttonId);
             if (button is not null)
             {
-                button.DistanceFromStart = distance;
+                button.DistanceFromStart = distance ?? 0;
+                if (distance is null)
+                {
+                    button.ButtonNumber = -1;
+                }
+                else if (button.ButtonNumber == -1)
+                {
+                    button.ButtonNumber = LargestConcurrent(s.Buttons.Select(b => b.ButtonNumber).Cast<int>());
+                }
             }
         });
     }
@@ -146,11 +160,10 @@ public class SettingsService : ISettingsService
     public LightstripResultDto AddLightStrip(bool samePiece, bool onePiece)
     {
         var lightstrips = GetLightstrips();
-        var largestId = lightstrips.MaxBy(l => l.Id)!.Id + 1;
         var lightstrip = new LightstripData
         {
             Id = lightstrips.Count > 1
-                ? Enumerable.Range(0, largestId + 1).Except(lightstrips.Select(l => l.Id)).First()
+                ? LargestConcurrent(lightstrips.Select(l => l.Id))
                 : 0
         };
 
