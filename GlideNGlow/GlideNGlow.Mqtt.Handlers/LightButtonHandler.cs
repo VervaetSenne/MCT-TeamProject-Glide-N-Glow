@@ -15,8 +15,6 @@ public class LightButtonHandler
     private readonly ISocketWrapper _socketWrapper;
     private readonly ILogger _logger;
     private readonly IWritableOptions<AppSettings> _appSettings;
-
-    private AppSettings AppSettings => _appSettings.GetCurrentValue();
     
     public readonly Dictionary<string,LightButtons> LightButtons = new();
 
@@ -70,6 +68,7 @@ public class LightButtonHandler
         LightButtonData? button = null;
         _appSettings.Update(settings =>
         {
+            settings = settings.GetCurrentValue();
             //check if there is a Button in _appSettings.CurrentValue.Buttons with the same macAddress as the one we got
             button = settings.Buttons.FirstOrDefault(x => x.MacAddress == macAddress);
             if (button is null)
@@ -77,7 +76,9 @@ public class LightButtonHandler
                 //there isn't, add a new one and put it's buttonNumber on -1 and notify the client to give it a location and return
                 settings.Buttons.Add(new LightButtonData()
                 {
-                    MacAddress = macAddress, ButtonNumber = -1, DistanceFromStart = 0
+                    MacAddress = macAddress,
+                    ButtonNumber = -1,
+                    DistanceFromStart = 0
                 });
                 return;
             }
@@ -101,7 +102,7 @@ public class LightButtonHandler
                     var buttons = settings.Buttons.Where(x => x.ButtonNumber >= 0).ToList();
                 
                     //sort the list based on their distanceFromStart value
-                    buttons.Sort((x, y) => Convert.ToInt32(x.DistanceFromStart.GetValueOrDefault() - y.DistanceFromStart.GetValueOrDefault()));
+                    buttons.Sort((x, y) => Convert.ToInt32((x.DistanceFromStart ?? 0) - (y.DistanceFromStart ?? 0)));
                 
                     //go over each button and give them a buttonNumber based on their location in the list
                     for (var i = 0; i < buttons.Count; i++)
@@ -125,58 +126,56 @@ public class LightButtonHandler
         }
     }
 
-    //TODO: Call this function when the file changes
-    public void OnFileChange()
+    public void OnFileChange(AppSettings settings)
     {
         var gotReshuffled = false;
-        _appSettings.Update(settings =>
+        
+        //make a list of all buttons in _appSettings.CurrentValue.Buttons, ignore all -2's and -3's
+        var buttons = settings.Buttons.Where(x => x.ButtonNumber >= -1).ToList();
+        
+        //for each button in the list, if its buttonNumber is -1 check if its in LightButtons, if it is, remove it from LightButtons and put a dirtyFlag on true
+        var isDirty = buttons.Where(buttonData => buttonData.ButtonNumber == -1).Aggregate(false, (current, buttonData) => current | LightButtons.Remove(buttonData.MacAddress));
+        //for each button in the list, if buttonNumber is 0 or higher check if its in LightButtons, if it isn't, add it to LightButtons and put a dirtyFlag on true
+        foreach (var buttonData in buttons.Where(buttonData => buttonData.ButtonNumber > -1))
         {
-            //make a list of all buttons in _appSettings.CurrentValue.Buttons, ignore all -2's and -3's
-            var buttons = settings.Buttons.Where(x => x.ButtonNumber >= -1).ToList();
-            
-            //for each button in the list, if its buttonNumber is -1 check if its in LightButtons, if it is, remove it from LightButtons and put a dirtyFlag on true
-            var dirtyFlag = buttons.Where(buttonData => buttonData.ButtonNumber == -1).Aggregate(false, (current, buttonData) => current | LightButtons.Remove(buttonData.MacAddress));
-            //for each button in the list, if buttonNumber is 0 or higher check if its in LightButtons, if it isn't, add it to LightButtons and put a dirtyFlag on true
-            foreach (var buttonData in buttons.Where(buttonData => buttonData.ButtonNumber > -1))
+            if (!LightButtons.ContainsKey(buttonData.MacAddress))
             {
-                if (!LightButtons.ContainsKey(buttonData.MacAddress))
+                LightButtons.Add(buttonData.MacAddress, new LightButtons(buttonData, _logger)
                 {
-                    LightButtons.Add(buttonData.MacAddress, new LightButtons(buttonData, _logger)
-                    {
-                        MacAddress = buttonData.MacAddress
-                    });
-                    dirtyFlag = true;
-                }
-                //if the distance is the same skip
-                if (!(Math.Abs((LightButtons[buttonData.MacAddress].DistanceFromStart ?? 0) -
-                               (buttonData.DistanceFromStart ?? 0)) < 0.001)) continue;
-                
-                //else, update it and put a dirtyFlag on true
-                LightButtons[buttonData.MacAddress].DistanceFromStart = buttonData.DistanceFromStart;
-                dirtyFlag = true;
+                    MacAddress = buttonData.MacAddress
+                });
+                isDirty = true;
             }
+            //if the distance is the same skip
+            if (!(Math.Abs((LightButtons[buttonData.MacAddress].DistanceFromStart ?? 0) -
+                           (buttonData.DistanceFromStart ?? 0)) < 0.001)) continue;
             
-            if (!dirtyFlag) return;
+            //else, update it and put a dirtyFlag on true
+            LightButtons[buttonData.MacAddress].DistanceFromStart = buttonData.DistanceFromStart;
+            isDirty = true;
+        }
+        
+        if (!isDirty) return;
+        
+        //isDirty so go over each button in LightButtons and give them a buttonNumber based on their location in the list
+        var activeButtons = buttons.Where(x => x.ButtonNumber >= 0).ToList();
+        
+        //sort the list based on their distanceFromStart value
+        activeButtons.Sort((x, y) => Convert.ToInt32((x.DistanceFromStart ?? 0) -
+                                                     (y.DistanceFromStart ?? 0)));
+        
+        //go over each button and give them a buttonNumber based on their location in the list
+        for (var i = 0; i < activeButtons.Count; i++)
+        {
+            //if the buttonNumber is already the same as i, skip it
+            if (activeButtons[i].ButtonNumber == i) continue;
             
-            //dirtyFlag is true, go over each button in LightButtons and give them a buttonNumber based on their location in the list
-            var activeButtons = buttons.Where(x => x.ButtonNumber >= 0).ToList();
-            
-            //sort the list based on their distanceFromStart value
-            activeButtons.Sort((x, y) => Convert.ToInt32((x.DistanceFromStart ?? 0) -
-                                                         (y.DistanceFromStart ?? 0)));
-            
-            //go over each button and give them a buttonNumber based on their location in the list
-            for (var i = 0; i < activeButtons.Count; i++)
-            {
-                //if the buttonNumber is already the same as i, skip it
-                if (activeButtons[i].ButtonNumber == i) continue;
-                
-                activeButtons[i].ButtonNumber = i;
-                //also change the buttonNumber of the button in LightButtons
-                LightButtons[activeButtons[i].MacAddress].ButtonNumber = i; 
-                gotReshuffled = true;
-            }
-        });
+            activeButtons[i].ButtonNumber = i;
+            //also change the buttonNumber of the button in LightButtons
+            LightButtons[activeButtons[i].MacAddress].ButtonNumber = i; 
+            gotReshuffled = true;
+        }
+        
         if(gotReshuffled)
         {
             _socketWrapper.SendButtonsUpdated().GetAwaiter().GetResult();
@@ -201,22 +200,21 @@ public class LightButtonHandler
     }
 
     //TODO: Call this function every x seconds
-    public async Task TestConnections(CancellationToken cancellationToken)
+    public async Task TestConnectionsAsync(CancellationToken cancellationToken)
     {
-        foreach (var esp in LightButtons)
+        foreach (var lightButton in LightButtons)
         {
             //if lightbutton didn't respond last time tell the frontend it disconnected
-            if (!esp.Value.Responded)
+            if (!lightButton.Value.Responded)
             {
-                await _socketWrapper.ButtonDisconnected(esp.Key);
-                _logger.LogInformation($"Esp {esp.Key} disconnected");
-                LightButtons.Remove(esp.Key);
+                await _socketWrapper.ButtonDisconnected(lightButton.Key);
+                _logger.LogInformation($"Esp {lightButton.Key} disconnected");
+                LightButtons.Remove(lightButton.Key);
             }
             else
             {
-                await _mqttHandler.SendMessage($"esp32/{esp.Key}/test", "test connection", cancellationToken);  
+                await _mqttHandler.SendMessage($"esp32/{lightButton.Key}/test", "test connection", cancellationToken);  
             }
-
         }
     }
 
