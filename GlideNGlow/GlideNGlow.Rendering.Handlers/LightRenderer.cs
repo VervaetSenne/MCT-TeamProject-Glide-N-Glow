@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Text;
 using GlideNGlow.Common.Models.Settings;
+using GlideNGlow.Common.Options.Extensions;
 using GlideNGlow.Mqqt.Handlers;
 using GlideNGlow.Mqtt.Topics;
 using GlideNGlow.Rendering.Handlers.Helpers;
@@ -20,7 +21,7 @@ public class LightRenderer
 
     private bool _isDirty = true;
 
-    private AppSettings AppSettings => _appsettings.CurrentValue;
+    private AppSettings AppSettings => _appsettings.GetCurrentValue();
     
     public List<Color> Lights { get; private set; }
     public LightStripConverter LightStripConverter { get; private set; } = null!;
