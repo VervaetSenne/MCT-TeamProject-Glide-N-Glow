@@ -44,7 +44,6 @@ public class LightButtonHandler
         await _mqttHandler.Unsubscribe(TopicEndpoints.ButtonTopic, cancellationToken);
     }
 
-    //TODO: Call this function after project startup
     public void OnStartupFileChange()
     {
         //on startup we want to go over each button and put all buttonNumbers that are -1 on -3 and all others on -2
@@ -82,48 +81,42 @@ public class LightButtonHandler
                 });
                 return;
             }
-            
-            //check if the buttonNumber is -2,
-            if (button.ButtonNumber == -2)
+
+            switch (button.ButtonNumber)
             {
-                //add it to LightButtons (we'll change the number later)
-                LightButtons.Add(button.MacAddress, new LightButtons(button, _logger)
+                //if buttonNumber is 0 or above, the button just reconnected, so we don't need to do anything besides notifying the client it reconnected
+                case >= 0:
+                    return;
+                //check if the buttonNumber is -2,
+                case -2:
                 {
-                    MacAddress = macAddress
-                });
+                    //add it to LightButtons (we'll change the number later)
+                    LightButtons.Add(button.MacAddress, new LightButtons(button, _logger)
+                    {
+                        MacAddress = macAddress
+                    });
                 
-                //look at all buttons 0 or above and give them a number based on their distance from the start
-                //make a list of all buttons that have a buttonNumber of 0 or above
-                var buttons = settings.Buttons.Where(x => x.ButtonNumber >= 0).ToList();
+                    //look at all buttons 0 or above and give them a number based on their distance from the start
+                    //make a list of all buttons that have a buttonNumber of 0 or above
+                    var buttons = settings.Buttons.Where(x => x.ButtonNumber >= 0).ToList();
                 
-                //sort the list based on their distanceFromStart value
-                buttons.Sort((x, y) => Convert.ToInt32(x.DistanceFromStart.GetValueOrDefault() - y.DistanceFromStart.GetValueOrDefault()));
+                    //sort the list based on their distanceFromStart value
+                    buttons.Sort((x, y) => Convert.ToInt32(x.DistanceFromStart.GetValueOrDefault() - y.DistanceFromStart.GetValueOrDefault()));
                 
-                //go over each button and give them a buttonNumber based on their location in the list
-                for (var i = 0; i < buttons.Count; i++)
-                {
-                    buttons[i].ButtonNumber = i;
-                    //also change the buttonNumber of the button in LightButtons
-                    LightButtons[buttons[i].MacAddress].ButtonNumber = i;
+                    //go over each button and give them a buttonNumber based on their location in the list
+                    for (var i = 0; i < buttons.Count; i++)
+                    {
+                        buttons[i].ButtonNumber = i;
+                        //also change the buttonNumber of the button in LightButtons
+                        LightButtons[buttons[i].MacAddress].ButtonNumber = i;
+                    }
+
+                    return;
                 }
-
-                return;
-            }
-
-                    
-            //if buttonNumber is 0 or above, the button just reconnected, so we don't need to do anything besides notifying the client it reconnected
-            if (button.ButtonNumber >= 0)
-            {
-                return;
-            }
-            
-            
-            //if buttonNumber is -3, the button doesn't have settings yet, change its number to -1 and notifying the client it reconnected
-
-            if (button.ButtonNumber == -3)
-            {
-                button.ButtonNumber = -1;
-                return;
+                //if buttonNumber is -3, the button doesn't have settings yet, change its number to -1 and notifying the client it reconnected
+                case -3:
+                    button.ButtonNumber = -1;
+                    break;
             }
         });
         if (button is not null)
@@ -135,23 +128,16 @@ public class LightButtonHandler
     //TODO: Call this function when the file changes
     public void OnFileChange()
     {
-        LightButtonData? button = null;
+        var gotReshuffled = false;
         _appSettings.Update(settings =>
         {
-            bool dirtyFlag = false;
             //make a list of all buttons in _appSettings.CurrentValue.Buttons, ignore all -2's and -3's
             var buttons = settings.Buttons.Where(x => x.ButtonNumber >= -1).ToList();
+            
             //for each button in the list, if its buttonNumber is -1 check if its in LightButtons, if it is, remove it from LightButtons and put a dirtyFlag on true
-            foreach (var buttonData in buttons.Where(buttonData => buttonData.ButtonNumber == -1))
-            {
-                if (LightButtons.ContainsKey(buttonData.MacAddress))
-                {
-                    LightButtons.Remove(buttonData.MacAddress);
-                    dirtyFlag = true;
-                }
-            }
-            //for each button in the list, if its buttonNumber 0 or higher check if its in LightButtons, if it isn't, add it to LightButtons and put a dirtyFlag on true
-            foreach (var buttonData in buttons.Where(buttonData => buttonData.ButtonNumber >= 0))
+            var dirtyFlag = buttons.Where(buttonData => buttonData.ButtonNumber == -1).Aggregate(false, (current, buttonData) => current | LightButtons.Remove(buttonData.MacAddress));
+            //for each button in the list, if buttonNumber is 0 or higher check if its in LightButtons, if it isn't, add it to LightButtons and put a dirtyFlag on true
+            foreach (var buttonData in buttons.Where(buttonData => buttonData.ButtonNumber > -1))
             {
                 if (!LightButtons.ContainsKey(buttonData.MacAddress))
                 {
@@ -161,44 +147,42 @@ public class LightButtonHandler
                     });
                     dirtyFlag = true;
                 }
-                //check if the distance is the same else, update it and put a dirtyFlag on true
-                if (LightButtons[buttonData.MacAddress].DistanceFromStart != buttonData.DistanceFromStart)
-                {
-                    LightButtons[buttonData.MacAddress].DistanceFromStart = buttonData.DistanceFromStart;
-                    dirtyFlag = true;
-                }
-            }
-            
-            //if dirtyFlag is true, go over each button in LightButtons and give them a buttonNumber based on their location in the list
-            if (dirtyFlag)
-            {
-                var activeButtons = buttons.Where(x => x.ButtonNumber >= 0).ToList();
-                var gotReshuffled = false;
-                //sort the list based on their distanceFromStart value
-                activeButtons.Sort((x, y) => Convert.ToInt32(x.DistanceFromStart.GetValueOrDefault() - y.DistanceFromStart.GetValueOrDefault()));
+                //if the distance is the same skip
+                if (!(Math.Abs((LightButtons[buttonData.MacAddress].DistanceFromStart ?? 0) -
+                               (buttonData.DistanceFromStart ?? 0)) < 0.001)) continue;
                 
-                //go over each button and give them a buttonNumber based on their location in the list
-                for (var i = 0; i < activeButtons.Count; i++)
-                {
-                    //if the buttonNumber is already the same as i, skip it
-                    if (activeButtons[i].ButtonNumber != i)
-                    {
-                        activeButtons[i].ButtonNumber = i;
-                        //also change the buttonNumber of the button in LightButtons
-                        LightButtons[activeButtons[i].MacAddress].ButtonNumber = i; 
-                        gotReshuffled = true;
-                    }
-                }
-                if(gotReshuffled==true)
-                {
-                    _socketWrapper.SendButtonsUpdated().GetAwaiter().GetResult();
-                }
+                //else, update it and put a dirtyFlag on true
+                LightButtons[buttonData.MacAddress].DistanceFromStart = buttonData.DistanceFromStart;
+                dirtyFlag = true;
             }
             
+            if (!dirtyFlag) return;
+            
+            //dirtyFlag is true, go over each button in LightButtons and give them a buttonNumber based on their location in the list
+            var activeButtons = buttons.Where(x => x.ButtonNumber >= 0).ToList();
+            
+            //sort the list based on their distanceFromStart value
+            activeButtons.Sort((x, y) => Convert.ToInt32((x.DistanceFromStart ?? 0) -
+                                                         (y.DistanceFromStart ?? 0)));
+            
+            //go over each button and give them a buttonNumber based on their location in the list
+            for (var i = 0; i < activeButtons.Count; i++)
+            {
+                //if the buttonNumber is already the same as i, skip it
+                if (activeButtons[i].ButtonNumber == i) continue;
+                
+                activeButtons[i].ButtonNumber = i;
+                //also change the buttonNumber of the button in LightButtons
+                LightButtons[activeButtons[i].MacAddress].ButtonNumber = i; 
+                gotReshuffled = true;
+            }
         });
+        if(gotReshuffled)
+        {
+            _socketWrapper.SendButtonsUpdated().GetAwaiter().GetResult();
+        }
     }
     
-
 #region Subscriptions
 
     private async Task OnSignin(string topic, string message)
@@ -313,7 +297,7 @@ public class LightButtonHandler
     
     public async Task SetRgb(int buttonId, int r, int g, int b, CancellationToken cancellationToken)
     {
-        string macAddress = GetMacAddress(buttonId, cancellationToken).Result;
+        var macAddress = GetMacAddress(buttonId);
         await SetRgb(macAddress, r, g, b, cancellationToken);
     }
     
@@ -338,7 +322,7 @@ public class LightButtonHandler
         }
     }
     
-    public async Task<string> GetMacAddress(int buttonId, CancellationToken cancellationToken)
+    public string GetMacAddress(int buttonId)
     {
         //check all in LightButtons to see if any match the buttonId
         foreach (var lightButton in LightButtons)
@@ -351,5 +335,4 @@ public class LightButtonHandler
 
         return "";
     }
-    
 }
