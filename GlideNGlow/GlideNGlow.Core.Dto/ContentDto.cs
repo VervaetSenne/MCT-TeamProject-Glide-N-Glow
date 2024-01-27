@@ -5,5 +5,5 @@ namespace GlideNGlow.Core.Dto;
 public class ContentDto
 {
     public ContentType Type { get; set; }
-    public int? Value { get; set; }
+    public string? Value { get; set; }
 }
