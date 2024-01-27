@@ -1,9 +1,15 @@
 var fetchdom = 'http://localhost:5165';
 
 var gameMode;
+var gameId;
+
 var gamemodeSettingHeader;
 
 var userContentContainerl;
+
+var recentScoresContainer;
+
+var connection;
 
 function getParameters() {
   // Get the query string from the current URL
@@ -14,6 +20,7 @@ function getParameters() {
 
   // Get the value of the 'name' parameter
   gameMode = urlParams.get('name');
+  gameId = urlParams.get('id');
 
   console.log(gameMode);
   gamemodeSettingHeader.innerHTML = `${gameMode} in progress`;
@@ -39,9 +46,8 @@ function goBack() {
       );
     });
 }
-
 function loadUserContent() {
-  fetch(`${fetchdom}/running/scores`)
+  fetch(`${fetchdom}/running/content/${gameId}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error(
@@ -53,24 +59,81 @@ function loadUserContent() {
     .then((userContent) => {
       console.log(userContent);
       let html = ``;
-      for (const content of userContent) {
-        //0 time // 1 = value opvragen player cards
-        console.log(content);
-        if (content.type == 0) {
-          //show timer
+      if (userContent.type == 0) {
+        html += ``;
+      } else if (userContent.type == 1) {
+        for (let i = 0; i < userContent.value; i++) {
+          html += `<div class="player-card">
+      <div class="player-card-header">
+        <p>Player ${i + 1}</p>
+      </div>
+      <div class="player-score-container">
+        <p class="player-score-text">Score:</p>
+        <p class="player-score">0</p>
+      </div>
+    </div>`;
         }
-        if (content.type == 1) {
-          //show player cards
-        }
+      }
+      userContentContainer.innerHTML = html;
+    });
+}
+
+function handleRecentScores() {
+  fetch(`${fetchdom}/running/scores`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch gamemodes. Status: ${response.status}`
+        );
+      }
+      return response.json();
+    })
+    .then((recentScores) => {
+      console.log('recentScores');
+      console.log(recentScores);
+      let html = ``;
+      for (const score of recentScores) {
+        html += `<td>${score.username}</td>
+        <td>${score.username}</td>
+        <td>
+          <button class="table-button" id="${score.index}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hand">
+              <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0" />
+              <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" />
+              <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8" />
+              <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />
+            </svg>
+          </button>
+        </td>`;
       }
     });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+  // Initialize SignalR connection
+  connection = new signalR.HubConnectionBuilder()
+    .withUrl(`${fetchdom}/signalrHub`) // SignalR hub URL
+    .build();
+
+  connection.on('ScoreUpdated', function (playerIndex, newScore) {
+    // Update the player score
+  });
+
+  connection
+    .start()
+    .then(function () {
+      console.log('SignalR connected');
+    })
+    .catch(function (err) {
+      console.error('Error connecting to SignalR:', err);
+    });
+
   gamemodeSettingHeader = document.querySelector('.js-gamemode-setting-header');
   userContentContainer = document.querySelector('.js-content-container');
+  recentScoresContainer = document.querySelector('.js-recent-scores');
   getParameters();
   loadUserContent();
+  handleRecentScores();
   const animationContainer = document.getElementById('lottie-container');
 
   const animationData = {
