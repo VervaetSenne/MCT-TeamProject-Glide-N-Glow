@@ -123,14 +123,15 @@ public class SettingsService : ISettingsService
             var button = s.Buttons.FirstOrDefault(l => l.MacAddress.MacToHex() == buttonId);
             if (button is not null)
             {
-                button.DistanceFromStart = distance ?? 0;
+                var index = s.Buttons.IndexOf(button);
+                s.Buttons[index].DistanceFromStart = distance ?? 0;
                 if (distance is null)
                 {
-                    button.ButtonNumber = -1;
+                    s.Buttons[index].ButtonNumber = -1;
                 }
                 else if (button.ButtonNumber == -1)
                 {
-                    button.ButtonNumber = LargestConcurrent(s.Buttons.Select(b => b.ButtonNumber).Cast<int>());
+                    s.Buttons[index].ButtonNumber = LargestConcurrent(s.Buttons.Select(b => b.ButtonNumber).Cast<int>());
                 }
             }
         });
