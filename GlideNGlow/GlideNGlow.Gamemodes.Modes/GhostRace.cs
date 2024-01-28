@@ -44,6 +44,7 @@ public class GhostRace : Gamemode<GhostRaceSetting>
 
     public override async Task UpdateAsync(TimeSpan timeSpan, CancellationToken cancellationToken)
     {
+        //extension from using GlideNGlow.Common.Extensions;
         _timeElapsed += timeSpan.TotalSeconds();
         switch (_gameState)
         {
