@@ -1,3 +1,4 @@
+using System.Drawing;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Common.Options.Extensions;
 using GlideNGlow.Core.Services.Abstractions;
@@ -155,6 +156,7 @@ public class GamemodeHandler
             return;
         
         _currentGamemode.Gamemode.Stop();
+        await _lightButtonHandler.SetAllRgb(Color.Black, cancellationToken);
         _lightRenderer.Clear();
         _lightRenderer.MakeDirty();
         await _lightRenderer.ShowAsync(cancellationToken);
