@@ -37,8 +37,19 @@ public class EntryService : IEntryService
     private static string FormatScore(string score)
     {
         return score.Contains(':')
-            ? TimeSpan.ParseExact(score, @"[%h]%m\:%s[.ffffff]", null).ToString(@"%m\:%s[.ff]")
+            ? !TimeSpan.TryParseExact(score, @"%h\:%m\:%s\.ffff", null, out var timeSpan)
+                ? !TimeSpan.TryParseExact(score, @"%m\:%s\.ffff", null, out timeSpan)
+                    ? !TimeSpan.TryParseExact(score, @"%s\.ffff", null, out timeSpan)
+                        ? score
+                        : ToString(timeSpan)
+                    : ToString(timeSpan)
+                : ToString(timeSpan)
             : float.Parse(score).ToString("F");
+
+        string ToString(TimeSpan t)
+        {
+            return t.ToString(@"mm\:ss\.fff");
+        }
     }
 
     public async Task<IEnumerable<EntryDto>> FindFromGameAsync(Guid mode, TimeFrame timeFrame, bool unique,
