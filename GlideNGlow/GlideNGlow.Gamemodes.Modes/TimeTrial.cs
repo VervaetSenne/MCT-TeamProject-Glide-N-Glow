@@ -125,11 +125,12 @@ public class TimeTrial : Gamemode
                 _timeStarted.Stop();
                 _countdownLight.SetVisibility(false);
                 //await SocketWrapper.PublishUpdateScore(0, _timeStarted.ElapsedMilliseconds.ToString());
-                await SocketWrapper.PublishNewScores(TimeSpan.FromMilliseconds(_timeStarted.ElapsedMilliseconds).ToString(@"%m\:%s[.ff]"));
                 await LightButtonHandler.SetRgb(_startedButtonId,Color.Black,cancellationToken);
                 //await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Black,cancellationToken);
                 _gameState = GameState.Ending;
                 _timeElapsed = -_countdownTime;
+                //TODO: publish score currently gives issues
+                await SocketWrapper.PublishNewScores(TimeSpan.FromMilliseconds(_timeStarted.ElapsedMilliseconds).ToString(@"%m\:%s[.ff]"));
                 break;
             case GameState.Ending:
             case GameState.Error:
