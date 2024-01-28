@@ -15,30 +15,30 @@ public class LightRenderer
     //private setter public getter for int _pixelAmount
     public int PixelAmount { get; private set; }
     private readonly ILogger _logger;
-    private readonly IOptionsMonitor<AppSettings> _appsettings;
+    private readonly IOptionsMonitor<AppSettings> _appSettings;
     private readonly MqttHandler _mqttHandler;
     //private setter public getter for List<Color> _lights
 
     private bool _isDirty = true;
 
-    private AppSettings AppSettings => _appsettings.GetCurrentValue();
+    private AppSettings AppSettings => _appSettings.GetCurrentValue();
     
     public List<Color> Lights { get; private set; }
-    public LightStripConverter LightStripConverter { get; private set; } = null!;
+    public LightStripConverter? LightStripConverter { get; private set; }
 
-    private LightRenderer(ILogger<LightRenderer> logger, IOptionsMonitor<AppSettings> appsettings,
+    private LightRenderer(ILogger<LightRenderer> logger, IOptionsMonitor<AppSettings> appSettings,
         MqttHandler mqttHandler)
     {
         _logger = logger;
-        _appsettings = appsettings;
+        _appSettings = appSettings;
         _mqttHandler = mqttHandler;
         
         //create a colorlist with _pixelAmount amount of colors
         Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();
-        if (PixelAmount <= 0)
-        {
-            _logger.LogError("Pixel amount is 0 or less");
-        }
+        // if (PixelAmount <= 0)
+        // {
+        //     _logger.LogError("Pixel amount is 0 or less");
+        // }
     }
 
     public static LightRenderer Create(ILogger<LightRenderer> logger, IOptionsMonitor<AppSettings> appsettings, MqttHandler mqttHandler, CancellationToken cancellationToken = default)
@@ -47,9 +47,15 @@ public class LightRenderer
         renderer.UpdateSettings(cancellationToken);
         return renderer;
     }
+    
+    public void OnFileChange(CancellationToken cancellationToken)
+    {
+        UpdateSettings(cancellationToken);
+    }
 
     private void UpdateSettings(CancellationToken cancellationToken)
     {
+        var OldPixelAmount = PixelAmount;
         PixelAmount = AppSettings.Strips.Aggregate(0, (i, strip) => i + strip.Leds);
         //_pixelAmount = size;
 
@@ -59,11 +65,21 @@ public class LightRenderer
             PixelAmount = 300;
         }
         
-        LightStripConverter = new LightStripConverter(AppSettings.Strips);
+        if(LightStripConverter is null)
+        {
+            LightStripConverter = new LightStripConverter(AppSettings.Strips);
+        }
+        else
+        {
+            LightStripConverter.UpdateLightStripData(AppSettings.Strips);
+        }
         
-        Lights.Clear();
-        Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();
-        _ = SetStripSize(PixelAmount, cancellationToken);
+        if(OldPixelAmount != PixelAmount)
+        {
+            Lights.Clear();
+            Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();
+            _ = SetStripSize(PixelAmount, cancellationToken);
+        }
     }
 
     public async Task SetStripSize(int size, CancellationToken cancellationToken)
