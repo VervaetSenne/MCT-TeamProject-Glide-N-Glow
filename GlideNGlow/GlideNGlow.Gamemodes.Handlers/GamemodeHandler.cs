@@ -40,6 +40,8 @@ public class GamemodeHandler
     {
         appSettings = appSettings.GetCurrentValue();
         _lightButtonHandler.OnFileChange(appSettings);
+        //TODO needs cancellation token but is called in constructor
+        _lightRenderer.OnFileChange(default);
         
         OnCurrentGameChange(appSettings);
     }
