@@ -189,13 +189,13 @@ public class LightButtonHandler
         var macAddress = topic.Split('/')[1];
         if (LightButtons.ContainsKey(macAddress))
         {
-            _logger.LogInformation($"Esp {macAddress} signed in: {message}");
+            _logger.LogInformation($"Esp {macAddress} resigned in: {message}");
         }
         else
         {
             await SigninNewButton(macAddress);
             // _lightButtons.Add(macAddress, new LightButtons(macAddress, _logger, SetRgb));
-            _logger.LogInformation($"Esp {macAddress} resigned in: {message}");
+            _logger.LogInformation($"Esp {macAddress} signed in: {message}");
         }
     }
 
