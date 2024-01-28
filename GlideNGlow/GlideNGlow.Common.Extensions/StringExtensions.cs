@@ -10,7 +10,7 @@ public static class StringExtensions
         var id = new StringBuilder();
         for (var i = 0; i < hexs.Count / 2; i++)
         {
-            id.Append(((hexs[i] + hexs[i + 1]) % 255).ToString("X2"));
+            id.Append(((hexs[i] + hexs[i + 1] * (hexs[4] + hexs[5])) % 255).ToString("X2"));
         }
 
         return id.ToString();
