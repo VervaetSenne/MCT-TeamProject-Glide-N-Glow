@@ -104,10 +104,20 @@ public class GamemodeHandler
         if (cancellationToken.IsCancellationRequested)
             return;
         
-        _currentGamemode!.Gamemode.Initialize(cancellationToken);
-        //TODO button connection won't get caught when there isn't a gamemode running, might cause issues for collect
+        _currentGamemode!.Gamemode.Initialize(cancellationToken); //button connection won't get caught when there isn't a gamemode running, might cause issues for collect
+        // await _lightButtonHandler.AddSubscriptions(cancellationToken);
+        // _lightButtonHandler.AddButtonPressedEvent(i => Input(i, cancellationToken));
+    }
+
+    public async Task InitButtonSubscriptionsAsync(CancellationToken cancellationToken)
+    {
         await _lightButtonHandler.AddSubscriptions(cancellationToken);
         _lightButtonHandler.AddButtonPressedEvent(i => Input(i, cancellationToken));
+    }
+    
+    public async Task RemoveButtonSubscriptionsAsync(CancellationToken cancellationToken)
+    {
+        await _lightButtonHandler.RemoveSubscriptions(cancellationToken);
     }
     
     public async Task UpdateAsync(TimeSpan timeSpan, CancellationToken cancellationToken)
