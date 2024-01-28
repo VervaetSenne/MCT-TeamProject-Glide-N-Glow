@@ -158,7 +158,7 @@ public class GamemodeHandler
         _lightRenderer.Clear();
         _lightRenderer.MakeDirty();
         await _lightRenderer.ShowAsync(cancellationToken);
-        await _lightButtonHandler.RemoveSubscriptions(cancellationToken);
+        //await _lightButtonHandler.RemoveSubscriptions(cancellationToken);
         _currentGamemode = null;
     }
     
