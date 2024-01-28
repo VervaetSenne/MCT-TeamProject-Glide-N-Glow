@@ -69,7 +69,7 @@ function loadUserContent() {
       </div>
       <div class="player-score-container">
         <p class="player-score-text">Score:</p>
-        <p class="player-score">0</p>
+        <p class="player-score-${i}">0</p>
       </div>
     </div>`;
         }
@@ -92,11 +92,16 @@ function handleRecentScores() {
       console.log('recentScores');
       console.log(recentScores);
       let html = ``;
+      html += `<tr>
+        <th>Username</th>
+        <th>Score</th>
+        <th>`;
       for (const score of recentScores) {
-        html += `<td>${score.username}</td>
-        <td>${score.username}</td>
+        html += `<tr id="score-row-id-${score.playerIndex}">
+        <td>${score.playerName}</td>
+        <td>${score.value}</td>
         <td>
-          <button class="table-button" id="${score.index}">
+          <button class="table-button" id="${score.playerIndex}" onclick="claimScore(this)">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hand">
               <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0" />
               <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" />
@@ -104,19 +109,64 @@ function handleRecentScores() {
               <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />
             </svg>
           </button>
-        </td>`;
+        </td>
+      </tr>`;
       }
+    });
+}
+
+function claimScore(button) {
+  const buttonId = button.id;
+
+  // Make a POST request to claim the score
+  fetch(`${fetchdom}/running/score/${buttonId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((result) => {
+      // Handle the response if needed
+      console.log('Score claimed successfully:', result);
+    })
+    .catch((error) => {
+      // Handle errors
+      console.error('Error claiming score:', error);
     });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
   // Initialize SignalR connection
   connection = new signalR.HubConnectionBuilder()
-    .withUrl(`${fetchdom}/signalrHub`) // SignalR hub URL
+    .withUrl(`${fetchdom}/game-hub`) // SignalR hub URL
     .build();
 
-  connection.on('ScoreUpdated', function (playerIndex, newScore) {
+  connection.on('score-updated', function (playerIndex, newScore) {
     // Update the player score
+    const playerScoreElement = document.getElementById(
+      `player-score-${playerIndex}`
+    );
+    if (playerScoreElement) {
+      playerScoreElement.innerText = newScore;
+    }
+  });
+
+  connection.on('score-claimed', function (playerIndex, playerName) {
+    //change row that has been clicked to claim
+    const scoreRowElement = document.getElementById(
+      `score-row-id-${playerIndex}`
+    );
+    if (scoreRowElement) {
+      const playerNameElement = scoreRowElement.querySelector('td:first-child');
+
+      if (playerNameElement) {
+        playerNameElement.textContent = playerName;
+      }
+    }
+  });
+
+  connection.on('new-scores', function (playerIndex, playerName) {
+    //add new score to row
   });
 
   connection
