@@ -1,5 +1,12 @@
 var fetchdom = 'http://localhost:5165';
 
+//Settigns var
+var stateCalibrate = 0;
+var stateStartStop = 0;
+var startStopButton;
+var calibrateButton;
+var calibrateDiv;
+
 //Gamemodes var
 let gamemodesTable;
 let AllowGamemodeSwitchLoadState;
@@ -7,102 +14,153 @@ let allowGamemodeSwitchState;
 
 //Buttons var
 let buttonTable;
+let buttonsCache;
 
 //Lightstrips var
 let lightstripsTable;
 
-//gamemode cards var
-
-var gameModeCardsContainer;
+//signalR var
+var gameHubConnection;
+var connectionHubConnection;
 
 //Current gamemode vars
-
-function handleAdminSettings() {
-  var startStopButton = document.getElementById('settings-startstop-button');
-  var calibrateButton = document.getElementById('settings-callibrate-button');
-  var calibrateDiv = document.querySelectorAll('.hidey');
-  var stateStartStop = 0;
-  var stateCalibrate = 0;
-
-  startStopButton.addEventListener('click', function () {
-    console.log('startstop');
+function toggleStartStop() { 
+  console.log('startstop');
+  //Stop games
+  if (stateStartStop == 0) {
+    startStopButton.style.backgroundColor = 'green';
+    startStopButton.innerHTML = 'Turn lights on';
     stateStartStop++;
-    //Stop games
-    if (stateStartStop == 1) {
-      startStopButton.style.backgroundColor = 'green';
-      startStopButton.innerHTML = 'Turn lights on';
-      fetch(`${fetchdom}/gamemode/stop/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ stop: true }),
-      })
-        .then((result) => {
-          // Handle the API response if needed
-          console.log('API Response - START STOP GAMEMODE:', result);
-        })
-        .catch((error) => {
-          // Handle errors
-          console.error(
-            'Error sending data to API - START STOP GAMEMODE:',
-            error
-          );
-        });
-    }
-    //start again
-    if (stateStartStop == 2) {
-      startStopButton.style.backgroundColor = '#9b2d2d';
-      startStopButton.innerHTML = 'Turn lights off';
-      fetch(`${fetchdom}/gamemode/stop/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ stop: false }),
-      })
-        .then((result) => {
-          // Handle the API response if needed
-          console.log('API Response - START STOP GAMEMODE:', result);
-        })
-        .catch((error) => {
-          // Handle errors
-          console.error(
-            'Error sending data to API - START STOP GAMEMODE:',
-            error
-          );
-        });
-      stateStartStop = 0;
-    }
-  });
-  calibrateButton.addEventListener('click', function () {
-    console.log('callibrate');
-    stateCalibrate++;
-    if (stateCalibrate == 1) {
+  }
+  //start again
+  else {
+    startStopButton.style.backgroundColor = '#9b2d2d';
+    startStopButton.innerHTML = 'Turn lights off';
+    stateStartStop = 0;
+  }
+}
+
+function toggleCallibrate() {
+  console.log('callibrate');
+    if (stateCalibrate == 0) {
       calibrateDiv.forEach((div) => {
         div.classList.add('gamemode-setting-content-hidden');
       });
-      calibrateButton.innerHTML = 'Stop callibrate';
+      calibrateButton.innerHTML = 'Stop Callibration';
       startStopButton.style.opacity = '0.5';
       startStopButton.disabled = true;
+      stateStartStop = 1;
+      toggleStartStop();
+      startStopButton.innerHTML = 'Calibrating';
+      stateCalibrate++;
     }
-    if (stateCalibrate == 2) {
+    else {
       calibrateDiv.forEach((div) => {
         div.classList.remove('gamemode-setting-content-hidden');
       });
-      calibrateButton.innerHTML = 'Callibrate';
+      calibrateButton.innerHTML = 'Start Callibration';
       startStopButton.style.opacity = '1';
       startStopButton.disabled = false;
+      startStopButton.innerHTML = 'Turn lights off';
       stateCalibrate = 0;
+    }
+}
+
+function handleAdminSettings() {
+  startStopButton = document.getElementById('settings-startstop-button');
+  calibrateButton = document.getElementById('settings-callibrate-button');
+  calibrateDiv = document.querySelectorAll('.hidey');
+
+  startStopButton.addEventListener('click', function () {
+    toggleStartStop();
+    if (stateStartStop == 0){
+      sendStop();
+    }
+  });
+  calibrateButton.addEventListener('click', function () {
+    toggleCallibrate();
+    if (stateCalibrate == 1){
+      sendStop();
     }
   });
 }
+
+function sendStop() {
+  fetch(`${fetchdom}/gamemode/stop/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ stop: true }),
+  })
+    .then((result) => {
+      // Handle the API response if needed
+      console.log('API Response - START STOP GAMEMODE:', result);
+    })
+    .catch((error) => {
+      // Handle errors
+      console.error(
+        'Error sending data to API - START STOP GAMEMODE:',
+        error
+      );
+    });
+}
+
+function updateGamemodesTable(gamemodes) {
+  gamemodesTable.children = [gamemodesTable.children[0]];
+  allowGamemodeSwitchState = gamemodes.allowUserSwitching;
+
+  for (const gamemode of gamemodes.gamemodes) {
+    console.log(gamemode);
+    var row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${gamemode.name}</td>
+      <td>
+        <label class="checkbox-container">
+          <input type="checkbox" class="set-available-checkbox" ${
+            gamemode.available ? 'checked' : ''
+          } data-id="${gamemode.id}" />
+
+          <span class="checkmark"></span>
+        </label>
+      </td>
+      <td>
+        <button class="table-button table-button-force-gamemodes" id="${
+          gamemode.id
+        }">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-lock"
+          >
+            <rect
+              width="18"
+              height="11"
+              x="3"
+              y="11"
+              rx="2"
+              ry="2"
+            />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+        </button>
+      </td>`;
+    gamemodesTable.appendChild(row);
+  }
+}
+
 function handleGamemodes() {
   /*
     GAMEMODES GET ALL GAMEMODES
   */
   console.log('gamemodes function');
-  console.log(window.location.hostname);
   fetch(`${fetchdom}/gamemode/admin-settings`)
     .then((response) => {
       if (!response.ok) {
@@ -114,64 +172,7 @@ function handleGamemodes() {
     })
     .then((gamemodes) => {
       console.log(gamemodes);
-      let html = '<table class="rounded-table">';
-
-      // Add table headers
-      html += `
-        <tr>
-          <th>Name</th>
-          <th>Set available</th>
-          <th>Force</th>
-        </tr>
-      `;
-      for (const gamemode of gamemodes.gamemodes) {
-        console.log(gamemode);
-        allowGamemodeSwitchState = gamemodes.allowUserSwitching;
-        html += `
-          <tr>
-            <td>${gamemode.name}</td>
-            <td>
-              <label class="checkbox-container">
-                <input type="checkbox" class="set-available-checkbox" ${
-                  gamemode.available ? 'checked' : ''
-                } data-id="${gamemode.id}" />
-
-                <span class="checkmark"></span>
-              </label>
-            </td>
-            <td>
-              <button class="table-button table-button-force-gamemodes" id="${
-                gamemode.id
-              }">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-lock"
-                >
-                  <rect
-                    width="18"
-                    height="11"
-                    x="3"
-                    y="11"
-                    rx="2"
-                    ry="2"
-                  />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
-              </button>
-            </td>
-          </tr>`;
-      }
-
-      html += '</table>';
-      gamemodesTable.innerHTML = html;
+      updateGamemodesTable(gamemodes)
 
       /*
       SETT GAMEMODE AVAILABLE CHECKBOX
@@ -319,6 +320,78 @@ function handleGamemodes() {
       });
     });
 }
+
+function updateButtonsTable(buttons) {
+  buttonTable.children = [buttonTable.children[0]];
+
+  for (const button of buttons) {
+    var row = document.createElement('tr');
+    row.setAttribute('data-button-id', button.id)
+    
+    row.innerHTML = `
+      <td id="button-id-data">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill=#${button.id}
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-circle"
+        >
+          <circle cx="12" cy="12" r="10" />
+        </svg>
+      </td>
+      <td id="distance-data">${button.distance}</td>
+      <td>
+        <button class="table-button" onclick="editButtonDistance(this)">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill=""
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-pencil editDistanceButtonsSVG"
+            data-state="state1"
+          >
+            <path
+              d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+            />
+            <path d="m15 5 4 4" />
+          </svg>
+        </button>
+        <button id="${button.id}" class="table-button" onclick="deleteButton(this)">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-trash-2"
+          >
+            <path d="M3 6h18" />
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+            <line x1="10" x2="10" y1="11" y2="17" />
+            <line x1="14" x2="14" y1="11" y2="17" />
+          </svg>
+        </button>
+      </td>`;
+    buttonTable.appendChild(row);  
+  }
+}
+
 function handleButtons() {
   /*
     GET ALL BUTTONS
@@ -333,87 +406,11 @@ function handleButtons() {
       return response.json();
     })
     .then((buttons) => {
-      console.log(buttons);
-      let html = '<table class="rounded-table">';
-
-      // Add table headers
-      html += `
-        <tr>
-                    <th id="button-id">Id</th>
-                    <th id="button-distance">Distance(m)</th>
-                    <th id="button-actions">Actions</th>
-                  </tr>
-      `;
-
-      for (const button of buttons) {
-        html += `
-          <tr data-button-id="${button.id}">
-                    <td id="button-id-data">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill=#${button.id}
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="lucide lucide-circle"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                      </svg>
-                    </td>
-                    <td id="distance-data">${button.distance}</td>
-                    <td>
-                      <button class="table-button" onclick="editButtonDistance(this)">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill=""
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-pencil editDistanceButtonsSVG"
-                          data-state="state1"
-                        >
-                          <path
-                            d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
-                          />
-                          <path d="m15 5 4 4" />
-                        </svg>
-                      </button>
-                      <button id="${button.id}" class="table-button" onclick="deleteButton(this)">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-trash-2"
-                        >
-                          <path d="M3 6h18" />
-                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                          <line x1="10" x2="10" y1="11" y2="17" />
-                          <line x1="14" x2="14" y1="11" y2="17" />
-                        </svg>
-                      </button>
-                    </td>
-                  </tr>`;
-      }
-
-      html += '</table>';
-      buttonTable.innerHTML = html;
+      buttonsCache = buttons;
+      updateButtonsTable(buttons);
     });
 }
+
 function deleteButton(button) {
   // Get the parent <tr> element
   const tableRow = button.closest('tr');
@@ -440,6 +437,7 @@ function deleteButton(button) {
       });
   }
 }
+
 function editButtonDistance(button) {
   //CHANGE SVG
 
@@ -485,6 +483,7 @@ function editButtonDistance(button) {
     distanceTd.classList.add('edit-mode');
   }
 }
+
 function updateDistanceOnAPI(buttonId, newDistance) {
   const apiUrl = `${fetchdom}/button/${buttonId}?distance=${newDistance}`;
 
@@ -523,11 +522,11 @@ function handleLightstrips() {
       // Add table headers
       html += `
         <tr>
-                    <th>Distance(m)</th>
-                    <th>Length(m)</th>
-                    <th>Pixels</th>
-                    <th id="lightstrip-action">Actions</th>
-                  </tr>
+          <th>Distance(cm)</th>
+          <th>Length(cm)</th>
+          <th>Pixels</th>
+          <th id="lightstrip-action">Actions</th>
+        </tr>
       `;
       for (const strip of lightstrips.lightstrips) {
         console.log(strip);
@@ -614,52 +613,52 @@ function handleLightstrips() {
         // Add a new row with initial values of 0 above the "Add Lightstrip" button
         const newRow = document.createElement('tr');
         newRow.innerHTML = `
-    <td id="lightstrip-distance-data">0</td>
-    <td id="lightstrip-length-data">0</td>
-    <td id="lightstrip-pixels-data">0</td>
-    <td>
-      <button class="table-button" onclick="editLightstripData(this)">
-        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-pencil editLightstripDataSVG"
-                          data-state="state1"
-                        >
-                          <path
-                            d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
-                          />
-                          <path d="m15 5 4 4" />
-                        </svg>
-      </button>
-      <button class="table-button" onclick="deleteLightstrip(this)">
-        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-trash-2"
-                        >
-                          <path d="M3 6h18" />
-                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                          <line x1="10" x2="10" y1="11" y2="17" />
-                          <line x1="14" x2="14" y1="11" y2="17" />
-                        </svg>
-      </button>
-    </td>
-  `;
+          <td id="lightstrip-distance-data">0</td>
+          <td id="lightstrip-length-data">0</td>
+          <td id="lightstrip-pixels-data">0</td>
+          <td>
+            <button class="table-button" onclick="editLightstripData(this)">
+              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-pencil editLightstripDataSVG"
+                                data-state="state1"
+                              >
+                                <path
+                                  d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+                                />
+                                <path d="m15 5 4 4" />
+                              </svg>
+            </button>
+            <button class="table-button" onclick="deleteLightstrip(this)">
+              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-trash-2"
+                              >
+                                <path d="M3 6h18" />
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                <line x1="10" x2="10" y1="11" y2="17" />
+                                <line x1="14" x2="14" y1="11" y2="17" />
+                              </svg>
+            </button>
+          </td>
+        `;
 
         // Find the correct parent node for insertion
         const addLightstripButtonRow = addLightstripButton.closest('tr');
@@ -689,6 +688,7 @@ function handleLightstrips() {
       });
     });
 }
+
 function editLightstripData(button) {
   console.log('editLightstripData');
   //CHANGE SVG
@@ -829,6 +829,7 @@ function deleteLightstrip(button) {
       });
   }
 }
+
 function toggleDropdown() {
   var dropdown = document.getElementById('customDropdown');
   dropdown.style.display =
@@ -837,18 +838,69 @@ function toggleDropdown() {
 
 document.addEventListener('DOMContentLoaded', (event) => {
   //Gamemode vars
-  gamemodesTable = document.querySelector('.js-gamemodes-table');
-  buttonTable = document.querySelector('.js-buttons-table');
-  lightstripsTable = document.querySelector('.js-lightstrips-table');
-  gameModeCardsContainer = document.querySelector(
-    '.js-gamemodes-card-container'
-  );
+  gamemodesTable = document.querySelector('.js-gamemodes-table').getElementsByTagName('table')[0];
+  buttonTable = document.querySelector('.js-buttons-table').getElementsByTagName('table')[0];
+  lightstripsTable = document.querySelector('.js-lightstrips-table').getElementsByTagName('table')[0];
+
   //Functions
-  checkUrl();
-  checkAdmin();
-  checkLogout();
+  handleAdminSettings();
   handleGamemodes();
   handleButtons();
   handleLightstrips();
-  handleAdminSettings();
+
+  ///SignalR
+  //game
+  gameHubConnection = new signalR.HubConnectionBuilder()
+  .withUrl(fetchdom + "/game-hub")
+  .configureLogging(signalR.LogLevel.Warning)
+  .build();
+
+  gameHubConnection.on("current-game-updated", (gameid) => {
+    if (gameid){
+      stateStartStop = 0;
+      stateCalibrate = 0;
+      toggleStartStop();
+      toggleCallibrate();
+    }
+    else{
+      stateStartStop = 1;
+      stateCalibrate = 0;
+      toggleStartStop();
+      toggleCallibrate();
+    }
+  });
+
+  gameHubConnection
+    .start()
+    .then(function () {
+      console.log('SignalR connected');
+    })
+    .catch(function (err) {
+      console.error('Error connecting to SignalR:', err);
+    });
+
+    //connection
+    connectionHubConnection = new signalR.HubConnectionBuilder()
+    .withUrl(fetchdom + "/connection-hub")
+    .configureLogging(signalR.LogLevel.Warning)
+    .build();
+
+    connectionHubConnection.on("button-connected", (hex, distance) =>{
+      const buttonIndex = buttonsCache.findIndex((b) => b.id == hex)
+      if (buttonIndex != -1){
+        buttonsCache[buttonIndex].distance = distance;
+      }
+      else{
+        buttonsCache.add({
+          id: hex,
+          distance: distance
+        })
+      }
+      updateButtonsTable(buttonsCache);
+    });
+
+    connectionHubConnection.on("button-disconnected", (hex) =>{
+      
+    });
 });
+

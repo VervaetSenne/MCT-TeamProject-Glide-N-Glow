@@ -1,4 +1,5 @@
-﻿using GlideNGlow.Socket.Abstractions;
+﻿using GlideNGlow.Common.Extensions;
+using GlideNGlow.Socket.Abstractions;
 using GlideNGlow.Socket.Constants;
 using GlideNGlow.Socket.Hubs;
 using Microsoft.AspNetCore.SignalR;
@@ -28,7 +29,7 @@ public class SocketWrapper : ISocketWrapper
         await _gamHubContext.Clients.All.SendAsync(Events.ScoreUpdated, id, score);
     }
 
-    public async Task PublishNewScores(List<string> scores)
+    public async Task PublishNewScores(string[] scores)
     {
         await _gamHubContext.Clients.All.SendAsync(Events.NewScores, scores);
         _scoreHandler.AddScores(scores);
@@ -37,5 +38,25 @@ public class SocketWrapper : ISocketWrapper
     public async Task PublishScoreClaimedAsync(int id, string playerName)
     {
         await _gamHubContext.Clients.All.SendAsync(Events.ScoreClaimed, id, playerName);
+    }
+
+    public async Task SendButtonsUpdated()
+    {
+        await _gamHubContext.Clients.All.SendAsync(Events.ButtonsUpdated);
+    }
+
+    public async Task ButtonConnected(string macAddress, float distanceFromStart)
+    {
+        await _gamHubContext.Clients.All.SendAsync(Events.ButtonConnected, macAddress.MacToHex(), distanceFromStart);
+    }
+
+    public async Task ButtonDisconnected(string macAddress)
+    {
+        await _gamHubContext.Clients.All.SendAsync(Events.ButtonDisconnected, macAddress);
+    }
+
+    public async Task SendWarning(string message)
+    {
+        await _gamHubContext.Clients.All.SendAsync(Events.Warning, message);
     }
 }

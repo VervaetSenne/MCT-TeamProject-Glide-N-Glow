@@ -188,7 +188,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     {
         var scores = _scores
             .Select(amount => Math.Round(amount / _timeElapsed.TotalMinutes, 2).ToString(CultureInfo.InvariantCulture))
-            .ToList();
+            .ToArray();
 
         //send the score to the server
         await SocketWrapper.PublishNewScores(scores);

@@ -1,5 +1,8 @@
 var fetchdom = 'http://localhost:5165';
 
+//signalR
+var gameHubConnection;
+
 function checkCurrentGame() {
   fetch(`${fetchdom}/gamemode/current`)
     .then((response) => {
@@ -23,4 +26,28 @@ function checkCurrentGame() {
 
 document.addEventListener('DOMContentLoaded', (event) => {
   checkCurrentGame();
+
+  gameHubConnection = new signalR.HubConnectionBuilder()
+  .withUrl(fetchdom + "/game-hub")
+  .configureLogging(signalR.LogLevel.Warning)
+  .build();
+
+  gameHubConnection.on("current-game-updated", (gameid) => {
+    if (gameid){
+      checkCurrentGame();
+    }
+    else{
+      console.log('the game has ended');
+      window.location.href = '/';
+    }
+  });
+  
+  gameHubConnection
+    .start()
+    .then(function () {
+      console.log('SignalR connected');
+    })
+    .catch(function (err) {
+      console.error('Error connecting to SignalR:', err);
+    });
 });

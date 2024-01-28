@@ -8,9 +8,9 @@ public class ScoreHandler
     
     public readonly List<Score> Scores = new();
 
-    public void AddScores(List<string> newScores)
+    public void AddScores(params string[] newScores)
     {
-        for (var index = 0; index < newScores.Count; index++)
+        for (var index = 0; index < newScores.Length; index++)
         {
             var score = newScores[index];
             Scores.Add(new Score(Scores.Count + index, score));

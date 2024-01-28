@@ -39,6 +39,13 @@ public class GamemodeHandler
     private void AppSettingsChanged(AppSettings appSettings)
     {
         appSettings = appSettings.GetCurrentValue();
+        _lightButtonHandler.OnFileChange(appSettings);
+        
+        OnCurrentGameChange(appSettings);
+    }
+
+    private void OnCurrentGameChange(AppSettings appSettings)
+    {
         if (_currentGamemode is not null && _currentGamemode.Game.Id == appSettings.CurrentGamemode ||
             _currentGamemode is null && appSettings.CurrentGamemode is null)
             return;
@@ -110,7 +117,7 @@ public class GamemodeHandler
     
     public async Task RenderAsync(CancellationToken cancellationToken)
     {
-        if (!(_currentGamemode is null))
+        if (_currentGamemode is not null)
         {
             if (_lightRenderer.PixelAmount <= 0)
                 return;
