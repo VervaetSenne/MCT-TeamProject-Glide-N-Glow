@@ -105,6 +105,7 @@ public class GamemodeHandler
             return;
         
         _currentGamemode!.Gamemode.Initialize(cancellationToken);
+        //TODO button connection won't get caught when there isn't a gamemode running, might cause issues for collect
         await _lightButtonHandler.AddSubscriptions(cancellationToken);
         _lightButtonHandler.AddButtonPressedEvent(i => Input(i, cancellationToken));
     }
