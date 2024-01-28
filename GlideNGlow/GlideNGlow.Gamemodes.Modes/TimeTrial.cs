@@ -17,7 +17,7 @@ public class TimeTrial : Gamemode
     private GameState _gameState;
     private readonly MeasurementLineRenderObject _countdownLight = new(0, 1, Color.Red);
     private float _timeElapsed;
-    private float _countdownTime = 3;
+    private float _countdownTime = 5;
     private int _countdownStep;
     
     public TimeTrial(LightButtonHandler lightButtonHandler, AppSettings appSettings, ISocketWrapper socketWrapper) : base(lightButtonHandler, appSettings, socketWrapper)
