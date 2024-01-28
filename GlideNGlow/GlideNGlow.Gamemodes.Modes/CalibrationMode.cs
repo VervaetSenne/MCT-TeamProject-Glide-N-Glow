@@ -74,6 +74,11 @@ public class CalibrationMode : Gamemode
             distance += interval*2;
         }
     }
+    
+    public override List<RenderObject> GetRenderObjects()
+    {
+        return RenderObjects.ToList();
+    }
 
     public override void Stop()
     {
