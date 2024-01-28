@@ -105,7 +105,9 @@ public class SettingsService : ISettingsService
 
     public IEnumerable<ButtonDto> GetButtons()
     {
-        return AppSettings.Buttons
+        AppSettings settings = null!;
+        _appSettings.Update(s => settings = s);
+        return settings.Buttons
             .OrderBy(l => l.ButtonNumber)
             .Where(l => l.ButtonNumber > -3)
             .Select(l => new ButtonDto
