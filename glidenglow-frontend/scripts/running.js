@@ -69,7 +69,7 @@ function loadUserContent() {
       </div>
       <div class="player-score-container">
         <p class="player-score-text">Score:</p>
-        <p class="player-score-${i}">0</p>
+        <p class="player-score player-score-${i}">0</p>
       </div>
     </div>`;
         }
