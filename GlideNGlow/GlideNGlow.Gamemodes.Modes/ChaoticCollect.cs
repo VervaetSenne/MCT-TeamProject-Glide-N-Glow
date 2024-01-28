@@ -21,7 +21,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     private readonly List<int> _buttonAssignments = new();
     private readonly Random _random = new();
     private readonly List<int> _scores = new();
-    private readonly float _countdownTime = 3f;
+    private readonly float _countdownTime = 5f;
     private readonly Dictionary<int,MeasurementLineRenderObject> _displayLines = new();
     private float _buttonWidth = 25f;
     private int _countdownStep;
