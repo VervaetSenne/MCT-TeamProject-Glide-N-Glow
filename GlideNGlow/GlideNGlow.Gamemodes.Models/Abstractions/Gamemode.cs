@@ -32,7 +32,7 @@ public abstract class Gamemode : IGamemode
 
     public virtual List<RenderObject> GetRenderObjects()
     {
-        return RenderObjects.ToList();
+        return RenderObjects;
     }
 
     public abstract Task ButtonPressed(int id, CancellationToken cancellationToken);
