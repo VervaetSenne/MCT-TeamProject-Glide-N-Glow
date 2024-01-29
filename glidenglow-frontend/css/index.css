@@ -303,7 +303,7 @@ main {
   padding-left: 6rem;
 }
 #button-actions {
-  /* padding-left: 1.5rem; */
+  padding-left: 1.5rem;
 }
 #button-id {
   padding-left: 1.5rem;
@@ -325,7 +325,7 @@ main {
   font-size: 1.1rem;
 }
 #lightstrip-action {
-  /* padding-left: 1.5rem; */
+  padding-left: 1.5rem;
 }
 #lightstrip-pixels-data {
   padding-left: 1.5rem;
