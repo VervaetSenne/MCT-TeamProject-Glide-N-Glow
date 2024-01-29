@@ -41,9 +41,7 @@ public class MultiThreadFileWriter
                     }
                     else
                     {
-                        await using var sw = File.AppendText(log.Filepath);
-                        await sw.WriteLineAsync(log.Text);
-                        await sw.FlushAsync();
+                        await File.WriteAllTextAsync(log.Filepath, log.Text, _token);
                     }
                     success = true;
                 }
