@@ -97,9 +97,7 @@ function handleAdminSettings() {
   });
   calibrateButton.addEventListener('click', function () {
     toggleCallibrate();
-    if (stateCalibrate == 1) {
-      sendStop();
-    }
+    sendStop();
   });
 }
 
