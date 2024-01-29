@@ -349,7 +349,6 @@ main {
 .gamemodes-header-icons {
   display: flex;
   justify-content: center;
-  margin-top: 5rem;
 }
 .small-gamepad-icon {
   width: 64px;
@@ -366,7 +365,7 @@ main {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 5rem;
+  margin-top: 1rem;
 }
 .gamemode-card {
   width: 326px;
