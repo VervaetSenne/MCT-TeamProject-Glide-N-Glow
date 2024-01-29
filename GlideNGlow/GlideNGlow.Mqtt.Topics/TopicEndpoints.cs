@@ -3,6 +3,7 @@
 public static class TopicEndpoints
 {
     public const string TopicRgb = "{{r: {0},  g:{1},  b:{2}}}";
+    public const string TopicRgbAnim = "{{r: {0},  g:{1},  b:{2},  ani: {3}}}";
     public const string SigninTopic = "esp32/+/connected";
     public const string TestTopic = "esp32/+/acknowledge";
     public const string ButtonTopic = "esp32/+/button";

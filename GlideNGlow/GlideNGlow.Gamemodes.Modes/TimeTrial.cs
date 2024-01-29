@@ -29,6 +29,7 @@ public class TimeTrial : Gamemode
         RenderObjects.Add(_countdownLight);
         _countdownLight.SetVisibility(false);
         _gameState = GameState.WaitingForStart;
+        LightButtonHandler.SetAllRgb(Color.White, cancellationToken).GetAwaiter().GetResult();
     }
 
     public override void Stop()
@@ -43,7 +44,7 @@ public class TimeTrial : Gamemode
                 await UpdateCountdownAsync(timeSpan);
                 break;
             case GameState.Ending:
-                await UpdateEndingAsync(timeSpan);
+                await UpdateEndingAsync(timeSpan, cancellationToken);
                 break;
             case GameState.WaitingForStart:
             case GameState.Running:
@@ -53,12 +54,13 @@ public class TimeTrial : Gamemode
         }
     }
     
-    private async Task UpdateEndingAsync(TimeSpan timeSpan)
+    private async Task UpdateEndingAsync(TimeSpan timeSpan, CancellationToken cancellationToken)
     {
         _timeElapsed += timeSpan.TotalSeconds();
         if (_timeElapsed >= 0)
         {
             _gameState = GameState.WaitingForStart;
+            await LightButtonHandler.SetAllRgb(Color.White, cancellationToken);
         }
     }
     

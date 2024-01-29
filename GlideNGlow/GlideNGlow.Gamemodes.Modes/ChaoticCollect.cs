@@ -186,6 +186,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
                 await RunningStart(cancellationToken);
                 break;
             case GameState.Ending:
+                await SetAllColor(Color.White, cancellationToken);
                 await SubmitScores();
                 _timeElapsed = TimeSpan.FromSeconds(-_countdownTime);
                 break;
@@ -257,7 +258,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     private async Task SetColor(int buttonId, Color color, CancellationToken cancellationToken)
     {
         _displayLines[buttonId].SetColor(color);
-        await LightButtonHandler.SetRgb(buttonId, color, cancellationToken);
+        await LightButtonHandler.SetRgb(buttonId, color, cancellationToken,0);
     }
     
 
