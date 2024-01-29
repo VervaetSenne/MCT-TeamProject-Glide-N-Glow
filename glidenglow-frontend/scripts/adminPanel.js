@@ -24,7 +24,7 @@ var gameHubConnection;
 var connectionHubConnection;
 
 //Current gamemode vars
-function toggleStartStop() { 
+function toggleStartStop() {
   console.log('startstop');
   //Stop games
   if (stateStartStop == 0) {
@@ -42,28 +42,27 @@ function toggleStartStop() {
 
 function toggleCallibrate() {
   console.log('callibrate');
-    if (stateCalibrate == 0) {
-      calibrateDiv.forEach((div) => {
-        div.classList.add('gamemode-setting-content-hidden');
-      });
-      calibrateButton.innerHTML = 'Stop Callibration';
-      startStopButton.style.opacity = '0.5';
-      startStopButton.disabled = true;
-      stateStartStop = 1;
-      toggleStartStop();
-      startStopButton.innerHTML = 'Calibrating';
-      stateCalibrate++;
-    }
-    else {
-      calibrateDiv.forEach((div) => {
-        div.classList.remove('gamemode-setting-content-hidden');
-      });
-      calibrateButton.innerHTML = 'Start Callibration';
-      startStopButton.style.opacity = '1';
-      startStopButton.disabled = false;
-      startStopButton.innerHTML = 'Turn lights off';
-      stateCalibrate = 0;
-    }
+  if (stateCalibrate == 0) {
+    calibrateDiv.forEach((div) => {
+      div.classList.add('gamemode-setting-content-hidden');
+    });
+    calibrateButton.innerHTML = 'Stop Callibration';
+    startStopButton.style.opacity = '0.5';
+    startStopButton.disabled = true;
+    stateStartStop = 1;
+    toggleStartStop();
+    startStopButton.innerHTML = 'Calibrating';
+    stateCalibrate++;
+  } else {
+    calibrateDiv.forEach((div) => {
+      div.classList.remove('gamemode-setting-content-hidden');
+    });
+    calibrateButton.innerHTML = 'Start Callibration';
+    startStopButton.style.opacity = '1';
+    startStopButton.disabled = false;
+    startStopButton.innerHTML = 'Turn lights off';
+    stateCalibrate = 0;
+  }
 }
 
 function handleAdminSettings() {
@@ -73,13 +72,13 @@ function handleAdminSettings() {
 
   startStopButton.addEventListener('click', function () {
     toggleStartStop();
-    if (stateStartStop == 0){
+    if (stateStartStop == 0) {
       sendStop();
     }
   });
   calibrateButton.addEventListener('click', function () {
     toggleCallibrate();
-    if (stateCalibrate == 1){
+    if (stateCalibrate == 1) {
       sendStop();
     }
   });
@@ -99,10 +98,7 @@ function sendStop() {
     })
     .catch((error) => {
       // Handle errors
-      console.error(
-        'Error sending data to API - START STOP GAMEMODE:',
-        error
-      );
+      console.error('Error sending data to API - START STOP GAMEMODE:', error);
     });
 }
 
@@ -172,7 +168,7 @@ function handleGamemodes() {
     })
     .then((gamemodes) => {
       console.log(gamemodes);
-      updateGamemodesTable(gamemodes)
+      updateGamemodesTable(gamemodes);
 
       /*
       SETT GAMEMODE AVAILABLE CHECKBOX
@@ -326,8 +322,8 @@ function updateButtonsTable(buttons) {
 
   for (const button of buttons) {
     var row = document.createElement('tr');
-    row.setAttribute('data-button-id', button.id)
-    
+    row.setAttribute('data-button-id', button.id);
+
     row.innerHTML = `
       <td id="button-id-data">
         <svg
@@ -353,7 +349,7 @@ function updateButtonsTable(buttons) {
             width="24"
             height="24"
             viewBox="0 0 24 24"
-            fill=""
+            fill="none"
             stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
@@ -388,7 +384,7 @@ function updateButtonsTable(buttons) {
           </svg>
         </button>
       </td>`;
-    buttonTable.appendChild(row);  
+    buttonTable.appendChild(row);
   }
 }
 
@@ -838,9 +834,15 @@ function toggleDropdown() {
 
 document.addEventListener('DOMContentLoaded', (event) => {
   //Gamemode vars
-  gamemodesTable = document.querySelector('.js-gamemodes-table').getElementsByTagName('table')[0];
-  buttonTable = document.querySelector('.js-buttons-table').getElementsByTagName('table')[0];
-  lightstripsTable = document.querySelector('.js-lightstrips-table').getElementsByTagName('table')[0];
+  gamemodesTable = document
+    .querySelector('.js-gamemodes-table')
+    .getElementsByTagName('table')[0];
+  buttonTable = document
+    .querySelector('.js-buttons-table')
+    .getElementsByTagName('table')[0];
+  lightstripsTable = document
+    .querySelector('.js-lightstrips-table')
+    .getElementsByTagName('table')[0];
 
   //Functions
   handleAdminSettings();
@@ -851,18 +853,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
   ///SignalR
   //game
   gameHubConnection = new signalR.HubConnectionBuilder()
-  .withUrl(fetchdom + "/game-hub")
-  .configureLogging(signalR.LogLevel.Warning)
-  .build();
+    .withUrl(fetchdom + '/game-hub')
+    .configureLogging(signalR.LogLevel.Warning)
+    .build();
 
-  gameHubConnection.on("current-game-updated", (gameid) => {
-    if (gameid){
+  gameHubConnection.on('current-game-updated', (gameid) => {
+    if (gameid) {
       stateStartStop = 0;
       stateCalibrate = 0;
       toggleStartStop();
       toggleCallibrate();
-    }
-    else{
+    } else {
       stateStartStop = 1;
       stateCalibrate = 0;
       toggleStartStop();
@@ -879,28 +880,24 @@ document.addEventListener('DOMContentLoaded', (event) => {
       console.error('Error connecting to SignalR:', err);
     });
 
-    //connection
-    connectionHubConnection = new signalR.HubConnectionBuilder()
-    .withUrl(fetchdom + "/connection-hub")
+  //connection
+  connectionHubConnection = new signalR.HubConnectionBuilder()
+    .withUrl(fetchdom + '/connection-hub')
     .configureLogging(signalR.LogLevel.Warning)
     .build();
 
-    connectionHubConnection.on("button-connected", (hex, distance) =>{
-      const buttonIndex = buttonsCache.findIndex((b) => b.id == hex)
-      if (buttonIndex != -1){
-        buttonsCache[buttonIndex].distance = distance;
-      }
-      else{
-        buttonsCache.add({
-          id: hex,
-          distance: distance
-        })
-      }
-      updateButtonsTable(buttonsCache);
-    });
+  connectionHubConnection.on('button-connected', (hex, distance) => {
+    const buttonIndex = buttonsCache.findIndex((b) => b.id == hex);
+    if (buttonIndex != -1) {
+      buttonsCache[buttonIndex].distance = distance;
+    } else {
+      buttonsCache.add({
+        id: hex,
+        distance: distance,
+      });
+    }
+    updateButtonsTable(buttonsCache);
+  });
 
-    connectionHubConnection.on("button-disconnected", (hex) =>{
-      
-    });
+  connectionHubConnection.on('button-disconnected', (hex) => {});
 });
-
