@@ -258,7 +258,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     private async Task SetColor(int buttonId, Color color, CancellationToken cancellationToken)
     {
         _displayLines[buttonId].SetColor(color);
-        await LightButtonHandler.SetRgb(buttonId, color, cancellationToken,0);
+        await LightButtonHandler.SetRgb(buttonId, color, cancellationToken,1);
     }
     
 
