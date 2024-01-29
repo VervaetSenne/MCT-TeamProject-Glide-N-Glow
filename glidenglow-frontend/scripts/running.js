@@ -189,7 +189,7 @@ function claimScore(button) {
         // Revert the input field to normal data
         const firstDataRow = button.closest('tr');
         const usernameCell = firstDataRow.querySelector('td:first-child');
-        usernameCell.innerHTML = newUsername;
+        usernameCell.textContent = newUsername; // Change from innerHTML to textContent
       })
       .catch((error) => {
         // Handle errors
