@@ -147,6 +147,7 @@ function claimScore(button) {
 
   if (!isClaimed) {
     // If the button is not claimed, change the SVG and make the first data field an input
+    button.classList.add('claimed'); // Add a class to indicate that the button has been claimed
 
     // Store the original SVG content for later reverting
     const originalSvgContent = button.innerHTML;
@@ -176,7 +177,7 @@ function claimScore(button) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(newUsername),
+      body: JSON.stringify({ username: newUsername }),
     })
       .then((result) => {
         // Handle the response if needed
