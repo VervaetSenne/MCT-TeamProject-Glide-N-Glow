@@ -50,6 +50,14 @@ public class WritableOptions<TOptions> : IWritableOptions<TOptions> where TOptio
 		applyChanges(sectionObject ?? new TOptions());
 
 		jObject[_section] = JObject.Parse(JsonConvert.SerializeObject(sectionObject));
-		File.WriteAllText(physicalPath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
+		try
+		{
+			File.WriteAllText(physicalPath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
+		}
+		catch
+		{
+			Task.Delay(2).GetAwaiter().GetResult();
+			File.WriteAllText(physicalPath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
+		}
 	}
 }
