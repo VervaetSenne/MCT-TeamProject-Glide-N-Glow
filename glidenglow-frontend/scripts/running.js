@@ -112,33 +112,97 @@ function handleRecentScores() {
         </td>
       </tr>`;
       }
+      recentScoresContainer.innerHTML = html;
     });
 }
 
 function claimScore(button) {
   const buttonId = button.id;
 
-  // Make a POST request to claim the score
-  fetch(`${fetchdom}/running/score/${buttonId}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((result) => {
-      // Handle the response if needed
-      console.log('Score claimed successfully:', result);
+  // Check if the button has the 'claimed' class
+  const isClaimed = button.classList.contains('claimed');
+
+  if (!isClaimed) {
+    // If the button is not claimed, change the SVG and make the first data field an input
+
+    // Store the original SVG content for later reverting
+    const originalSvgContent = button.innerHTML;
+
+    // Change the SVG of the button
+    button.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    `;
+
+    // Make the first data field an input
+    const firstDataRow = button.closest('tr');
+    const usernameCell = firstDataRow.querySelector('td:first-child');
+    const username = usernameCell.textContent.trim();
+
+    // Replace the username cell with an input field
+    usernameCell.innerHTML = `<input type="text" value="${username}" id="usernameInput">`;
+  } else {
+    // If the button is already claimed, proceed with the POST request
+    const usernameInput = document.getElementById('usernameInput');
+    const newUsername = usernameInput.value;
+
+    // Make a POST request to claim the score with the filled-in data
+    fetch(`${fetchdom}/running/score/${buttonId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newUsername),
     })
-    .catch((error) => {
-      // Handle errors
-      console.error('Error claiming score:', error);
-    });
+      .then((result) => {
+        // Handle the response if needed
+        console.log('Score claimed successfully:', result);
+
+        // Revert the button to the original SVG
+        button.innerHTML = originalSvgContent;
+
+        // Revert the input field to normal data
+        const firstDataRow = button.closest('tr');
+        const usernameCell = firstDataRow.querySelector('td:first-child');
+        usernameCell.innerHTML = newUsername;
+      })
+      .catch((error) => {
+        // Handle errors
+        console.error('Error claiming score:', error);
+      })
+      .finally(() => {
+        // Remove the 'claimed' class after the operation is complete
+        button.classList.remove('claimed');
+      });
+  }
 }
 
+function loadUserScores() {
+  fetch(`${fetchdom}/running/scores`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch gamemodes. Status: ${response.status}`
+        );
+      }
+      return response.json();
+    })
+    .then((scores) => {
+      console.log(scores);
+      for (const score of scores) {
+        const playerScoreElement = document.getElementById(
+          `player-score-${score.playerIndex}`
+        );
+        if (playerScoreElement) {
+          playerScoreElement.innerText = score.value;
+        }
+      }
+    });
+}
 document.addEventListener('DOMContentLoaded', function () {
   // Get init values from the API
-  
-
+  loadUserScores();
   // Initialize SignalR connection
   connection = new signalR.HubConnectionBuilder()
     .withUrl(`${fetchdom}/game-hub`) // SignalR hub URL
@@ -146,6 +210,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   connection.on('score-updated', function (playerIndex, newScore) {
     // Update the player score
+    console.log('score-updated');
     const playerScoreElement = document.getElementById(
       `player-score-${playerIndex}`
     );
@@ -168,8 +233,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  connection.on('new-scores', function (playerIndex, playerName) {
+  connection.on('new-scores', function (scores) {
     //add new score to row
+    // scores.forEach((score) => {
+    //   const newRow = `
+    //   <tr id="score-row-id-${score.playerIndex}">
+    //     <td>${score.playerName}</td>
+    //     <td>${score.value}</td>
+    //     <td>
+    //       <button class="table-button" id="${score.playerIndex}" onclick="claimScore(this)">
+    //         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hand">
+    //           <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0" />
+    //           <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" />
+    //           <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8" />
+    //           <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />
+    //         </svg>
+    //       </button>
+    //     </td>
+    //   </tr>`;
+    //   // Assuming gameScoresTable is the id of your table element
+    //   document.getElementById('recent-scores-table').innerHTML += newRow;
+    // });
+    handleRecentScores();
   });
 
   connection
