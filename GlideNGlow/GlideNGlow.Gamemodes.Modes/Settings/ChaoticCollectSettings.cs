@@ -10,7 +10,7 @@ public class ChaoticCollectSettings : IHasPlayers<int>
     public ChaoticCollectSettings(string playerAmount, string timeLimit)
     {
         PlayerAmount = int.Parse(playerAmount);
-        TimeLimit = TimeSpan.Parse(timeLimit).TotalSeconds();
+        TimeLimit = TimeSpan.ParseExact(timeLimit, @"%m\:%s", null).TotalSeconds();
     }
     
     public int PlayerAmount { get; set; }

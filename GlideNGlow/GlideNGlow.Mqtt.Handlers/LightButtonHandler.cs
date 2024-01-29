@@ -189,17 +189,17 @@ public class LightButtonHandler
         var macAddress = topic.Split('/')[1];
         if (LightButtons.ContainsKey(macAddress))
         {
-            _logger.LogInformation($"Esp {macAddress} signed in: {message}");
+            _logger.LogInformation($"Esp {macAddress} resigned in: {message}");
         }
         else
         {
             await SigninNewButton(macAddress);
             // _lightButtons.Add(macAddress, new LightButtons(macAddress, _logger, SetRgb));
-            _logger.LogInformation($"Esp {macAddress} resigned in: {message}");
+            _logger.LogInformation($"Esp {macAddress} signed in: {message}");
         }
     }
 
-    //TODO: Call this function every x seconds
+    //Call this function every x seconds
     public async Task TestConnectionsAsync(CancellationToken cancellationToken)
     {
         foreach (var lightButton in LightButtons)
@@ -213,9 +213,10 @@ public class LightButtonHandler
             }
             else
             {
-                await _mqttHandler.SendMessage($"esp32/{lightButton.Key}/test", "test connection", cancellationToken);  
+                //await _mqttHandler.SendMessage($"esp32/{lightButton.Key}/test", "test connection", cancellationToken);  
             }
         }
+        await _mqttHandler.SendMessage($"esp32/acknowledge", "ping", cancellationToken); 
     }
 
     private async Task OnTestSubscription(string topic, string message)
@@ -279,7 +280,7 @@ public class LightButtonHandler
     {
         foreach (var esp in LightButtons)
         {
-            await _mqttHandler.SendMessage($"esp32/{esp.Key}/test", "test connection", cancellationToken);
+            await _mqttHandler.SendMessage($"esp32/acknowledge", "test connection", cancellationToken);
         }
     }
 

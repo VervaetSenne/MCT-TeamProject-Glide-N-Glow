@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Globalization;
+using GlideNGlow.Common.Extensions;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Gamemodes.Models.Abstractions;
 using GlideNGlow.Gamemodes.Modes.Enums;
@@ -20,7 +21,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     private readonly List<int> _buttonAssignments = new();
     private readonly Random _random = new();
     private readonly List<int> _scores = new();
-    private readonly float _countdownTime = 3f;
+    private readonly float _countdownTime = 5f;
     private readonly Dictionary<int,MeasurementLineRenderObject> _displayLines = new();
     private float _buttonWidth = 25f;
     private int _countdownStep;
@@ -94,11 +95,20 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
                 await UpdateRunning(cancellationToken);
                 break;
             case GameState.Ending:
+                await UpdateEnding();
                 break;
             case GameState.Error:
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private async Task UpdateEnding()
+    {
+        if (_timeElapsed.TotalSeconds() > 0)
+        {
+            await ChangeStateAsync(GameState.WaitingForStart, new CancellationToken());
         }
     }
 
@@ -139,6 +149,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
 
     private async Task UpdateRunning(CancellationToken cancellationToken)
     {
+        //TODO Time limit is 60 times too high
         if(_timeElapsed.TotalSeconds >= Settings.TimeLimit)
         {
             await ChangeStateAsync(GameState.Ending, cancellationToken);
@@ -174,6 +185,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
                 break;
             case GameState.Ending:
                 await SubmitScores();
+                _timeElapsed = TimeSpan.FromSeconds(-_countdownTime);
                 break;
             case GameState.Error:
                 await LightButtonHandler.SetAllRgb(Color.Orange, default);
@@ -197,7 +209,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     private async Task RunningStart(CancellationToken cancellationToken)
     {
         //for each player, set an element in _buttonAssignements (that is 0) to its color
-        
+        await SetAllColor(Color.Black, cancellationToken);
         for (var i = 1; i <= _playerAmount; i++)
         {
             await AssignColorToEmpty(i, cancellationToken);
@@ -220,6 +232,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
         _buttonAssignments[randomButtonId] = playerId;
         //set the button to the player's color
         await SetColor(randomButtonId, _playerColors[playerId], cancellationToken);
+        
     }
     
     private async Task RemoveAssignment(int buttonId, CancellationToken cancellationToken)
@@ -231,7 +244,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
     
     private async Task SetAllColor(Color color, CancellationToken cancellationToken)
     {
-        foreach (var buttonId in _buttonAssignments)
+        foreach (var buttonId in _buttonIds.Keys)
         {
             await SetColor(buttonId, color, cancellationToken);
         }
@@ -240,8 +253,8 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
 
     private async Task SetColor(int buttonId, Color color, CancellationToken cancellationToken)
     {
-        await LightButtonHandler.SetRgb(buttonId, color, cancellationToken);
         _displayLines[buttonId].SetColor(color);
+        await LightButtonHandler.SetRgb(buttonId, color, cancellationToken);
     }
     
 
@@ -261,7 +274,8 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
 
         //add a point to the player
         _scores[playerId-1]++;
-        await SocketWrapper.PublishUpdateScore(playerId-1, _scores[playerId-1].ToString());
+        //TODO: publish the score to the server
+        //await SocketWrapper.PublishUpdateScore(playerId-1, _scores[playerId-1].ToString());
     }
 
     public override async Task ButtonPressed(int id, CancellationToken cancellationToken)
