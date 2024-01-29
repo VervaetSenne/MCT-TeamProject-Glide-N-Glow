@@ -3,6 +3,7 @@
 public class AppSettings
 {
     public string Ip { get; set; } = string.Empty;
+    public string FrontendUrl { get; set; } = string.Empty;
     public Guid? CurrentGamemode { get; set; } = null;
     public List<Guid> AvailableGamemodes { get; set; } = new();
     public Guid? ForceGamemode { get; set; } = null;

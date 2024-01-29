@@ -31,9 +31,9 @@ builder.Services.AddCors(options =>
             .WithOrigins(new []
                 {
                     "127.0.0.1",
-                    "127.0.0.1:5500",
                     "localhost",
-                    builder.Configuration.GetSection($"{nameof(AppSettings)}:{nameof(AppSettings.Ip)}").Get<string>() ?? "10.10.10.13"
+                    builder.Configuration.GetSection($"{nameof(AppSettings)}:{nameof(AppSettings.Ip)}").Get<string>() ?? "10.10.10.13",
+                    builder.Configuration.GetSection($"{nameof(AppSettings)}:{nameof(AppSettings.FrontendUrl)}").Get<string>() ?? "127.0.0.1:5500",
                 }
                 .SelectMany(s => new []
                 {
