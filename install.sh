@@ -25,7 +25,7 @@ touch /etc/apache2/sites-available/000-default.conf > '
 </VirtualHost>
 '
 
-cp ./GlideNGlow/GlideNGlow.Ui.WebApi/glidenglow-frontend /app/glidenglow-frontend
+cp ./glidenglow-frontend /app/glidenglow-frontend
 
 echo "apache install succesful"
 echo "website copied succesful"
