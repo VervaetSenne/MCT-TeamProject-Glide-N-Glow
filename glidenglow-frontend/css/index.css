@@ -555,6 +555,8 @@ main {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   padding: 10px;
+  height: 1rem;
+  opacity: 60%;
 }
 
 .player-card-header p {

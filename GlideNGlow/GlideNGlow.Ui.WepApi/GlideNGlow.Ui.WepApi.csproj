@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\GlideNGlow.Gamemodes.Constants\GlideNGlow.Gamemodes.Constants.csproj" />
       <ProjectReference Include="..\GlideNGlow.Gamemodes.Data\GlideNGlow.Gamemodes.Data.csproj" />
       <ProjectReference Include="..\GlideNGlow.Gamemodes.Handlers\GlideNGlow.Gamemodes.Handlers.csproj" />
       <ProjectReference Include="..\GlideNGlow.Services\GlideNGlow.Services.csproj" />

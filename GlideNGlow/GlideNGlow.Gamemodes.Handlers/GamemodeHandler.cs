@@ -1,7 +1,9 @@
 using System.Drawing;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Common.Options.Extensions;
+using GlideNGlow.Core.Models;
 using GlideNGlow.Core.Services.Abstractions;
+using GlideNGlow.Gamemodes.Constants;
 using GlideNGlow.Gamemodes.Models;
 using GlideNGlow.Gamemodes.Models.Abstractions;
 using GlideNGlow.Mqqt.Handlers;
@@ -53,7 +55,10 @@ public class GamemodeHandler
             _currentGamemode is null && appSettings.CurrentGamemode is null)
             return;
         
-        var game = _gameService.FindByIdAsync(appSettings.CurrentGamemode).GetAwaiter().GetResult();
+        var game = appSettings.CurrentGamemode == Guid.Empty
+            ? CalibrateMode.Instance
+            : _gameService.FindByIdAsync(appSettings.CurrentGamemode).GetAwaiter().GetResult();
+        
         if (game is null)
         {
             StopGameAsync(default).GetAwaiter().GetResult();

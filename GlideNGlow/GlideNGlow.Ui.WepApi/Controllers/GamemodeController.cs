@@ -1,7 +1,11 @@
 ﻿using System.Text.Json;
+using GlideNGlow.Common.Enums;
 using GlideNGlow.Core.Dto;
+using GlideNGlow.Core.Models;
 using GlideNGlow.Core.Models.Extensions;
 using GlideNGlow.Core.Services.Abstractions;
+using GlideNGlow.Gamemodes.Constants;
+using GlideNGlow.Gamemodes.Modes;
 using GlideNGlow.Services.Abstractions;
 using GlideNGlow.Socket.Abstractions;
 using Microsoft.AspNetCore.Mvc;
@@ -89,6 +93,9 @@ public class GamemodeController : Controller
     public async Task<IActionResult> GetCurrentGamemodeAsync()
     {
         var currentId = _settingsService.GetCurrentGamemode();
+        if (currentId == Guid.Empty)
+            return Ok(CalibrateMode.Instance);
+        
         return Ok(await _gameService.FindByIdAsync(currentId));
     }
 
@@ -98,20 +105,32 @@ public class GamemodeController : Controller
         return SetCurrentGamemodeAsync(null, null);
     }
 
+    [HttpPost("calibrate")]
+    public Task<IActionResult> CalibrateAsync()
+    {
+        return SetCurrentGamemodeAsync(Guid.Empty, null);
+    }
+
     [HttpPost("current/{gameId}")]
     public async Task<IActionResult> SetCurrentGamemodeAsync([FromRoute] Guid? gameId, [FromBody] JsonElement? settings)
     {
-        if (!_settingsService.GetAllowSwitching())
+        if (!_settingsService.GetAllowSwitching() && gameId != Guid.Empty)
             return NoContent();
         
         _settingsService.UpdateCurrentGamemode(gameId, settings);
+        
+        await _socketWrapper.PublishUpdateGamemode(gameId);
+        if (gameId == Guid.Empty)
+        {
+            return Ok();
+        }
+        
         if (gameId.HasValue)
         {
             var game = await _gameService.FindByIdAsync(gameId);
             if (game is not null) return Ok(game.GetSettingsObject());
         }
 
-        await _socketWrapper.PublishUpdateGamemode(gameId);
         return Ok();
     }
 }

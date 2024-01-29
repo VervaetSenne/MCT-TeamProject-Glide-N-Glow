@@ -319,40 +319,41 @@ public class LightButtonHandler
         }
     }
 
-    public async Task SetRgb(string macAddress,int r, int g, int b, CancellationToken cancellationToken)
+    public async Task SetRgb(string macAddress,int r, int g, int b, CancellationToken cancellationToken, int anim = 2)
     {
-        await _mqttHandler.SendMessage($"esp32/{macAddress}/ledcircle", string.Format(TopicEndpoints.TopicRgb, r, g, b), cancellationToken);
+        await _mqttHandler.SendMessage($"esp32/{macAddress}/ledcircle", string.Format(TopicEndpoints.TopicRgbAnim, r, g, b, anim), cancellationToken);
     }
     
-    public async Task SetRgb(string macAddress, Color color, CancellationToken cancellationToken)
+    
+    public async Task SetRgb(string macAddress, Color color,CancellationToken cancellationToken , int anim = 2)
     {
-        await SetRgb(macAddress, color.R, color.G, color.B, cancellationToken);
+        await SetRgb(macAddress, color.R, color.G, color.B, cancellationToken, anim);
     }
     
-    public async Task SetRgb(int buttonId, int r, int g, int b, CancellationToken cancellationToken)
+    public async Task SetRgb(int buttonId, int r, int g, int b, CancellationToken cancellationToken, int anim = 2)
     {
         var macAddress = GetMacAddress(buttonId);
-        await SetRgb(macAddress, r, g, b, cancellationToken);
+        await SetRgb(macAddress, r, g, b, cancellationToken, anim);
     }
     
-    public async Task SetRgb(int buttonId, Color color, CancellationToken cancellationToken)
+    public async Task SetRgb(int buttonId, Color color, CancellationToken cancellationToken, int anim = 2)
     {
-        await SetRgb(buttonId, color.R, color.G, color.B, cancellationToken);
+        await SetRgb(buttonId, color.R, color.G, color.B, cancellationToken, anim);
     }
     
-    public async Task SetAllRgb(int r, int g, int b, CancellationToken cancellationToken)
+    public async Task SetAllRgb(int r, int g, int b, CancellationToken cancellationToken, int anim = 2)
     {
         foreach (var esp in LightButtons)
         {
-            await SetRgb(esp.Key, r, g, b, cancellationToken);
+            await SetRgb(esp.Key, r, g, b, cancellationToken,anim);
         }
     }
     
-    public async Task SetAllRgb(Color color, CancellationToken cancellationToken)
+    public async Task SetAllRgb(Color color, CancellationToken cancellationToken , int anim = 2)
     {
         foreach (var esp in LightButtons)
         {
-            await SetRgb(esp.Key, color.R, color.G, color.B, cancellationToken);
+            await SetRgb(esp.Key, color.R, color.G, color.B, cancellationToken, anim);
         }
     }
     
