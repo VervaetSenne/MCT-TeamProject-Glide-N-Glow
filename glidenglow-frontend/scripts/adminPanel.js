@@ -41,12 +41,12 @@ function toggleStartStop() {
 }
 
 function toggleCallibrate() {
-  console.log('callibrate');
+  console.log('calibrate');
   if (stateCalibrate == 0) {
     calibrateDiv.forEach((div) => {
       div.classList.add('gamemode-setting-content-hidden');
     });
-    calibrateButton.innerHTML = 'Stop Callibration';
+    calibrateButton.innerHTML = 'Stop Calibration';
     startStopButton.style.opacity = '0.5';
     startStopButton.disabled = true;
     stateStartStop = 1;
@@ -57,7 +57,7 @@ function toggleCallibrate() {
     calibrateDiv.forEach((div) => {
       div.classList.remove('gamemode-setting-content-hidden');
     });
-    calibrateButton.innerHTML = 'Start Callibration';
+    calibrateButton.innerHTML = 'Start Calibration';
     startStopButton.style.opacity = '1';
     startStopButton.disabled = false;
     startStopButton.innerHTML = 'Turn lights off';
