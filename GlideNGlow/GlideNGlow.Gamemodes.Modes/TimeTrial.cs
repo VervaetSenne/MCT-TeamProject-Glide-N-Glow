@@ -79,8 +79,9 @@ public class TimeTrial : Gamemode
         {
             if (_countdownStep == 2) return;
             _countdownTime = 2;
-            _countdownLight.SetColor(Color.Orange);
-            await LightButtonHandler.SetRgb(_startedButtonId, Color.Orange,new CancellationToken());
+            Color color = Color.FromArgb(255, 85, 0);
+            _countdownLight.SetColor(color);
+            await LightButtonHandler.SetRgb(_startedButtonId, color ,new CancellationToken(),1);
             return;
         }
         if (_timeElapsed < 0)
@@ -88,7 +89,7 @@ public class TimeTrial : Gamemode
             if (_countdownStep == 3) return;
             _countdownStep= 3;
             _countdownLight.SetColor(Color.Yellow);
-            await LightButtonHandler.SetRgb(_startedButtonId, Color.Yellow,new CancellationToken());
+            await LightButtonHandler.SetRgb(_startedButtonId, Color.Yellow,new CancellationToken(),1);
             return;
         }
         
@@ -97,7 +98,7 @@ public class TimeTrial : Gamemode
         {
             _countdownStep = 4;
             _countdownLight.SetColor(Color.Green);
-            await LightButtonHandler.SetRgb(_startedButtonId, Color.Green,new CancellationToken());
+            await LightButtonHandler.SetRgb(_startedButtonId, Color.Green,new CancellationToken(),0);
             
             _gameState = GameState.Running;
             _timeStarted.Start();
@@ -113,7 +114,8 @@ public class TimeTrial : Gamemode
                 _gameState = GameState.Countdown;
                 _countdownLight.SetVisibility(true);
                 _timeElapsed = -_countdownTime;
-                await LightButtonHandler.SetRgb(_startedButtonId, Color.Red,cancellationToken);
+                await LightButtonHandler.SetAllRgb(Color.Black, cancellationToken);
+                //await LightButtonHandler.SetRgb(_startedButtonId, Color.Red,cancellationToken,2);
                 
                 _countdownStep = 0;
                 var startDistance = AppSettings.Buttons[_startedButtonId].DistanceFromStart ?? 0;
