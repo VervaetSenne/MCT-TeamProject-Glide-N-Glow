@@ -120,7 +120,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
         switch (_countdownStep)
         {
             case 0 :
-                if(_timeElapsed.TotalSeconds >= -_countdownTime/3*2)
+                if(_timeElapsed.TotalSeconds >= -_countdownTime)
                 {
                     _countdownStep = 1;
                     await SetAllColor(Color.Red, default);
@@ -134,7 +134,7 @@ public class ChaoticCollect : Gamemode<ChaoticCollectSettings>
                 }
                 break;
             case 2 :
-                if(_timeElapsed.TotalSeconds >= -_countdownTime/3*2)
+                if(_timeElapsed.TotalSeconds >= -_countdownTime/3)
                 {
                     _countdownStep = 3;
                     await SetAllColor(Color.Yellow, default);

@@ -16,7 +16,7 @@ public class TimeTrial : Gamemode
     private int _startedButtonId =-1;
     private GameState _gameState;
     private readonly MeasurementLineRenderObject _countdownLight = new(0, 1, Color.Red);
-    private float _timeElapsed;
+    private TimeSpan _timeElapsed;
     private float _countdownTime = 5;
     private int _countdownStep;
     
@@ -56,8 +56,8 @@ public class TimeTrial : Gamemode
     
     private async Task UpdateEndingAsync(TimeSpan timeSpan, CancellationToken cancellationToken)
     {
-        _timeElapsed += timeSpan.TotalSeconds();
-        if (_timeElapsed >= 0)
+        _timeElapsed += timeSpan;
+        if (_timeElapsed.TotalSeconds() >= 0)
         {
             _gameState = GameState.WaitingForStart;
             await LightButtonHandler.SetAllRgb(Color.White, cancellationToken);
@@ -66,43 +66,48 @@ public class TimeTrial : Gamemode
     
     private async Task UpdateCountdownAsync(TimeSpan timeSpan)
     {
-        _timeElapsed += timeSpan.TotalSeconds();
-        if (_timeElapsed < -_countdownTime/3*2)
+        _timeElapsed += timeSpan;
+        switch (_countdownStep)
         {
-            if (_countdownStep == 1) return;
-            _countdownStep = 1;
-            _countdownLight.SetColor(Color.Red);
-            await LightButtonHandler.SetRgb(_startedButtonId, Color.Red,new CancellationToken());
-            return;
-        }
-        if (_timeElapsed < -_countdownTime/3)
-        {
-            if (_countdownStep == 2) return;
-            _countdownTime = 2;
-            Color color = Color.FromArgb(255, 85, 0);
-            _countdownLight.SetColor(color);
-            await LightButtonHandler.SetRgb(_startedButtonId, color ,new CancellationToken(),1);
-            return;
-        }
-        if (_timeElapsed < 0)
-        {
-            if (_countdownStep == 3) return;
-            _countdownStep= 3;
-            _countdownLight.SetColor(Color.Yellow);
-            await LightButtonHandler.SetRgb(_startedButtonId, Color.Yellow,new CancellationToken(),1);
-            return;
-        }
-        
-        
-        if (_timeElapsed >= 0)
-        {
-            _countdownStep = 4;
-            _countdownLight.SetColor(Color.Green);
-            await LightButtonHandler.SetRgb(_startedButtonId, Color.Green,new CancellationToken(),0);
+            case 0 :
+                if(_timeElapsed.TotalSeconds() >= -_countdownTime)
+                {
+                    _countdownStep = 1;
+                    _countdownLight.SetColor(Color.Red);
+                    await LightButtonHandler.SetRgb(_startedButtonId, Color.Red,new CancellationToken());
+                }
+                break;
+            case 1 : 
+                if(_timeElapsed.TotalSeconds() >= -_countdownTime/3*2)
+                {
+                    _countdownStep = 2;
+                    Color color = Color.FromArgb(255, 85, 0);
+                    _countdownLight.SetColor(color);
+                    await LightButtonHandler.SetRgb(_startedButtonId, color ,new CancellationToken(),1);
+                }
+                break;
+            case 2 :
+                if(_timeElapsed.TotalSeconds() >= -_countdownTime/3)
+                {
+                    _countdownStep = 3;
+                    _countdownLight.SetColor(Color.Yellow);
+                    await LightButtonHandler.SetRgb(_startedButtonId, Color.Yellow,new CancellationToken(),1);
+                }
+                break;
+            case 3 :
+                if (_timeElapsed.TotalSeconds() >= 0)
+                {
+                    _countdownStep = 4;
+                    _countdownLight.SetColor(Color.Green);
+                    await LightButtonHandler.SetRgb(_startedButtonId, Color.Green,new CancellationToken(),0);
             
-            _gameState = GameState.Running;
-            _timeStarted.Start();
+                    _gameState = GameState.Running;
+                    _timeStarted.Start();
+                }
+
+                break;
         }
+        
     }
 
     public override async Task ButtonPressed(int id, CancellationToken cancellationToken)
@@ -113,7 +118,7 @@ public class TimeTrial : Gamemode
                 _startedButtonId = id;
                 _gameState = GameState.Countdown;
                 _countdownLight.SetVisibility(true);
-                _timeElapsed = -_countdownTime;
+                _timeElapsed = TimeSpan.FromSeconds(-_countdownTime);
                 await LightButtonHandler.SetAllRgb(Color.Black, cancellationToken);
                 //await LightButtonHandler.SetRgb(_startedButtonId, Color.Red,cancellationToken,2);
                 
@@ -132,7 +137,7 @@ public class TimeTrial : Gamemode
                 await LightButtonHandler.SetRgb(_startedButtonId,Color.Black,cancellationToken);
                 //await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Black,cancellationToken);
                 _gameState = GameState.Ending;
-                _timeElapsed = -_countdownTime;
+                _timeElapsed = TimeSpan.FromSeconds(-_countdownTime);
                 await SocketWrapper.PublishNewScores(TimeSpan.FromMilliseconds(_timeStarted.ElapsedMilliseconds).ToString(@"mm\:ss\.fff"));
                 _timeStarted.Reset();
                 break;
