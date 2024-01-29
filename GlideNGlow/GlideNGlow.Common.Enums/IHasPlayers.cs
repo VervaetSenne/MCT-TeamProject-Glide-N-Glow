@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace GlideNGlow.Common.Enums;
+﻿namespace GlideNGlow.Common.Enums;
 
 public interface IHasPlayers<out T>
 {

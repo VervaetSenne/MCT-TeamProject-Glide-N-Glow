@@ -311,10 +311,7 @@ public class LightButtonHandler
 
     public async Task TestConnection(CancellationToken cancellationToken)
     {
-        foreach (var esp in LightButtons)
-        {
-            await _mqttHandler.SendMessage($"esp32/acknowledge", "test connection", cancellationToken);
-        }
+        await _mqttHandler.SendMessage($"esp32/acknowledge", "test connection", cancellationToken);
     }
 
     public async Task SetRgb(string macAddress,int r, int g, int b, CancellationToken cancellationToken, int anim = 2)

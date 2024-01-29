@@ -1,7 +1,6 @@
 using System.Drawing;
 using GlideNGlow.Common.Models.Settings;
 using GlideNGlow.Common.Options.Extensions;
-using GlideNGlow.Core.Models;
 using GlideNGlow.Core.Services.Abstractions;
 using GlideNGlow.Gamemodes.Constants;
 using GlideNGlow.Gamemodes.Models;

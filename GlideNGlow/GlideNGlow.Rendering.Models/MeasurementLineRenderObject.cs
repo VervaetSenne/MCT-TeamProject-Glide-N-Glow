@@ -67,7 +67,7 @@ public class MeasurementLineRenderObject : RenderObject
         if (!IsVisible) return;
         
         //first we must convert our start and end positions to the correct pixel positions
-        if (!renderer.LightStripConverter.TryConvertToPixelLine(_startPosition, _endPosition, out var startPixel,
+        if (!renderer.LightStripConverter!.TryConvertToPixelLine(_startPosition, _endPosition, out var startPixel,
                 out var endPixel)) return;
         
         if(startPixel == endPixel)
