@@ -99,14 +99,14 @@ public class SettingsService : ISettingsService
     public Guid? GetCurrentGamemode()
     {
         Guid? current = null;
-        _appSettings.Update(s => current = s.CurrentGamemode);
+        _appSettings.Update(s => current = s.CurrentGamemode, false);
         return current;
     }
 
     public IEnumerable<ButtonDto> GetButtons()
     {
         AppSettings settings = null!;
-        _appSettings.Update(s => settings = s);
+        _appSettings.Update(s => settings = s, false);
         return settings.Buttons
             .OrderBy(l => l.ButtonNumber)
             .Where(l => l.ButtonNumber > -3)
@@ -249,7 +249,7 @@ public class SettingsService : ISettingsService
         }
         
         var settings = string.Empty;
-        _appSettings.Update(s => settings = s.CurrentSettings);
+        _appSettings.Update(s => settings = s.CurrentSettings, false);
 
         if (string.IsNullOrWhiteSpace(settings))
             return new ContentDto

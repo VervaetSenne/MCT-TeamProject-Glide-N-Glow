@@ -99,7 +99,6 @@ public class LightButtonHandler
         
         _appSettings.Update(settings =>
         {
-            settings = settings.GetCurrentValue();
             //check if there is a Button in _appSettings.CurrentValue.Buttons with the same macAddress as the one we got
             //button = settings.Buttons.FirstOrDefault(x => x.MacAddress == macAddress);
             if (button is null)
@@ -113,7 +112,6 @@ public class LightButtonHandler
                 });
                 return;
             }
-            
             
             switch (button.ButtonNumber)
             {

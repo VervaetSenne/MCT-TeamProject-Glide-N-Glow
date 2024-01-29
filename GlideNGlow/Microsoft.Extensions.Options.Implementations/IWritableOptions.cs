@@ -2,6 +2,6 @@
 {
 	public interface IWritableOptions<out T> : IOptionsMonitor<T> where T : class, new()
 	{
-		void Update(Action<T> applyChanges);
+		void Update(Action<T> applyChanges, bool doesWrite = true);
 	}
 }
