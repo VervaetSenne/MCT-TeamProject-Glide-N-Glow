@@ -133,7 +133,8 @@ public class TimeTrial : Gamemode
                 //await LightButtonHandler.SetRgb(AppSettings.Buttons[_startedButtonId].MacAddress, Color.Black,cancellationToken);
                 _gameState = GameState.Ending;
                 _timeElapsed = -_countdownTime;
-                await SocketWrapper.PublishNewScores(TimeSpan.FromMilliseconds(_timeStarted.ElapsedMilliseconds).ToString(@"%m\:%s\.ff"));
+                await SocketWrapper.PublishNewScores(TimeSpan.FromMilliseconds(_timeStarted.ElapsedMilliseconds).ToString(@"mm\:ss\.fff"));
+                _timeStarted.Reset();
                 break;
             case GameState.Ending:
             case GameState.Error:
