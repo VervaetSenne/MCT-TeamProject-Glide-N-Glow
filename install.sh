@@ -34,23 +34,15 @@ dotnet ef database update --context GlideNGlowDbContext --startup-project ./Glid
 echo "database up to date"
 
 # build project
-dotnet build ./GlideNGlow/GlideNGlow.Ui.WepApi/GlideNGlow.Ui.WepApi.csproj --configuration Release --property:ASPNETCORE_URLS='http://10.10.10.13:5165' --output /app/
+dotnet build ./GlideNGlow/GlideNGlow.Ui.WepApi/GlideNGlow.Ui.WepApi.csproj --configuration Release --property:ASPNETCORE_URLS=$ASPURL --output /app/
 export ASPNETCORE_URLS=$ASPURL
 export ASPNETCORE_ENVIRONMENT="Production"
 chmod 666 /app/appsettings.json
 
 apt install apache2 -y
-echo '
-<VirtualHost *:80>
-    ServerAdmin webmaster@localhost
-    DocumentRoot /app/glidenglow-frontend
-</VirtualHost>
-' | sudo tee -a /etc/apache2/sites-available/000-default.conf
 
-mkdir /app/glidenglow-frontend
-cp -r ./glidenglow-frontend /app/glidenglow-frontend
+cp -r ./glidenglow-frontend/* /var/www/html
 
-chmod 666 -R /app/glidenglow-frontend
 systemctl restart apache2
 
 echo "apache install succesful"
