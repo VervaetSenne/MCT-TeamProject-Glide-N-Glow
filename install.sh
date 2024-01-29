@@ -15,22 +15,6 @@ sudo mysql -e "GRANT ALL PRIVILEGES ON GlideNGlow.* TO 'glidenglow_user'@'localh
 
 echo "mariadb install succesful"
 
-apt install apache2 -y
-echo '
-<VirtualHost *:80>
-    ServerAdmin webmaster@localhost
-    DocumentRoot /var/www/html
-    # Add your additional configuration here
-</VirtualHost>
-' | sudo tee /etc/apache2/sites-available/000-default.conf > /dev/null
-
-
-cp ./glidenglow-frontend /app/glidenglow-frontend
-
-echo "apache install succesful"
-echo "website copied succesful"
-chmod 666 -R /app/glidenglow-frontend
-
 # install dotnet
 wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
 chmod +x ./dotnet-install.sh
@@ -54,6 +38,23 @@ dotnet build ./GlideNGlow/GlideNGlow.Ui.WepApi/GlideNGlow.Ui.WepApi.csproj --con
 export ASPNETCORE_URLS=$ASPURL
 export ASPNETCORE_ENVIRONMENT="Production"
 chmod 666 /app/appsettings.json
+
+apt install apache2 -y
+echo '
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    DocumentRoot /app/glidenglow-frontend
+</VirtualHost>
+' | sudo tee -a /etc/apache2/sites-available/000-default.conf
+
+mkdir /app/glidenglow-frontend
+cp -r ./glidenglow-frontend /app/glidenglow-frontend
+
+chmod 666 -R /app/glidenglow-frontend
+systemctl restart apache2
+
+echo "apache install succesful"
+echo "website copied succesful"
 
 echo "build successful"
 echo "done."
