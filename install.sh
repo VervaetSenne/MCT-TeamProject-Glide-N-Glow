@@ -16,14 +16,14 @@ sudo mysql -e "GRANT ALL PRIVILEGES ON GlideNGlow.* TO 'glidenglow_user'@'localh
 echo "mariadb install succesful"
 
 apt install apache2 -y
-touch /etc/apache2/sites-available/000-default.conf > '
+echo '
 <VirtualHost *:80>
     ServerAdmin webmaster@localhost
-    DocumentRoot /app/glidenglow-frontend        
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    CustomLog ${APACHE_LOG_DIR}/access.log combined
+    DocumentRoot /var/www/html
+    # Add your additional configuration here
 </VirtualHost>
-'
+' | sudo tee /etc/apache2/sites-available/000-default.conf > /dev/null
+
 
 cp ./glidenglow-frontend /app/glidenglow-frontend
 
