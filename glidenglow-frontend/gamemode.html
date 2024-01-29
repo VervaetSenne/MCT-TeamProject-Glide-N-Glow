@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link type="text/css" rel="stylesheet" href="css/index.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
     <script src="scripts/checkCurrentGamemode.js"></script>
     <script src="scripts/gamemodeSettings.js"></script>
@@ -71,50 +74,6 @@
       >
         <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
       </svg>
-    </div>
-    <!-- Gamemode settings-->
-    <div class="gamemode-settings-card-container">
-      <!-- Gamemode settings card amount of players -->
-      <div
-        class="gamemode-settings-card js-player-amount gamemode-setting-content-hidden"
-      >
-        <p>Fill in the amount of players</p>
-
-        <input
-          type="number"
-          id="playerInputAmount"
-          class="playerInput"
-          placeholder="Enter number of players"
-          min="0"
-        />
-
-        <button class="startButton" onclick="startGame()">Start</button>
-      </div>
-      <!-- Gamemode settings card set time -->
-      <div class="gamemode-settings-card js-set-time">
-        <p class="gamemode-setting-text">Set time</p>
-        <input
-          type="number"
-          id="playerInputTimeMinutes"
-          class="playerInput"
-          placeholder="Minutes"
-          min="0"
-        /><span>:</span
-        ><input
-          type="number"
-          id="playerInputTimeSeconds"
-          class="playerInput"
-          placeholder="Seconds"
-          min="0"
-        />
-        <button class="startButton" onclick="startGame()">Start</button>
-      </div>
-      <!-- Gamemode settings card no setting-->
-      <div
-        class="gamemode-settings-card js-no-setting gamemode-setting-content-hidden"
-      >
-        <button class="startButton" onclick="startGame()">Start</button>
-      </div>
     </div>
   </body>
 </html>
