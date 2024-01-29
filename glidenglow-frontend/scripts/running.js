@@ -57,21 +57,33 @@ function loadUserContent() {
       return response.json();
     })
     .then((userContent) => {
+      const playerColors = [
+        { color: '#FF0000' },
+        { color: '#0000FF' },
+        { color: '#008000' },
+        { color: '#FFFF00' },
+        { color: '#00FFFF' },
+        { color: '#800080' },
+        { color: '#FFA500' },
+        { color: '#FFC0CB' },
+      ];
+
       console.log(userContent);
       let html = ``;
       if (userContent.type == 0) {
         html += ``;
       } else if (userContent.type == 1) {
         for (let i = 0; i < userContent.value; i++) {
+          const backgroundColor = playerColors[i % playerColors.length].color;
           html += `<div class="player-card">
-      <div class="player-card-header">
-        <p>Player ${i + 1}</p>
-      </div>
-      <div class="player-score-container">
-        <p class="player-score-text">Score:</p>
-        <p class="player-score" id="player-score-${i}">0</p>
-      </div>
-    </div>`;
+            <div class="player-card-header" style="background-color: ${backgroundColor}">
+              <p></p>
+            </div>
+            <div class="player-score-container">
+              <p class="player-score-text">Score:</p>
+              <p class="player-score" id="player-score-${i}">0</p>
+            </div>
+          </div>`;
         }
       }
       userContentContainer.innerHTML = html;
