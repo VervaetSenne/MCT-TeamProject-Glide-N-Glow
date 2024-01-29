@@ -1,5 +1,5 @@
-﻿using System.Collections.Concurrent;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options.Implementations.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -11,8 +11,6 @@ public class WritableOptions<TOptions> : IWritableOptions<TOptions> where TOptio
 	private readonly IOptionsMonitor<TOptions> _options;
 	private readonly string _section;
 
-	private readonly BlockingCollection<Actions> _actionsCollection = new();
-
 	public WritableOptions(
 		IHostEnvironment environment,
 		IOptionsMonitor<TOptions> options,
@@ -21,8 +19,6 @@ public class WritableOptions<TOptions> : IWritableOptions<TOptions> where TOptio
 		_environment = environment;
 		_options = options;
 		_section = section;
-
-		_ = StartConsumptionAsync();
 	}
 
 	public TOptions CurrentValue => _options.CurrentValue;
@@ -55,45 +51,16 @@ public class WritableOptions<TOptions> : IWritableOptions<TOptions> where TOptio
 
 		sectionObject ??= new TOptions();
 		
-		_actionsCollection.Add(new Actions
-		{
-			Obj = sectionObject,
-			Action = applyChanges,
-			DoesWrite = doesWrite,
-			PhysicalPath = physicalPath,
-			JObject = jObject
-		});
-	}
+		applyChanges(sectionObject);
 
-	private Task StartConsumptionAsync()
-	{
-		foreach (var action in _actionsCollection.GetConsumingEnumerable())
-		{
-			action.Action(action.Obj);
-
-			if (!action.DoesWrite) continue;
+		if (!doesWrite) return;
 		
-			action.JObject[_section] = JObject.Parse(JsonConvert.SerializeObject(action.Obj));
-			try
-			{
-				File.WriteAllText(action.PhysicalPath, JsonConvert.SerializeObject(action.JObject, Formatting.Indented));
-			}
-			catch
-			{
-				Task.Delay(2).GetAwaiter().GetResult();
-				File.WriteAllText(action.PhysicalPath, JsonConvert.SerializeObject(action.JObject, Formatting.Indented));
-			}
-		}
-
-		return Task.CompletedTask;
-	}
-
-	private class Actions
-	{
-		public required TOptions Obj { get; init; }
-		public required Action<TOptions> Action { get; init; }
-		public required bool DoesWrite { get; init; }
-		public required string PhysicalPath { get; init; }
-		public required JObject JObject { get; init; }
+		jObject[_section] = JObject.Parse(JsonConvert.SerializeObject(sectionObject));
+		
+		new MultiThreadFileWriter().WriteLine(new LogMessage
+		{
+			Filepath = physicalPath,
+			Text = JsonConvert.SerializeObject(jObject, Formatting.Indented)
+		});
 	}
 }
