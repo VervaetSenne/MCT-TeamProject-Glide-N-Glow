@@ -65,12 +65,43 @@ public class LightButtonHandler
     private async Task SigninNewButton(string macAddress)
     {
         //check if there is a Button in _appSettings.CurrentValue.Buttons with the same macAddress as the one we got
-        LightButtonData? button = null;
+                
+        LightButtonData? button = _appSettings.GetCurrentValue().Buttons.FirstOrDefault(x => x.MacAddress == macAddress);
+
+        //check if the button isn't in LightButtons if so add it
+        if (!LightButtons.ContainsKey(macAddress))
+        {
+            if(button is null)
+            {
+                LightButtons.Add(macAddress, new LightButtons(new LightButtonData()
+                {
+                    MacAddress = macAddress,
+                    ButtonNumber = -1,
+                    DistanceFromStart = 0
+                }, _logger)
+                {
+                    MacAddress = macAddress
+                });
+            }
+            else
+            {
+                LightButtons.Add(macAddress, new LightButtons(new LightButtonData()
+                {
+                    MacAddress = macAddress,
+                    ButtonNumber = button.ButtonNumber,
+                    DistanceFromStart = button.DistanceFromStart
+                }, _logger)
+                {
+                    MacAddress = macAddress
+                });
+            }
+        }
+        
         _appSettings.Update(settings =>
         {
             settings = settings.GetCurrentValue();
             //check if there is a Button in _appSettings.CurrentValue.Buttons with the same macAddress as the one we got
-            button = settings.Buttons.FirstOrDefault(x => x.MacAddress == macAddress);
+            //button = settings.Buttons.FirstOrDefault(x => x.MacAddress == macAddress);
             if (button is null)
             {
                 //there isn't, add a new one and put it's buttonNumber on -1 and notify the client to give it a location and return
@@ -82,7 +113,8 @@ public class LightButtonHandler
                 });
                 return;
             }
-
+            
+            
             switch (button.ButtonNumber)
             {
                 //if buttonNumber is 0 or above, the button just reconnected, so we don't need to do anything besides notifying the client it reconnected
@@ -92,10 +124,10 @@ public class LightButtonHandler
                 case -2:
                 {
                     //add it to LightButtons (we'll change the number later)
-                    LightButtons.Add(button.MacAddress, new LightButtons(button, _logger)
-                    {
-                        MacAddress = macAddress
-                    });
+                    // LightButtons.Add(button.MacAddress, new LightButtons(button, _logger)
+                    // {
+                    //     MacAddress = macAddress
+                    // });
                 
                     //look at all buttons 0 or above and give them a number based on their distance from the start
                     //make a list of all buttons that have a buttonNumber of 0 or above
@@ -246,9 +278,12 @@ public class LightButtonHandler
             _logger.LogCritical("Button pressed but not registered uwu!");
             await _socketWrapper.SendWarning("Unregistered button pressed!");
         }
-        
-        if (ButtonPressedEvent is not null)
-            await ButtonPressedEvent.Invoke(LightButtons[macAddress].ButtonNumber ?? -1);
+
+        if (ButtonPressedEvent is not null && LightButtons.TryGetValue(macAddress, out var lb))
+        {
+            
+            await ButtonPressedEvent.Invoke(lb.ButtonNumber ?? -1);
+        }
     }
 
 #endregion

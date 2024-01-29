@@ -50,6 +50,7 @@ public class Engine : IHostedService
         using var scope = _scopeFactory.CreateScope();
         var lightButtonHandler = scope.ServiceProvider.GetRequiredService<LightButtonHandler>();
 
+        await lightButtonHandler.TestConnectionsAsync(cancellationToken);
         var periodicTimer = new PeriodicTimer(TimeSpan.FromMinutes(1));
         while (await periodicTimer.WaitForNextTickAsync(cancellationToken))
         {

@@ -65,6 +65,7 @@ public class MqttHandler
         _mqttClient.ApplicationMessageReceivedAsync += async e =>
         {
             var incoming = e.ApplicationMessage.Topic.Split('/');
+            //if(incoming.Length < 3) return;
             if (route.Where((t, i) => t != "+" && t != incoming[i]).Any())
             {
                 return;
