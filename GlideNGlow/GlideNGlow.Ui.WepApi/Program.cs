@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Environment.InitializeAppSettings();
 
+builder.WebHost.UseUrls(builder.Configuration[$"{nameof(AppSettings)}:{nameof(AppSettings.ApiUrl)}"]
+                        ?? throw new Exception("Please fill in the connection string, apiurl and ip in the appsettings.json file."));
+
 // Add services to the container.
 
 builder.Services.AddControllers();
