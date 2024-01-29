@@ -186,10 +186,14 @@ function claimScore(button) {
         // Revert the button to the original SVG
         button.innerHTML = originalSvgContent;
 
-        // Revert the input field to normal data
+        // Create a new data cell with the new username
+        const newUsernameCell = document.createElement('td');
+        newUsernameCell.textContent = newUsername;
+
+        // Replace the old username cell with the new one
         const firstDataRow = button.closest('tr');
-        const usernameCell = firstDataRow.querySelector('td:first-child');
-        usernameCell.textContent = newUsername; // Change from innerHTML to textContent
+        const oldUsernameCell = firstDataRow.querySelector('td:first-child');
+        firstDataRow.replaceChild(newUsernameCell, oldUsernameCell);
       })
       .catch((error) => {
         // Handle errors
