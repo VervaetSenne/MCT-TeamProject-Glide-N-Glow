@@ -1,0 +1,10 @@
+[Unit]
+Description=GlideNGlow Service
+
+[Service]
+WorkingDirectory=/app/
+ExecStart=/root/.dotnet/dotnet /app/GlideNGlow.Ui.WepApi.dll
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
