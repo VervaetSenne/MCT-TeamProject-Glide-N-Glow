@@ -40,6 +40,24 @@ function toggleStartStop() {
   }
 }
 
+function sendCalibrate() {
+  fetch(`${fetchdom}/gamemode/calibrate/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ stop: true }),
+  })
+    .then((result) => {
+      // Handle the API response if needed
+      console.log('API Response - START STOP GAMEMODE:', result);
+    })
+    .catch((error) => {
+      // Handle errors
+      console.error('Error sending data to API - START STOP GAMEMODE:', error);
+    });
+}
+
 function toggleCallibrate() {
   console.log('callibrate');
   if (stateCalibrate == 0) {
@@ -51,6 +69,7 @@ function toggleCallibrate() {
     startStopButton.disabled = true;
     stateStartStop = 1;
     toggleStartStop();
+    sendCalibrate();
     startStopButton.innerHTML = 'Calibrating';
     stateCalibrate++;
   } else {
