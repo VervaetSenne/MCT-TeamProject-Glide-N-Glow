@@ -12,7 +12,7 @@
   --bg-current-gamemode: #dbdbdb;
   --page-bg-primary: #f2f2f2;
   --transition-speed: 300ms;
-  --hover-bg-primary: #D9D9D9;
+  --hover-bg-primary: #d9d9d9;
 }
 
 body {
@@ -25,9 +25,8 @@ body {
 }
 
 html {
-  touch-action:none;
+  touch-action: none;
 }
-
 
 body::-webkit-scrollbar {
   width: 0.25rem;
@@ -116,7 +115,7 @@ main {
   display: none;
 }
 
-.logo-image{
+.logo-image {
   padding-top: 1rem;
   margin: 0 auto;
 }
@@ -140,7 +139,7 @@ main {
   z-index: 1;
 }
 
-.hidey-text{
+.hidey-text {
   color: var(--text-dark);
   background-color: var(--bg-white);
   border-radius: 10px;
@@ -188,7 +187,7 @@ main {
   height: 95dvh;
 }
 
-.grid-item-gamemodes{
+.grid-item-gamemodes {
   display: block;
   overflow-y: auto;
   height: 73dvh;
@@ -280,7 +279,7 @@ main {
 .gamemodes-container {
   display: flex;
   padding: 0rem 1rem 0rem 0rem;
-  justify-content:space-between
+  justify-content: space-between;
 }
 .gamemodes-container-gamemodeswitch-text {
   margin-left: 1rem;
@@ -350,7 +349,6 @@ main {
 .gamemodes-header-icons {
   display: flex;
   justify-content: center;
-  margin-top: 5rem;
 }
 .small-gamepad-icon {
   width: 64px;
@@ -367,7 +365,7 @@ main {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 5rem;
+  margin-top: 1rem;
 }
 .gamemode-card {
   width: 326px;
@@ -402,6 +400,7 @@ main {
 }
 .gamemode-discription {
   color: var(--text-primary);
+  height: 50px;
 }
 .gamemode-card-best-time {
   display: flex;
@@ -622,7 +621,7 @@ main {
   text-align: center;
 }
 
-.recent-scores-container th { 
+.recent-scores-container th {
   background-color: var(--bg-primary);
   color: var(--text-secondary);
 }
@@ -637,7 +636,7 @@ main {
   padding: 10rem;
 }
 
-.leaderbord-podium div h1{
+.leaderbord-podium div h1 {
   font-size: 2.5rem;
   font-weight: bold;
   color: var(--text-dark);
@@ -645,14 +644,14 @@ main {
   padding: 0;
 }
 
-.leaderbord-podium div p{
+.leaderbord-podium div p {
   font-size: 1.5rem;
   color: var(--text-dark);
   margin: 0;
   padding: 0;
 }
 
-.first-place{
+.first-place {
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -660,7 +659,7 @@ main {
   align-items: center;
 }
 
-.second-place{
+.second-place {
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -669,7 +668,7 @@ main {
   margin-right: 31rem;
 }
 
-.third-place{
+.third-place {
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -677,7 +676,6 @@ main {
   align-items: center;
   margin-left: 31rem;
 }
-
 
 /* Custom styles for the dropdown */
 /* .filter-dropdown {
@@ -700,7 +698,7 @@ main {
 
 /* The container must be positioned relative: */
 .custom-select {
-  position: fixed;  
+  position: fixed;
   top: 20px;
   right: 20px;
   z-index: 1000;
@@ -720,7 +718,7 @@ main {
 /* Style the arrow inside the select element: */
 .select-selected:after {
   position: absolute;
-  content: "";
+  content: '';
   top: 14px;
   right: 10px;
   width: 0;
@@ -736,7 +734,8 @@ main {
 }
 
 /* style the items (options), including the selected item: */
-.select-items div,.select-selected {
+.select-items div,
+.select-selected {
   color: #ffffff;
   padding: 8px 16px;
   border: 1px solid transparent;
@@ -761,11 +760,11 @@ main {
   display: none;
 }
 
-.select-items div:hover, .same-as-selected {
+.select-items div:hover,
+.same-as-selected {
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 0px 0px 10px 10px;
 }
-
 
 /* table */
 .table-button {
@@ -811,7 +810,7 @@ main {
   font-size: 1rem;
 }
 
-.add-lightstrip-button td{
+.add-lightstrip-button td {
   border-bottom: 0px solid #ddd; /* Adjust the border color */
 }
 
@@ -986,7 +985,7 @@ input:checked + .slider:before {
     width: 100%;
   }
 
-  .grid-item{
+  .grid-item {
     margin: 0;
     padding: 0;
   }
@@ -1027,8 +1026,8 @@ input:checked + .slider:before {
   .leaderbord-podium svg {
     height: 150px;
   }
-  
-  .leaderbord-podium div h1{
+
+  .leaderbord-podium div h1 {
     font-size: 1.2rem;
     font-weight: bold;
     color: var(--text-dark);
@@ -1036,14 +1035,14 @@ input:checked + .slider:before {
     padding: 0;
   }
 
-  .leaderbord-podium div p{
+  .leaderbord-podium div p {
     font-size: 1rem;
     color: var(--text-dark);
     margin: -2px;
     padding: 0;
   }
 
-  .first-place{
+  .first-place {
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -1051,7 +1050,7 @@ input:checked + .slider:before {
     align-items: center;
   }
 
-  .second-place{
+  .second-place {
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -1060,7 +1059,7 @@ input:checked + .slider:before {
     margin-right: 60%;
   }
 
-  .third-place{
+  .third-place {
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -1069,30 +1068,30 @@ input:checked + .slider:before {
     margin-left: 60%;
   }
 
-  .leaderbord-podium .third-place h1{
+  .leaderbord-podium .third-place h1 {
     font-size: 1rem;
   }
 
-  .leaderbord-podium .third-place p{
+  .leaderbord-podium .third-place p {
     font-size: 0.8rem;
   }
 
-  .rounded-table{
+  .rounded-table {
     height: auto;
   }
 
-  .rounded-table th{
+  .rounded-table th {
     padding: 5px;
     font-size: 0.9rem;
   }
 
-  .rounded-table td{
+  .rounded-table td {
     padding: 5px;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
   }
 
-  #lightstrip-action{
+  #lightstrip-action {
     padding: 0;
     padding-left: 1rem;
   }
@@ -1101,7 +1100,6 @@ input:checked + .slider:before {
     margin-top: 1rem;
   }
 }
-
 
 /* Large screens */
 @media only screen and (min-width: 800px) {
@@ -1125,7 +1123,6 @@ input:checked + .slider:before {
     grid-template-columns: 1fr 1fr;
   }
 
-
   .grid-item:first-child {
     width: 100%;
   }
@@ -1146,7 +1143,7 @@ input:checked + .slider:before {
   }
 } */
 
-@media (min-width: 1300px) {  
+@media (min-width: 1300px) {
   .grid-container {
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
@@ -1185,7 +1182,7 @@ input:checked + .slider:before {
     /* width: 29vw; */
   }
 
-  .grid-item-gamemodes{
+  .grid-item-gamemodes {
     display: block;
     overflow-y: auto;
     height: 74dvh;
