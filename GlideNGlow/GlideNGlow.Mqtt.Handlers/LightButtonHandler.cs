@@ -216,7 +216,7 @@ public class LightButtonHandler
                 //await _mqttHandler.SendMessage($"esp32/{lightButton.Key}/test", "test connection", cancellationToken);  
             }
         }
-        await _mqttHandler.SendMessage($"esp32/acknowledge", "test connection", cancellationToken); 
+        await _mqttHandler.SendMessage($"esp32/acknowledge", "ping", cancellationToken); 
     }
 
     private async Task OnTestSubscription(string topic, string message)
