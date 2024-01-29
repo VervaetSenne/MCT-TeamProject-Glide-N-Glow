@@ -5,7 +5,6 @@ var gamemodeSettingHeader;
 var gameModeCardsContainer;
 
 var currentSettings = [];
-var fetchdom = 'http://localhost:5165';
 
 function getParameters() {
   // Get the query string from the current URL

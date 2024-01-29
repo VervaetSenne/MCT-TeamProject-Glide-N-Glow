@@ -1,6 +1,4 @@
-var fetchdom = 'http://localhost:5165';
-
-//Settigns var
+//Settings var
 var stateCalibrate = 0;
 var stateStartStop = 0;
 var startStopButton;

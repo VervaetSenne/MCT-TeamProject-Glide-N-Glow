@@ -1,5 +1,3 @@
-var fetchdom = 'http://localhost:5165';
-
 //gamemode cards var
 
 var gameModeCardsContainer;
