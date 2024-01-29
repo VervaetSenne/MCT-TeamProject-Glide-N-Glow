@@ -33,7 +33,8 @@ bool previousLedOn;
 String connectedTopic = "";
 String ledTopic = "";
 String buttonTopic = "";
-String ackTopic = "";
+String getAckTopic = "";
+String showAckTopic = "";
 
 String clientName = "";
 int previousButtonState;
@@ -59,7 +60,8 @@ void setup() {
   Serial.print("test1");
   ledTopic = "esp32/"+WiFi.macAddress()+"/ledcircle";
   buttonTopic = "esp32/"+WiFi.macAddress()+"/button";
-  ackTopic = "esp32/"+WiFi.macAddress()+"/acknowledge";
+  showAckTopic = "esp32/"+WiFi.macAddress()+"/acknowledge";
+  getAckTopic = "esp32/acknowledge";
   
   Serial.print("test1");
   clientName = "ESP32"+WiFi.macAddress();
@@ -84,7 +86,6 @@ void loop() {
   // char buttonMessage[buttonState];
   // Serial.println(buttonMessage);
   if (buttonState == LOW && buttonState != previousButtonState){
-    Serial.println("pressed");
     client.publish(buttonTopic.c_str(), reinterpret_cast<const uint8_t*>("true"), 4, true);
   }
   delay(100);
@@ -192,7 +193,7 @@ void reconnect() {
       Serial.println("connected");
       // Subscribe
       client.subscribe(ledTopic.c_str());
-      client.subscribe(ackTopic.c_str());
+      client.subscribe(getAckTopic.c_str());
     } else {
       int state = client.state();
       Serial.print("Connection failed, state=");
@@ -205,23 +206,13 @@ void reconnect() {
 }
 
 void callback(char* topic, byte* message, unsigned int length) {
-  Serial.println("Message arrived on topic");
-
-  // Serial.print("Message arrived on topic: ");  
-  // Serial.print(topic);
-  // Serial.print(". Message: ");
-
   String MQTTmessage = "";
   for (int i = 0; i < length; i++) {
-    // Serial.print((char)message[i]);
     MQTTmessage += (char)message[i];
-  }
-  // Serial.println(messageLed);
-  
-  if (String(topic) == ackTopic) {
-    Serial.println("acknowledge");
+  }  
+  if (String(topic) == getAckTopic) {
     if(MQTTmessage == "ping"){
-      client.publish(ackTopic.c_str(), "pong");
+      client.publish(showAckTopic.c_str(), "pong");
     }
   }
   else if (String(topic) == ledTopic) {
@@ -229,8 +220,6 @@ void callback(char* topic, byte* message, unsigned int length) {
     DeserializationError error = deserializeJson(doc, message);
 
     if (error) {
-    Serial.print("deserializeJson() failed: ");
-    Serial.println(error.c_str());
     return;
     }
   r = doc["r"];
