@@ -52,7 +52,7 @@ function handleSettingsContent(gameId) {
         for (const setting of settings) {
           if (setting.type == 0) {
             //time;
-            html += `<p>Set time</p>`;
+            html += `<p>Set time (Minutes : Seconds)</p>`;
             html += `<input
               type="number"
               id="input_${setting.name}_minutes"
@@ -80,9 +80,9 @@ function handleSettingsContent(gameId) {
               id="input_${setting.name}"
               class="playerInput"
               placeholder="Enter number of players"
-              min="0"
+              min="1"
               max="5"
-              value="0"
+              value="1"
             /><br>`;
           }
         }

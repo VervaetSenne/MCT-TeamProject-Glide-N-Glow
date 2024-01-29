@@ -21,8 +21,11 @@ function handleGamemodeCards() {
     .then((gamemodes) => {
       console.log(gamemodes);
       let html = '';
+      let bestScore = 0;
       for (const gamemode of gamemodes) {
         console.log(gamemode);
+        bestScore = gamemode.bestScore;
+        if (bestScore == '----') bestScore = '';
         html += `
           <a href="gamemode.html?name=${gamemode.name}&id=${gamemode.id}" class="gamemode-card">
           <div class="gamemode-card-banner">
@@ -61,7 +64,7 @@ function handleGamemodeCards() {
                 />
                 <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
               </svg>
-              <p>Best score: <span>${gamemode.bestScore}</span></p>
+              <p>Best score: <span>${bestScore}</span></p>
             </div>
           </div>
         </a>`;
