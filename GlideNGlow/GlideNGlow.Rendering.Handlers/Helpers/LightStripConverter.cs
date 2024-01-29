@@ -4,7 +4,7 @@ namespace GlideNGlow.Rendering.Handlers.Helpers;
 
 public class LightStripConverter
 {
-    private List<LightstripData> _lightstrips = new();
+    private List<LightstripData> _lightStrips = new();
     private readonly List<float> _lightStripDistanceStarts = new();
     private readonly List<int> _lightStripIdStarts = new();
     private readonly List<float> _lightStripDistanceEnds = new();
@@ -18,26 +18,26 @@ public class LightStripConverter
     
     public void UpdateLightStripData(List<LightstripData> lightstrips)
     {
-        _lightstrips = lightstrips;
+        _lightStrips = lightstrips;
         
         _lightStripDistanceStarts.Clear();
         _lightStripDistanceEnds.Clear();
         
         float currentStart = 0;
         var currentId = 0;
-        foreach (var lightstrip in _lightstrips)
+        foreach (var lightStrip in _lightStrips)
         {
-            currentStart += lightstrip.DistanceFromLast;
+            currentStart += lightStrip.DistanceFromLast;
             _lightStripDistanceStarts.Add(currentStart);
             _lightStripIdStarts.Add(currentId);
             
             
-            currentStart += lightstrip.Length;
-            currentId += lightstrip.Leds;
+            currentStart += lightStrip.Length;
+            currentId += lightStrip.Leds;
             _lightStripDistanceEnds.Add(currentStart);
             _lightStripIdEnds.Add(currentId);
             
-            _lightStripPixelDensity.Add(lightstrip.Length / lightstrip.Leds);
+            _lightStripPixelDensity.Add(lightStrip.Length / lightStrip.Leds);
         }
     }
     

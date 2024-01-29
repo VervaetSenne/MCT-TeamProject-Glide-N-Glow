@@ -40,6 +40,8 @@ public class GamemodeHandler
     {
         appSettings = appSettings.GetCurrentValue();
         _lightButtonHandler.OnFileChange(appSettings);
+        //TODO needs cancellation token but is called in constructor
+        _lightRenderer.OnFileChange(default);
         
         OnCurrentGameChange(appSettings);
     }
@@ -102,9 +104,20 @@ public class GamemodeHandler
         if (cancellationToken.IsCancellationRequested)
             return;
         
-        _currentGamemode!.Gamemode.Initialize(cancellationToken);
+        _currentGamemode!.Gamemode.Initialize(cancellationToken); //button connection won't get caught when there isn't a gamemode running, might cause issues for collect
+        // await _lightButtonHandler.AddSubscriptions(cancellationToken);
+        // _lightButtonHandler.AddButtonPressedEvent(i => Input(i, cancellationToken));
+    }
+
+    public async Task InitButtonSubscriptionsAsync(CancellationToken cancellationToken)
+    {
         await _lightButtonHandler.AddSubscriptions(cancellationToken);
         _lightButtonHandler.AddButtonPressedEvent(i => Input(i, cancellationToken));
+    }
+    
+    public async Task RemoveButtonSubscriptionsAsync(CancellationToken cancellationToken)
+    {
+        await _lightButtonHandler.RemoveSubscriptions(cancellationToken);
     }
     
     public async Task UpdateAsync(TimeSpan timeSpan, CancellationToken cancellationToken)
@@ -145,7 +158,7 @@ public class GamemodeHandler
         _lightRenderer.Clear();
         _lightRenderer.MakeDirty();
         await _lightRenderer.ShowAsync(cancellationToken);
-        await _lightButtonHandler.RemoveSubscriptions(cancellationToken);
+        //await _lightButtonHandler.RemoveSubscriptions(cancellationToken);
         _currentGamemode = null;
     }
     

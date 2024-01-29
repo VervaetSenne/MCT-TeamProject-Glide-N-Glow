@@ -36,6 +36,7 @@ public class Engine : IHostedService
         
         var deltaTime = TimeSpan.FromMilliseconds(300);
         var periodicTimer = new PeriodicTimer(deltaTime);
+        await gamemodeHandler.InitButtonSubscriptionsAsync(cancellationToken);
         while (await periodicTimer.WaitForNextTickAsync(cancellationToken))
         {
             await gamemodeHandler.TryInitializeAsync(cancellationToken);
@@ -56,8 +57,10 @@ public class Engine : IHostedService
         }
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    public async Task StopAsync(CancellationToken cancellationToken)
     {
-        return Task.CompletedTask;
+        using var scope = _scopeFactory.CreateScope();
+        var gamemodeHandler = scope.ServiceProvider.GetRequiredService<GamemodeHandler>();
+        await gamemodeHandler.RemoveButtonSubscriptionsAsync(cancellationToken);
     }
 }
