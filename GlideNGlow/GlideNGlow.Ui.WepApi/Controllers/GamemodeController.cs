@@ -4,6 +4,7 @@ using GlideNGlow.Core.Dto;
 using GlideNGlow.Core.Models;
 using GlideNGlow.Core.Models.Extensions;
 using GlideNGlow.Core.Services.Abstractions;
+using GlideNGlow.Gamemodes.Constants;
 using GlideNGlow.Gamemodes.Modes;
 using GlideNGlow.Services.Abstractions;
 using GlideNGlow.Socket.Abstractions;
@@ -93,16 +94,7 @@ public class GamemodeController : Controller
     {
         var currentId = _settingsService.GetCurrentGamemode();
         if (currentId == Guid.Empty)
-            return Ok(new Game
-            {
-                Name = "Callibrate",
-                Description = "Callibration",
-                Image = Array.Empty<byte>(),
-                AssemblyName = typeof(CalibrationMode).AssemblyQualifiedName ?? throw new Exception(),
-                Settings = "",
-                ScoreImportance = ScoreImportance.None,
-                ContentType = ContentType.None
-            });
+            return Ok(CalibrateMode.Instance);
         
         return Ok(await _gameService.FindByIdAsync(currentId));
     }

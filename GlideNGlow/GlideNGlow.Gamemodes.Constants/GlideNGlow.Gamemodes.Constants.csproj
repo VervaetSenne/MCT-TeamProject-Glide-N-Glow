@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GlideNGlow.Core.Models\GlideNGlow.Core.Models.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Gamemodes.Modes\GlideNGlow.Gamemodes.Modes.csproj" />
+    </ItemGroup>
+
+</Project>
