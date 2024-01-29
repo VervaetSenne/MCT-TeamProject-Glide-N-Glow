@@ -50,7 +50,7 @@ public class CalibrationMode : Gamemode
                 var distance = lightButtonsValue.DistanceFromStart ?? -1;
                 string colorHex = lightButtonsValue.MacAddress.MacToHex();
                 //convert color Hex to Color
-                var color = ColorTranslator.FromHtml(colorHex);
+                var color = ColorTranslator.FromHtml("0x" + colorHex);
                 var mlro = new MeasurementLineRenderObject(distance - _halfWidth, distance + _halfWidth,
                     color);
                 await LightButtonHandler.SetRgb(buttonNumber, color, cancellationToken);
