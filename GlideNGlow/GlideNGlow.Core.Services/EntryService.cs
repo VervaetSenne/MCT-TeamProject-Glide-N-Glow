@@ -94,18 +94,18 @@ public class EntryService : IEntryService
             .ToListAsync();
 
         return entries
+            .Select(e =>
+            {
+                e.Score = FormatScore(e.Score);
+                return e;
+            })
             .GroupBy(e => e.GameId)
-            .Select(g => g.Max(new EntryComparer()) ?? new Entry
+            .Select(g => g.Min(new EntryComparer()) ?? new Entry
             {
                 GameId = g.Key,
                 DateTime = DateTime.MinValue,
                 Name = string.Empty,
                 Score = "----"
-            })
-            .Select(e =>
-            {
-                e.Score = FormatScore(e.Score);
-                return e;
             });
     }
 
