@@ -4,7 +4,7 @@ using GlideNGlow.Rendering.Handlers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options.Implementations;
 using Microsoft.Extensions.Options.Implementations.Extensions;
 using MQTTnet;
 using MQTTnet.Client;
@@ -20,7 +20,7 @@ public static class EngineInstaller
             .AddScoped<MqttHandler>()
             .AddScoped<LightButtonHandler>()
             .AddScoped<LightRenderer>(isp => LightRenderer.Create(isp.GetRequiredService<ILogger<LightRenderer>>(),
-            isp.GetRequiredService<IOptionsMonitor<AppSettings>>(), isp.GetRequiredService<MqttHandler>()))
+            isp.GetRequiredService<IWritableOptions<AppSettings>>(), isp.GetRequiredService<MqttHandler>()))
             .AddScoped<IMqttClient>(_ => new MqttFactory().CreateMqttClient())
             .AddScoped<GamemodeHandler>()
             .AddHostedService<Engine>();
