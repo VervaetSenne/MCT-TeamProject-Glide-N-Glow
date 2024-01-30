@@ -140,10 +140,11 @@ function handleRecentScores() {
 function claimScore(button) {
   // Check if the button has the 'claimed' class
   const isClaimed = button.classList.contains('claimed');
+  const isClaiming = button.classList.contains('claiming');
 
-  if (!isClaimed) {
+  if (!isClaimed && !isClaiming) {
     // If the button is not claimed, change the SVG and make the first data field an input
-
+    button.classList.add('claiming');
     // Change the SVG of the button
     button.innerHTML = `
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
@@ -163,6 +164,10 @@ function claimScore(button) {
     const usernameInput = document.getElementById('usernameInput');
     const newUsername = usernameInput.value;
 
+    if (newUsername.trim() == ''){
+      return;
+    }
+
     // Make a POST request to claim the score with the filled-in data
     fetch(`${fetchdom}/running/score/${button.id}?playerName=${newUsername}`, {
       method: 'POST',
@@ -180,7 +185,7 @@ function claimScore(button) {
         const firstDataRow = button.closest('tr');
         const oldUsernameCell = firstDataRow.querySelector('td:first-child');
         oldUsernameCell.innerHTML = newUsername;
-        button.style.visibility = hidden;
+        button.style.display = 'hidden';
       })
       .catch((error) => {
         // Handle errors
