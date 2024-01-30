@@ -223,6 +223,13 @@ document.addEventListener('DOMContentLoaded', function () {
     .withUrl(`${fetchdom}/game-hub`) // SignalR hub URL
     .build();
 
+  connection.on('current-game-updated', function (currentGame) {
+    if (!currentGame) {
+      console.log('game ended');
+      window.location.href = `/`;
+    }
+  })
+
   connection.on('score-updated', function (playerIndex, newScore) {
     // Update the player score
     console.log('score-updated');
