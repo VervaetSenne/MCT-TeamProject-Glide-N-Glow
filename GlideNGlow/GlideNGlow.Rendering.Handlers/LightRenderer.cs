@@ -87,13 +87,18 @@ public class LightRenderer
         {
             Lights.Clear();
             Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();
-            _ = SetStripSize(PixelAmount, cancellationToken);
         }
+        SetStripSize(PixelAmount, cancellationToken).GetAwaiter().GetResult();
     }
 
-    public async Task SetStripSize(int size, CancellationToken cancellationToken)
+    private async Task SetStripSize(int size, CancellationToken cancellationToken)
     {
         PixelAmount = size;
+        await ResendStripSize(cancellationToken);
+    }
+    
+    public async Task ResendStripSize(CancellationToken cancellationToken)
+    {
         await _mqttHandler.SendMessage(TopicEndpoints.TopicSetStripSize, PixelAmount.ToString(), cancellationToken);
     }
     
