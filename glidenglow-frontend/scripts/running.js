@@ -170,12 +170,12 @@ function claimScore(button) {
     const newUsername = usernameInput.value;
 
     // Make a POST request to claim the score with the filled-in data
-    fetch(`${fetchdom}/running/score/${buttonId}`, {
+    fetch(`${fetchdom}/running/score/0?playerName=${newUsername}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username: newUsername }),
+      body: JSON.stringify(newUsername),
     })
       .then((result) => {
         // Handle the response if needed
@@ -184,14 +184,10 @@ function claimScore(button) {
         // Revert the button to the original SVG
         button.innerHTML = originalSvgContent;
 
-        // Create a new data cell with the new username
-        const newUsernameCell = document.createElement('td');
-        newUsernameCell.textContent = newUsername;
-
         // Replace the old username cell with the new one
         const firstDataRow = button.closest('tr');
         const oldUsernameCell = firstDataRow.querySelector('td:first-child');
-        firstDataRow.replaceChild(newUsernameCell, oldUsernameCell);
+        firstDataRow.innerHTML = newUsername;
       })
       .catch((error) => {
         // Handle errors

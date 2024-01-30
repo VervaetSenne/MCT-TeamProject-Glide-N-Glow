@@ -31,7 +31,7 @@ public class RunningController : Controller
     }
 
     [HttpPost("score/{id:int}")]
-    public async Task<IActionResult> ClaimScore(int id, [FromBody] string playerName)
+    public async Task<IActionResult> ClaimScore(int id, [FromQuery] string playerName)
     {
         var score = _scoreHandler.ClaimScore(id, playerName);
         if (score is null)
