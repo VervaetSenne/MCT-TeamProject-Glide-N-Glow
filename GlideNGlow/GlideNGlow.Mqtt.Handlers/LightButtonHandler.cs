@@ -47,7 +47,7 @@ public class LightButtonHandler
     {
         //on startup we want to go over each button and put all buttonNumbers that are -1 on -3 and all others on -2
         //Put all buttonNumbers that are -1 on -3 and all others on -2
-        _appSettings.Update(settings =>
+        /*_appSettings.Update(settings =>
         {
             foreach (var button in settings.Buttons)
             {
@@ -55,12 +55,12 @@ public class LightButtonHandler
                 {
                     button.ButtonNumber = -3;
                 }
-                else
+                else if (button.ButtonNumber < 0)
                 {
                     button.ButtonNumber = -2;
                 }
             }
-        });
+        });*/
     }
     
     private async Task SigninNewButton(string macAddress)
