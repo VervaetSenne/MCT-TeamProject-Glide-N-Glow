@@ -179,7 +179,7 @@ function claimScore(button) {
         // Replace the old username cell with the new one
         const firstDataRow = button.closest('tr');
         const oldUsernameCell = firstDataRow.querySelector('td:first-child');
-        firstDataRow.innerHTML = newUsername;
+        oldUsernameCell.innerHTML = newUsername;
         button.style.display = none;
       })
       .catch((error) => {
