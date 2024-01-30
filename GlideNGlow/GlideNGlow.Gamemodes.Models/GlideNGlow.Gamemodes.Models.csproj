@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GlideNGlow.Core.Models\GlideNGlow.Core.Models.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Mqtt.Handlers\GlideNGlow.Mqtt.Handlers.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Rendering.Models\GlideNGlow.Rendering.Models.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Socket\GlideNGlow.Socket.csproj" />
+    </ItemGroup>
+
+</Project>

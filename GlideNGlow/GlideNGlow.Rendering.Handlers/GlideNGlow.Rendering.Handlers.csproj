@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>GlideNGlow.Rendering.Handlers</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GlideNGlow.Common.Models\GlideNGlow.Common.Models.csproj" />
+      <ProjectReference Include="..\GlideNGlow.Mqtt.Handlers\GlideNGlow.Mqtt.Handlers.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>GlideNGlow.GPIO.Models</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Iot.Device.Bindings" Version="3.1.0" />
+      <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+      <PackageReference Include="System.Device.Gpio" Version="3.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GlideNGlow.Common.Models\GlideNGlow.Common.Models.csproj" />
+      <ProjectReference Include="..\Microsoft.Extensions.Options.Implementations\Microsoft.Extensions.Options.Implementations.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gamemode Active | Glide N Glow</title>
+  <link type="text/css" rel="stylesheet" href="css/index.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+  <script src="scripts/constants.js"></script>
+  <script src="scripts/running.js"></script>
+  <link rel="shortcut icon" href="favicon.svg" type="image/x-icon">
+</head>
+
+<body>
+  <!-- Danger button to go back to index.html -->
+  <div class="quit-button-container">
+    <button id="quit-button" onclick="goBack()">Quit</button>
+  </div>
+  <div class="gamemode-settings-header">
+    <h1 class="js-gamemode-setting-header">{Mode} in progress</h1>
+    <p class="gamemode-setting-discription">
+      See the details of the on-going game
+    </p>
+    <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="gamemodeActiveIcon">
+      <defs>
+        <style>
+          .cls-1 {
+            stroke: #6d97c4;
+          }
+
+          .cls-1,
+          .cls-2 {
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 2px;
+          }
+
+          .cls-2 {
+            stroke: #000;
+          }
+        </style>
+      </defs>
+      <path class="cls-2" d="M1,1v18h18" />
+      <path class="cls-1" d="M17,7l-5,5-4-4-3,3" />
+    </svg>
+  </div>
+  <!-- Icon to show hardware status -->
+  <div class="gamemode-hardware-status">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-activity">
+      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+    </svg>
+  </div>
+  <!-- Player cards -->
+  <div class="player-cards-container js-content-container">
+  </div>
+  <div class="lotti-container">
+    <!-- Lotti file -->
+    <div id="lottie-container" class="lotti-container"></div>
+  </div>
+  <h1 class="recent-scores-claim-text">Claim your score!</h1>
+  <!-- recent scores table -->
+  <div class="recent-scores-container">
+    <table class="recent-scores-table js-recent-scores">
+      <tr>
+        <th>Username</th>
+        <th>Score</th>
+        <th>Claim</th>
+      </tr>
+      <!-- More rows -->
+    </table>
+  </div>
+  </div>
+</body>
+
+</html>
