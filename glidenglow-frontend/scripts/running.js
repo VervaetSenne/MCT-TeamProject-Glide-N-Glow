@@ -143,7 +143,6 @@ function claimScore(button) {
 
   if (!isClaimed) {
     // If the button is not claimed, change the SVG and make the first data field an input
-    button.classList.add('claimed'); // Add a class to indicate that the button has been claimed
 
     // Change the SVG of the button
     button.innerHTML = `
@@ -175,12 +174,13 @@ function claimScore(button) {
       .then((result) => {
         // Handle the response if needed
         console.log('Score claimed successfully:', result);
+        button.classList.add('claimed'); // Add a class to indicate that the button has been claimed
 
         // Replace the old username cell with the new one
         const firstDataRow = button.closest('tr');
         const oldUsernameCell = firstDataRow.querySelector('td:first-child');
         oldUsernameCell.innerHTML = newUsername;
-        button.style.display = none;
+        button.style.visibility = hidden;
       })
       .catch((error) => {
         // Handle errors
