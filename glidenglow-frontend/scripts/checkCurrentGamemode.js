@@ -17,7 +17,7 @@ function checkCurrentGame() {
     .then((currentGame) => {
       if (currentGame != 0) {
         console.log('there is a game in progress');
-        window.location.href = `/gamemodeActive.html?name=${currentGame.name}`;
+        window.location.href = `/gamemodeActive.html?name=${currentGame.name}&id=${currentGame.id}`;
       }
     });
 }
