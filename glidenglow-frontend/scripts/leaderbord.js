@@ -118,7 +118,7 @@ function fillLeaderbordOnChange(gamemodeId) {
       return response.json();
     })
     .then((scores) => {
-      if (scores.length == 1) {
+      if (scores.length >= 1) {
         document.querySelector('.first-place h1').innerText = scores[0].score;
         document.querySelector('.first-place p').innerText = scores[0].username;
 
@@ -128,26 +128,14 @@ function fillLeaderbordOnChange(gamemodeId) {
         document.querySelector('.third-place h1').innerText = '';
         document.querySelector('.third-place p').innerText = '';
       }
-      if (scores.length == 2) {
-        document.querySelector('.first-place h1').innerText = scores[0].score;
-        document.querySelector('.first-place p').innerText = scores[0].username;
-
+      if (scores.length >= 2) {
         document.querySelector('.second-place h1').innerText = scores[1].score;
-        document.querySelector('.second-place p').innerText =
-          scores[1].username;
+        document.querySelector('.second-place p').innerText = scores[1].username;
 
         document.querySelector('.third-place h1').innerText = '';
         document.querySelector('.third-place p').innerText = '';
       }
-      if (scores.length == 3) {
-        // Fill the podium with the first 3 scores
-        document.querySelector('.first-place h1').innerText = scores[0].score;
-        document.querySelector('.first-place p').innerText = scores[0].username;
-
-        document.querySelector('.second-place h1').innerText = scores[1].score;
-        document.querySelector('.second-place p').innerText =
-          scores[1].username;
-
+      if (scores.length >= 3) {
         document.querySelector('.third-place h1').innerText = scores[2].score;
         document.querySelector('.third-place p').innerText = scores[2].username;
       }
