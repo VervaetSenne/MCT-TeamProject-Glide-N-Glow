@@ -67,12 +67,17 @@ public class EntryService : IEntryService
             entries = entries.Where(tuple => IsWithinTimeFrame(tuple, timeFrame));
 
         return await entries
+            .Select(e =>
+            {
+                e.Score = FormatScore(e.Score);
+                return e;
+            })
             .OrderBy(e => e, new EntryComparer())
             .Select((e, i) => new EntryDto
             {
                 Rank = i + 1,
                 Username = e.Name,
-                Score = FormatScore(e.Score)
+                Score = e.Score
             })
             .Where(e => e.Username.ToLower().Contains(username.Trim()))
             .ToListAsync();

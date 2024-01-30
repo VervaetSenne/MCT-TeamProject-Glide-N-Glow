@@ -15,7 +15,7 @@ public class EntryComparer : IComparer<Entry>
         if (x.GameId != y.GameId) throw new Exception("Be sure to group the entries by game before ordering!");
 
         var result = x.Score.Contains(':')
-            ? TimeSpan.ParseExact(x.Score, "g", null).CompareTo(TimeSpan.ParseExact(y.Score, "g", null))
+            ? TimeSpan.ParseExact(x.Score, @"mm\:ss\.fff", null).CompareTo(TimeSpan.ParseExact(y.Score, @"mm\:ss\.fff", null))
             : float.Parse(x.Score).CompareTo(float.Parse(y.Score));
 
         if (x.Game.ScoreImportance == ScoreImportance.Highest) result *= -1;
