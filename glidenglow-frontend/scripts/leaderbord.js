@@ -1,8 +1,6 @@
 var dropdownContainer;
 var leaderbordTableContainer;
 
-var fetchdom = 'http://localhost:5165';
-
 function handleDropdown() {
   fetch(`${fetchdom}/leaderboard/gamemodes`)
     .then((response) => {

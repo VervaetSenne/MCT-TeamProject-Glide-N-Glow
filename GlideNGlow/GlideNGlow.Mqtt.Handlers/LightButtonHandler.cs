@@ -6,6 +6,7 @@ using GlideNGlow.Mqtt.Topics;
 using GlideNGlow.Socket.Abstractions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options.Implementations;
+using Newtonsoft.Json.Linq;
 
 namespace GlideNGlow.Mqqt.Handlers;
 
@@ -64,64 +65,33 @@ public class LightButtonHandler
     
     private async Task SigninNewButton(string macAddress)
     {
- 
         LightButtonData? button = null;
         _appSettings.Update(settings =>
         {
             settings = settings.GetCurrentValue();
             
             //check if there is a Button in _appSettings.CurrentValue.Buttons with the same macAddress as the one we got
-                
-            button = _appSettings.GetCurrentValue().Buttons.FirstOrDefault(x => x.MacAddress == macAddress);
-
-            //check if the button isn't in LightButtons if so add it
-            if (!LightButtons.ContainsKey(macAddress))
-            {
-                if(button is null)
-                {
-                    LightButtons.Add(macAddress, new LightButtons(new LightButtonData()
-                    {
-                        MacAddress = macAddress,
-                        ButtonNumber = -1,
-                        DistanceFromStart = 0
-                    }, _logger)
-                    {
-                        MacAddress = macAddress
-                    });
-                }
-                else
-                {
-                    LightButtons.Add(macAddress, new LightButtons(new LightButtonData()
-                    {
-                        MacAddress = macAddress,
-                        ButtonNumber = button.ButtonNumber,
-                        DistanceFromStart = button.DistanceFromStart
-                    }, _logger)
-                    {
-                        MacAddress = macAddress
-                    });
-                }
-            }
+            var buttonId = settings.Buttons.FindIndex(x => x.MacAddress == macAddress);
+            if (buttonId > -1) button = settings.Buttons[buttonId];
+            
             //check if there is a Button in _appSettings.CurrentValue.Buttons with the same macAddress as the one we got
             //button = settings.Buttons.FirstOrDefault(x => x.MacAddress == macAddress);
             if (button is null)
             {
-                //there isn't, add a new one and put it's buttonNumber on -1 and notify the client to give it a location and return
-                settings.Buttons.Add(new LightButtonData()
+                button = new LightButtonData()
                 {
                     MacAddress = macAddress,
                     ButtonNumber = -1,
                     DistanceFromStart = 0
-                });
-                return;
+                };
+                //there isn't, add a new one and put it's buttonNumber on -1 and notify the client to give it a location and return
+                settings.Buttons.Add(button);
             }
-            
-            
-            switch (button.ButtonNumber)
+            else switch (button.ButtonNumber)
             {
                 //if buttonNumber is 0 or above, the button just reconnected, so we don't need to do anything besides notifying the client it reconnected
                 case >= 0:
-                    return;
+                    break;
                 //check if the buttonNumber is -2,
                 case -2:
                 {
@@ -134,29 +104,46 @@ public class LightButtonHandler
                     //look at all buttons 0 or above and give them a number based on their distance from the start
                     //make a list of all buttons that have a buttonNumber of 0 or above
                     var buttons = settings.Buttons.Where(x => x.ButtonNumber >= 0).ToList();
-                
+                    var notFound = settings.Buttons.Except(buttons);
+                    
                     //sort the list based on their distanceFromStart value
                     buttons.Sort((x, y) => Convert.ToInt32((x.DistanceFromStart ?? 0) - (y.DistanceFromStart ?? 0)));
-                
+    
+                    settings.Buttons = buttons;
+                    settings.Buttons.AddRange(notFound);
                     //go over each button and give them a buttonNumber based on their location in the list
                     for (var i = 0; i < buttons.Count; i++)
                     {
                         buttons[i].ButtonNumber = i;
                         //also change the buttonNumber of the button in LightButtons
                         LightButtons[buttons[i].MacAddress].ButtonNumber = i;
+                        settings.Buttons[i].ButtonNumber = i;
                     }
 
-                    return;
+                    break;
                 }
                 //if buttonNumber is -3, the button doesn't have settings yet, change its number to -1 and notifying the client it reconnected
                 case -3:
                     button.ButtonNumber = -1;
                     break;
             }
+
+            LightButtons.Clear();
+            foreach (var buttonData in settings.Buttons.Where(d => d.ButtonNumber > -1))
+            {
+                LightButtons.Add(buttonData.MacAddress, new LightButtons(buttonData, _logger)
+                {
+                    MacAddress = buttonData.MacAddress
+                });
+            }
         });
-        if (button is not null)
+        if (button?.ButtonNumber > -3)
         {
             await _socketWrapper.ButtonConnected(button.MacAddress, button.DistanceFromStart ?? 0);
+        }
+        else
+        {
+            await _socketWrapper.ButtonDisconnected(macAddress);
         }
     }
 
@@ -258,16 +245,15 @@ public class LightButtonHandler
         var macAddress = topic.Split('/')[1];
         _logger.LogInformation($"Esp {macAddress} acknowledged: {message}");
         
-        await SigninNewButton(macAddress);
         //check if LightButtons has this macAddress, if it doesn't, add it
-        // if (!LightButtons.ContainsKey(macAddress))
-        // {
-        //     await SigninNewButton(macAddress);
-        // }
-        // else
-        // {
-        //     LightButtons[macAddress].Responded = true;
-        // }
+        if (!LightButtons.ContainsKey(macAddress))
+        {
+            await SigninNewButton(macAddress);
+        }
+        else
+        {
+            LightButtons[macAddress].Responded = true;
+        }
     }
 
     private async Task OnButtonSubscription(string topic, string message)

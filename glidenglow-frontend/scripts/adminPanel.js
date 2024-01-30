@@ -1,6 +1,4 @@
-var fetchdom = 'http://localhost:5165';
-
-//Settigns var
+//Settings var
 var stateCalibrate = 0;
 var stateStartStop = 0;
 var startStopButton;
@@ -97,9 +95,7 @@ function handleAdminSettings() {
   });
   calibrateButton.addEventListener('click', function () {
     toggleCallibrate();
-    if (stateCalibrate == 1) {
-      sendStop();
-    }
+    sendStop();
   });
 }
 

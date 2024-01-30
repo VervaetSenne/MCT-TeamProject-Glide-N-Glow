@@ -11,22 +11,13 @@ namespace GlideNGlow.Gamemodes.Modes;
 
 public class CalibrationMode : Gamemode
 {
-    private readonly LightButtonHandler _lightButtonHandler;
-    private readonly AppSettings _appSettings;
-    private readonly ISocketWrapper _socketWrapper;
-    
     //timer for updating render objects
     private float _timeElapsed;
     private float _updateInterval = 5f;
-    
     private float _halfWidth = 2.5f;
-    
 
     public CalibrationMode(LightButtonHandler lightButtonHandler, AppSettings appSettings, ISocketWrapper socketWrapper) : base(lightButtonHandler, appSettings, socketWrapper)
     {
-        _lightButtonHandler = lightButtonHandler;
-        _appSettings = appSettings;
-        _socketWrapper = socketWrapper;
     }
 
     public override void Initialize(CancellationToken cancellationToken)
@@ -42,7 +33,7 @@ public class CalibrationMode : Gamemode
 
     private async Task RecalculateButtonLines(CancellationToken cancellationToken)
     {
-        foreach (var lightButtonsValue in _lightButtonHandler.LightButtons.Values)
+        foreach (var lightButtonsValue in LightButtonHandler.LightButtons.Values)
         {
             if (lightButtonsValue.ButtonNumber != -1)
             {
@@ -65,7 +56,7 @@ public class CalibrationMode : Gamemode
         //create interval measurement lines
         var interval = 50f;
         var distance = 0f;
-        var sum = _appSettings.Strips.Sum(strip => strip.Length + strip.DistanceFromLast);
+        var sum = AppSettings.Strips.Sum(strip => strip.Length + strip.DistanceFromLast);
         while (distance < sum)
         {
             var color = Color.White;

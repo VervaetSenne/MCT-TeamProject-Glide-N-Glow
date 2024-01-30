@@ -55,7 +55,7 @@ public class LightRenderer
 
     private void UpdateSettings(CancellationToken cancellationToken)
     {
-        var OldPixelAmount = PixelAmount;
+        var oldPixelAmount = PixelAmount;
         PixelAmount = AppSettings.Strips.Aggregate(0, (i, strip) => i + strip.Leds);
         //_pixelAmount = size;
 
@@ -74,7 +74,7 @@ public class LightRenderer
             LightStripConverter.UpdateLightStripData(AppSettings.Strips);
         }
         
-        if(OldPixelAmount != PixelAmount)
+        if(oldPixelAmount != PixelAmount)
         {
             Lights.Clear();
             Lights = Enumerable.Repeat(Color.Black, PixelAmount).ToList();

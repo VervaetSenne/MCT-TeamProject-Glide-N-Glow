@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options.Implementations.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -27,7 +28,7 @@ public class WritableOptions<TOptions> : IWritableOptions<TOptions> where TOptio
 		return _options.OnChange(listener);
 	}
 
-	public void Update(Action<TOptions> applyChanges)
+	public void Update(Action<TOptions> applyChanges, bool doesWrite = true)
 	{
 #if DEBUG
 		var fileProvider = _environment.ContentRootFileProvider;
@@ -43,21 +44,23 @@ public class WritableOptions<TOptions> : IWritableOptions<TOptions> where TOptio
 			throw new ArgumentNullException(nameof(physicalPath));
 
 		var jObject = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(physicalPath));
-		var sectionObject = jObject?.TryGetValue(_section, out var section) ?? throw new ArgumentNullException(nameof(jObject)) ?
-			JsonConvert.DeserializeObject<TOptions>(section.ToString()) :
-			CurrentValue;
+		var sectionObject =
+			jObject?.TryGetValue(_section, out var section) ?? throw new ArgumentNullException(nameof(jObject))
+				? JsonConvert.DeserializeObject<TOptions>(section.ToString())
+				: CurrentValue;
 
-		applyChanges(sectionObject ?? new TOptions());
+		sectionObject ??= new TOptions();
+		
+		applyChanges(sectionObject);
 
+		if (!doesWrite) return;
+		
 		jObject[_section] = JObject.Parse(JsonConvert.SerializeObject(sectionObject));
-		try
+		
+		new MultiThreadFileWriter().WriteLine(new LogMessage
 		{
-			File.WriteAllText(physicalPath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
-		}
-		catch
-		{
-			Task.Delay(2).GetAwaiter().GetResult();
-			File.WriteAllText(physicalPath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
-		}
+			Filepath = physicalPath,
+			Text = JsonConvert.SerializeObject(jObject, Formatting.Indented)
+		});
 	}
 }
