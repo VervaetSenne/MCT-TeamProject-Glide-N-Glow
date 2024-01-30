@@ -7,6 +7,7 @@ using GlideNGlow.Mqtt.Topics;
 using GlideNGlow.Rendering.Handlers.Helpers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options.Implementations;
 
 namespace GlideNGlow.Rendering.Handlers;
 
@@ -15,18 +16,26 @@ public class LightRenderer
     //private setter public getter for int _pixelAmount
     public int PixelAmount { get; private set; }
     private readonly ILogger _logger;
-    private readonly IOptionsMonitor<AppSettings> _appSettings;
+    private readonly IWritableOptions<AppSettings> _appSettings;
     private readonly MqttHandler _mqttHandler;
     //private setter public getter for List<Color> _lights
 
     private bool _isDirty = true;
 
-    private AppSettings AppSettings => _appSettings.GetCurrentValue();
-    
+    private AppSettings AppSettings
+    {
+        get
+        {
+            AppSettings settings = null!;
+            _appSettings.Update(s => settings = s, false);
+            return settings;
+        }
+    }
+
     public List<Color> Lights { get; private set; }
     public LightStripConverter? LightStripConverter { get; private set; }
 
-    private LightRenderer(ILogger<LightRenderer> logger, IOptionsMonitor<AppSettings> appSettings,
+    private LightRenderer(ILogger<LightRenderer> logger, IWritableOptions<AppSettings> appSettings,
         MqttHandler mqttHandler)
     {
         _logger = logger;
@@ -41,7 +50,7 @@ public class LightRenderer
         // }
     }
 
-    public static LightRenderer Create(ILogger<LightRenderer> logger, IOptionsMonitor<AppSettings> appsettings, MqttHandler mqttHandler, CancellationToken cancellationToken = default)
+    public static LightRenderer Create(ILogger<LightRenderer> logger, IWritableOptions<AppSettings> appsettings, MqttHandler mqttHandler, CancellationToken cancellationToken = default)
     {
         var renderer = new LightRenderer(logger, appsettings, mqttHandler);
         renderer.UpdateSettings(cancellationToken);
