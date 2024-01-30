@@ -872,20 +872,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     .configureLogging(signalR.LogLevel.Warning)
     .build();
 
-  gameHubConnection.on('current-game-updated', (gameid) => {
-    if (gameid) {
-      stateStartStop = 0;
-      stateCalibrate = 0;
-      toggleStartStop();
-      toggleCallibrate();
-    } else {
-      stateStartStop = 1;
-      stateCalibrate = 0;
-      toggleStartStop();
-      toggleCallibrate();
-    }
-  });
-
   gameHubConnection
     .start()
     .then(function () {
