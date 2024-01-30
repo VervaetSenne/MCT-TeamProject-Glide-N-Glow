@@ -21,7 +21,7 @@ public class SocketWrapper : ISocketWrapper
 
     public async Task PublishUpdateGamemode(Guid? gameId)
     {
-        await _connectionHubContext.Clients.All.SendAsync(Events.CurrentGameUpdated, gameId);
+        await _gamHubContext.Clients.All.SendAsync(Events.CurrentGameUpdated, gameId);
     }
 
     public async Task PublishUpdateScore(int id, string score)
@@ -42,21 +42,21 @@ public class SocketWrapper : ISocketWrapper
 
     public async Task SendButtonsUpdated()
     {
-        await _gamHubContext.Clients.All.SendAsync(Events.ButtonsUpdated);
+        await _connectionHubContext.Clients.All.SendAsync(Events.ButtonsUpdated);
     }
 
     public async Task ButtonConnected(string macAddress, float distanceFromStart)
     {
-        await _gamHubContext.Clients.All.SendAsync(Events.ButtonConnected, macAddress.MacToHex(), distanceFromStart);
+        await _connectionHubContext.Clients.All.SendAsync(Events.ButtonConnected, macAddress.MacToHex(), distanceFromStart);
     }
 
     public async Task ButtonDisconnected(string macAddress)
     {
-        await _gamHubContext.Clients.All.SendAsync(Events.ButtonDisconnected, macAddress);
+        await _connectionHubContext.Clients.All.SendAsync(Events.ButtonDisconnected, macAddress);
     }
 
     public async Task SendWarning(string message)
     {
-        await _gamHubContext.Clients.All.SendAsync(Events.Warning, message);
+        await _connectionHubContext.Clients.All.SendAsync(Events.Warning, message);
     }
 }

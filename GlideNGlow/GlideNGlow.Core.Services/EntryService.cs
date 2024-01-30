@@ -37,9 +37,9 @@ public class EntryService : IEntryService
     private static string FormatScore(string score)
     {
         return score.Contains(':')
-            ? !TimeSpan.TryParseExact(score, @"%h\:%m\:%s\.ffff", null, out var timeSpan)
-                ? !TimeSpan.TryParseExact(score, @"%m\:%s\.ffff", null, out timeSpan)
-                    ? !TimeSpan.TryParseExact(score, @"%s\.ffff", null, out timeSpan)
+            ? !TimeSpan.TryParseExact(score, @"%h\:%m\:%s\.fff", null, out var timeSpan)
+                ? !TimeSpan.TryParseExact(score, @"%m\:%s\.fff", null, out timeSpan)
+                    ? !TimeSpan.TryParseExact(score, @"%s\.fff", null, out timeSpan)
                         ? score
                         : ToString(timeSpan)
                     : ToString(timeSpan)
@@ -67,12 +67,17 @@ public class EntryService : IEntryService
             entries = entries.Where(tuple => IsWithinTimeFrame(tuple, timeFrame));
 
         return await entries
+            .Select(e =>
+            {
+                e.Score = FormatScore(e.Score);
+                return e;
+            })
             .OrderBy(e => e, new EntryComparer())
             .Select((e, i) => new EntryDto
             {
                 Rank = i + 1,
                 Username = e.Name,
-                Score = FormatScore(e.Score)
+                Score = e.Score
             })
             .Where(e => e.Username.ToLower().Contains(username.Trim()))
             .ToListAsync();
@@ -89,18 +94,18 @@ public class EntryService : IEntryService
             .ToListAsync();
 
         return entries
+            .Select(e =>
+            {
+                e.Score = FormatScore(e.Score);
+                return e;
+            })
             .GroupBy(e => e.GameId)
-            .Select(g => g.Max(new EntryComparer()) ?? new Entry
+            .Select(g => g.Min(new EntryComparer()) ?? new Entry
             {
                 GameId = g.Key,
                 DateTime = DateTime.MinValue,
                 Name = string.Empty,
                 Score = "----"
-            })
-            .Select(e =>
-            {
-                e.Score = FormatScore(e.Score);
-                return e;
             });
     }
 
