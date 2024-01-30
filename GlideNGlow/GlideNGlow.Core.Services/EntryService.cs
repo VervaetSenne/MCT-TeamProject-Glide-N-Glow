@@ -37,9 +37,9 @@ public class EntryService : IEntryService
     private static string FormatScore(string score)
     {
         return score.Contains(':')
-            ? !TimeSpan.TryParseExact(score, @"%h\:%m\:%s\.ffff", null, out var timeSpan)
-                ? !TimeSpan.TryParseExact(score, @"%m\:%s\.ffff", null, out timeSpan)
-                    ? !TimeSpan.TryParseExact(score, @"%s\.ffff", null, out timeSpan)
+            ? !TimeSpan.TryParseExact(score, @"%h\:%m\:%s\.fff", null, out var timeSpan)
+                ? !TimeSpan.TryParseExact(score, @"%m\:%s\.fff", null, out timeSpan)
+                    ? !TimeSpan.TryParseExact(score, @"%s\.fff", null, out timeSpan)
                         ? score
                         : ToString(timeSpan)
                     : ToString(timeSpan)
