@@ -31,6 +31,7 @@ wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
 chmod +x ./dotnet-install.sh
 ./dotnet-install.sh --version 7.0.405
 export PATH="$PATH:/root/.dotnet"
+rm ./dotnet-install.sh
 echo "dotnet install successful"
 
 # install efcore and update db
