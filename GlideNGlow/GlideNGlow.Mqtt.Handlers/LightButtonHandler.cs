@@ -64,42 +64,44 @@ public class LightButtonHandler
     
     private async Task SigninNewButton(string macAddress)
     {
-        //check if there is a Button in _appSettings.CurrentValue.Buttons with the same macAddress as the one we got
-                
-        LightButtonData? button = _appSettings.GetCurrentValue().Buttons.FirstOrDefault(x => x.MacAddress == macAddress);
-
-        //check if the button isn't in LightButtons if so add it
-        if (!LightButtons.ContainsKey(macAddress))
-        {
-            if(button is null)
-            {
-                LightButtons.Add(macAddress, new LightButtons(new LightButtonData()
-                {
-                    MacAddress = macAddress,
-                    ButtonNumber = -1,
-                    DistanceFromStart = 0
-                }, _logger)
-                {
-                    MacAddress = macAddress
-                });
-            }
-            else
-            {
-                LightButtons.Add(macAddress, new LightButtons(new LightButtonData()
-                {
-                    MacAddress = macAddress,
-                    ButtonNumber = button.ButtonNumber,
-                    DistanceFromStart = button.DistanceFromStart
-                }, _logger)
-                {
-                    MacAddress = macAddress
-                });
-            }
-        }
-        
+ 
+        LightButtonData? button = null;
         _appSettings.Update(settings =>
         {
             settings = settings.GetCurrentValue();
+            
+            //check if there is a Button in _appSettings.CurrentValue.Buttons with the same macAddress as the one we got
+                
+            button = _appSettings.GetCurrentValue().Buttons.FirstOrDefault(x => x.MacAddress == macAddress);
+
+            //check if the button isn't in LightButtons if so add it
+            if (!LightButtons.ContainsKey(macAddress))
+            {
+                if(button is null)
+                {
+                    LightButtons.Add(macAddress, new LightButtons(new LightButtonData()
+                    {
+                        MacAddress = macAddress,
+                        ButtonNumber = -1,
+                        DistanceFromStart = 0
+                    }, _logger)
+                    {
+                        MacAddress = macAddress
+                    });
+                }
+                else
+                {
+                    LightButtons.Add(macAddress, new LightButtons(new LightButtonData()
+                    {
+                        MacAddress = macAddress,
+                        ButtonNumber = button.ButtonNumber,
+                        DistanceFromStart = button.DistanceFromStart
+                    }, _logger)
+                    {
+                        MacAddress = macAddress
+                    });
+                }
+            }
             //check if there is a Button in _appSettings.CurrentValue.Buttons with the same macAddress as the one we got
             //button = settings.Buttons.FirstOrDefault(x => x.MacAddress == macAddress);
             if (button is null)
@@ -256,15 +258,16 @@ public class LightButtonHandler
         var macAddress = topic.Split('/')[1];
         _logger.LogInformation($"Esp {macAddress} acknowledged: {message}");
         
+        await SigninNewButton(macAddress);
         //check if LightButtons has this macAddress, if it doesn't, add it
-        if (!LightButtons.ContainsKey(macAddress))
-        {
-            await SigninNewButton(macAddress);
-        }
-        else
-        {
-            LightButtons[macAddress].Responded = true;
-        }
+        // if (!LightButtons.ContainsKey(macAddress))
+        // {
+        //     await SigninNewButton(macAddress);
+        // }
+        // else
+        // {
+        //     LightButtons[macAddress].Responded = true;
+        // }
     }
 
     private async Task OnButtonSubscription(string topic, string message)
